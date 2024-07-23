@@ -1,8 +1,6 @@
 /* styles.css */
 body {
     font-family: 'Montserrat', sans-serif;
-    margin: 0;
-    padding: 0;
     color: #333;
 }
 
@@ -16,17 +14,26 @@ header {
 
 .nav-link {
     font-weight: 700;
-    transition: color 0.3s;
+    transition: color 0.3s, background-color 0.3s;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
 }
 
 .nav-link:hover {
     color: #ffeb3b;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    color: #ffeb3b;
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .hero {
     background: url('images/cover.jpeg') no-repeat center center/cover;
     height: 70vh;
     display: flex;
+    align-items: center;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -40,43 +47,59 @@ header {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
+    z-index: 1; /* Ensure it is below the hero content */
 }
 
 .hero-content {
-    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5); /* Increased opacity for better readability */
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 80%; /* Limit width for better readability */
+    position: relative; /* Ensure it is positioned relative to the hero section */
+    z-index: 2; /* Ensure it is above the overlay */
 }
 
 .hero h1 {
     font-size: 3.5em;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
+    font-weight: 700; /* Make the title bolder */
 }
 
 .hero p {
     font-size: 1.5em;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
+    margin-top: 1rem; /* Add some space between title and subtitle */
 }
 
 .btn-warning {
-    background-color: #ffeb3b;
-    border-color: #ffeb3b;
+    background-color: #ffc107;
+    border-color: #ffc107;
     color: #333;
-    transition: background-color 0.3s, border-color 0.3s;
+    font-weight: 600;
+    transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .btn-warning:hover {
-    background-color: #fdd835;
-    border-color: #fdd835;
+    background-color: #e0a800;
+    border-color: #e0a800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .content-section {
-    padding: 50px 20px;
+    padding: 5rem 0;
 }
 
 .content-section h2 {
     text-align: left;
     font-size: 2.5em;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
+    color: #317427; /* Use the custom green color */
+    border-bottom: 3px solid #317427;
+    padding-bottom: 0.5rem;
+    display: inline-block;
 }
 
 .content-section p {
@@ -89,15 +112,17 @@ header {
     background-color: #f9f9f9;
 }
 
-.content-section.bg-pattern {
+/* .content-section.bg-pattern {
     background: url('images/pattern.png');
-}
+} */
 
-.content-section img {
+/* More specific selector to ensure styles are applied */
+.content-section img.img-fluid {
     max-width: 100%;
     height: auto;
-    border-radius: 10px;
+    border-radius: 15px !important; /* Increased rounded corners */
     transition: transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.30) !important; /* Added drop shadow */
 }
 
 .content-section img:hover {
@@ -114,4 +139,47 @@ footer .social-media a {
 
 footer .social-media a:hover {
     color: #ffeb3b;
+}
+
+/* Custom class for drop shadow */
+.custom-shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Added drop shadow */
+}
+
+/* Improve headings for boxes */
+.card-title {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #317427; /* Use the custom green color */
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #317427;
+    padding-bottom: 0.5rem;
+}
+
+/* Enhance card design */
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Add some subtle background patterns to sections */
+.bg-pattern {
+    background-color: #f9f9f9;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23317427' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Improve form styling */
+.form-control {
+    border: 2px solid #e0e0e0;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: #317427;
+    box-shadow: 0 0 0 0.2rem rgba(49, 116, 39, 0.25);
 }

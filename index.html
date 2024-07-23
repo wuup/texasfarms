@@ -20,6 +20,7 @@
             </div>
             <nav>
                 <ul class="nav justify-content-center">
+                    <li class="nav-item"><a class="nav-link text-white active" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="#about">About Us</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="#goats">Goats</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="#pigs">Pigs</a></li>
@@ -31,7 +32,7 @@
             </nav>
         </div>
     </header>
-    <section class="hero">
+    <section id="home" class="hero">
         <div class="hero-content text-center text-white">
             <h1>Sustainable Farming, Exceptional Quality</h1>
             <p>Dedicated to ethical farming, providing exceptional products for families, restaurants, and local markets.</p>
@@ -40,15 +41,41 @@
     </section>
     <section id="about" class="content-section py-5 bg-light">
         <div class="container">
-            <h2>About Us</h2>
-            <p>A passion for creating the highest quality, farm fresh products. We're excited to share them with you.</p>
+            <h2 class="text-center mb-4">Our Passion, Your Plate</h2>
+            <p class="lead text-left mb-5">At Texas Farms Vermont, we're driven by a passion for creating the highest quality, farm-fresh products. Our commitment to sustainable farming practices and animal welfare ensures that every bite tells a story of care, dedication, and respect for nature.</p>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Sustainable Practices</h5>
+                            <p class="card-text">We employ eco-friendly farming methods that protect our land and resources for future generations.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Animal Welfare</h5>
+                            <p class="card-text">Our animals are raised with love and respect, ensuring their well-being and the quality of our products.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Community Focus</h5>
+                            <p class="card-text">We're proud to support our local community by providing fresh and nutritious food.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
     <section id="goats" class="content-section py-5 bg-pattern">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <img src="images/goat2.jpeg" alt="Goats" class="img-fluid rounded">
+                    <img src="images/goats1.jpeg" alt="Goats" class="img-fluid custom-shadow rounded">
                 </div>
                 <div class="col-md-6">
                     <h2>Goats</h2>
@@ -62,7 +89,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 order-md-2">
-                    <img src="images/gloucestershire-old-spot-pigs.jpeg" alt="Pigs" class="img-fluid rounded">
+                    <img src="images/gloucestershire-old-spot-pigs.jpeg" alt="Pigs" class="img-fluid custom-shadow rounded">
                 </div>
                 <div class="col-md-6 order-md-1">
                     <h2>Pigs</h2>
@@ -76,7 +103,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <img src="images/chickens.jpg" alt="Chickens" class="img-fluid rounded">
+                    <img src="images/chickens.jpg" alt="Chickens" class="img-fluid custom-shadow rounded">
                 </div>
                 <div class="col-md-6">
                     <h2>Chickens</h2>
@@ -142,5 +169,31 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // JavaScript to add 'active' class to the current menu item
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Highlight the correct menu item based on the current section
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        const id = entry.target.getAttribute('id');
+                        document.querySelector(`.nav-link[href="#${id}"]`).classList.add('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
 </body>
 </html>
