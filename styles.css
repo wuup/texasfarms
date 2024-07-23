@@ -1,6 +1,8 @@
 body {
     font-family: 'Montserrat', sans-serif;
     color: #333;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAEklEQVQImWNgYGD4z0AswK4SAFXuAf8EPy+xAAAAAElFTkSuQmCC');
+    background-repeat: repeat;
 }
 
 .bg-custom-green {
@@ -73,6 +75,15 @@ header {
     margin-top: 1rem;
 }
 
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
 .btn-warning {
     background-color: #ffc107;
     border-color: #ffc107;
@@ -91,6 +102,14 @@ header {
 
 .content-section {
     padding: 5rem 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.content-section.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .content-section h2 {
@@ -216,4 +235,124 @@ footer .social-media a:hover {
 }
 #contact-us p {
     margin: 5px 0;
+}
+
+#grow-with-us,
+#find-us,
+#contact-us {
+    background-color: #f9f9f9;
+}
+
+#grow-with-us .card,
+#find-us .card,
+#contact-us .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#grow-with-us .card:hover,
+#find-us .card:hover,
+#contact-us .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+#grow-with-us .card-body,
+#contact-us .card-body {
+    padding: 3rem;
+}
+
+#grow-with-us .card-title,
+#find-us h2,
+#contact-us h2 {
+    color: #317427;
+    font-size: 2.5em;
+    margin-bottom: 1rem;
+    border-bottom: none;
+}
+
+#grow-with-us .lead,
+#contact-us .lead {
+    font-size: 1.2em;
+    color: #555;
+}
+
+#mailing-list-form .form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 25px 0 0 25px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1em;
+    height: auto;
+}
+
+#mailing-list-form .btn-success {
+    border-radius: 0 25px 25px 0;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1em;
+    font-weight: 600;
+    background-color: #317427;
+    border-color: #317427;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#mailing-list-form .btn-success:hover {
+    background-color: #285e1f;
+    transform: translateY(-2px);
+}
+
+#grow-with-us small {
+    font-size: 0.9em;
+}
+
+#find-us .card-title {
+    font-size: 1.5em;
+    color: #317427;
+}
+
+#find-us .btn-primary {
+    background-color: #317427;
+    border-color: #317427;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#find-us .btn-primary:hover {
+    background-color: #285e1f;
+    transform: translateY(-2px);
+}
+
+#contact-us .social-media a {
+    color: #317427;
+    transition: color 0.3s, transform 0.3s;
+}
+
+#contact-us .social-media a:hover {
+    color: #285e1f;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    #grow-with-us .card-body,
+    #contact-us .card-body {
+        padding: 2rem;
+    }
+
+    #mailing-list-form .form-control,
+    #mailing-list-form .btn-success {
+        border-radius: 25px;
+        margin-bottom: 1rem;
+    }
+
+    #find-us .card {
+        height: auto !important;
+    }
+
+    #find-us iframe {
+        height: 300px;
+    }
+}
+
+html {
+  scroll-behavior: smooth;
 }
