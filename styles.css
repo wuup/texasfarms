@@ -27,6 +27,7 @@ header {
 .nav-link.active {
     color: #ffeb3b;
     background-color: rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #ffeb3b; /* Add a bottom border to indicate the active item */
 }
 
 .hero {
@@ -35,8 +36,9 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    align-items: center;
     position: relative;
+    text-align: center;
+    padding: 0 1rem; /* Add padding for mobile view */
 }
 
 .hero::before {
@@ -51,7 +53,7 @@ header {
 }
 
 .hero-content {
-    background-color: rgba(0, 0, 0, 0.5); /* Increased opacity for better readability */
+    background-color: rgba(0, 0, 0, 0.7); /* Increased opacity for better readability */
     padding: 2rem;
     border-radius: 10px;
     max-width: 80%; /* Limit width for better readability */
@@ -60,14 +62,14 @@ header {
 }
 
 .hero h1 {
-    font-size: 3.5em;
+    font-size: 2.5em; /* Adjust font size for mobile view */
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
     font-weight: 700; /* Make the title bolder */
 }
 
 .hero p {
-    font-size: 1.5em;
+    font-size: 1.2em; /* Adjust font size for mobile view */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
     margin-top: 1rem; /* Add some space between title and subtitle */
 }
@@ -170,6 +172,7 @@ footer .social-media a:hover {
 /* Add some subtle background patterns to sections */
 .bg-pattern {
     background-color: #f9f9f9;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23317427' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Improve form styling */
@@ -181,4 +184,27 @@ footer .social-media a:hover {
 .form-control:focus {
     border-color: #317427;
     box-shadow: 0 0 0 0.2rem rgba(49, 116, 39, 0.25);
+}
+
+/* Media Queries for Mobile View */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2em; /* Adjust font size for smaller screens */
+    }
+
+    .hero p {
+        font-size: 1em; /* Adjust font size for smaller screens */
+    }
+
+    .content-section {
+        padding: 2rem 1rem; /* Adjust padding for smaller screens */
+    }
+
+    .content-section h2 {
+        font-size: 2em; /* Adjust font size for smaller screens */
+    }
+
+    .content-section p {
+        font-size: 1em; /* Adjust font size for smaller screens */
+    }
 }
