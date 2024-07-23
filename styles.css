@@ -1,4 +1,3 @@
-/* styles.css */
 body {
     font-family: 'Montserrat', sans-serif;
     color: #333;
@@ -27,7 +26,7 @@ header {
 .nav-link.active {
     color: #ffeb3b;
     background-color: rgba(255, 255, 255, 0.2);
-    border-bottom: 2px solid #ffeb3b; /* Add a bottom border to indicate the active item */
+    border-bottom: 2px solid #ffeb3b;
 }
 
 .hero {
@@ -38,7 +37,7 @@ header {
     justify-content: center;
     position: relative;
     text-align: center;
-    padding: 0 1rem; /* Add padding for mobile view */
+    padding: 0 1rem;
 }
 
 .hero::before {
@@ -49,29 +48,29 @@ header {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1; /* Ensure it is below the hero content */
+    z-index: 1;
 }
 
 .hero-content {
-    background-color: rgba(0, 0, 0, 0.7); /* Increased opacity for better readability */
+    background-color: rgba(0, 0, 0, 0.7);
     padding: 2rem;
     border-radius: 10px;
-    max-width: 80%; /* Limit width for better readability */
-    position: relative; /* Ensure it is positioned relative to the hero section */
-    z-index: 2; /* Ensure it is above the overlay */
+    max-width: 80%;
+    position: relative;
+    z-index: 2;
 }
 
 .hero h1 {
-    font-size: 2.5em; /* Adjust font size for mobile view */
+    font-size: 2.5em;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
-    font-weight: 700; /* Make the title bolder */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-weight: 700;
 }
 
 .hero p {
-    font-size: 1.2em; /* Adjust font size for mobile view */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
-    margin-top: 1rem; /* Add some space between title and subtitle */
+    font-size: 1.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    margin-top: 1rem;
 }
 
 .btn-warning {
@@ -98,7 +97,7 @@ header {
     text-align: left;
     font-size: 2.5em;
     margin-bottom: 1.5rem;
-    color: #317427; /* Use the custom green color */
+    color: #317427;
     border-bottom: 3px solid #317427;
     padding-bottom: 0.5rem;
     display: inline-block;
@@ -114,17 +113,12 @@ header {
     background-color: #f9f9f9;
 }
 
-/* .content-section.bg-pattern {
-    background: url('images/pattern.png');
-} */
-
-/* More specific selector to ensure styles are applied */
 .content-section img.img-fluid {
     max-width: 100%;
     height: auto;
-    border-radius: 15px !important; /* Increased rounded corners */
+    border-radius: 15px !important;
     transition: transform 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.30) !important; /* Added drop shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.30) !important;
 }
 
 .content-section img:hover {
@@ -143,22 +137,19 @@ footer .social-media a:hover {
     color: #ffeb3b;
 }
 
-/* Custom class for drop shadow */
 .custom-shadow {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Added drop shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Improve headings for boxes */
 .card-title {
     font-size: 1.5em;
     font-weight: 700;
-    color: #317427; /* Use the custom green color */
+    color: #317427;
     margin-bottom: 1rem;
     border-bottom: 2px solid #317427;
     padding-bottom: 0.5rem;
 }
 
-/* Enhance card design */
 .card {
     transition: transform 0.3s, box-shadow 0.3s;
     border: none;
@@ -169,13 +160,10 @@ footer .social-media a:hover {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Add some subtle background patterns to sections */
 .bg-pattern {
     background-color: #f9f9f9;
-    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23317427' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Improve form styling */
 .form-control {
     border: 2px solid #e0e0e0;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -186,25 +174,24 @@ footer .social-media a:hover {
     box-shadow: 0 0 0 0.2rem rgba(49, 116, 39, 0.25);
 }
 
-/* Media Queries for Mobile View */
 @media (max-width: 768px) {
     .hero h1 {
-        font-size: 2em; /* Adjust font size for smaller screens */
+        font-size: 2em;
     }
 
     .hero p {
-        font-size: 1em; /* Adjust font size for smaller screens */
+        font-size: 1em;
     }
 
     .content-section {
-        padding: 2rem 1rem; /* Adjust padding for smaller screens */
+        padding: 2rem 1rem;
     }
 
     .content-section h2 {
-        font-size: 2em; /* Adjust font size for smaller screens */
+        font-size: 2em;
     }
 
     .content-section p {
-        font-size: 1em; /* Adjust font size for smaller screens */
+        font-size: 1em;
     }
 }
