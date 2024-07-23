@@ -213,6 +213,21 @@ footer .social-media a:hover {
     .content-section p {
         font-size: 1em;
     }
+
+    #mailing-list-form .form-control,
+    #mailing-list-form .btn-success {
+        border-radius: 25px;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    #find-us .card {
+        height: auto !important;
+    }
+
+    #find-us iframe {
+        height: 300px;
+    }
 }
 
 #find-us {
@@ -223,7 +238,6 @@ footer .social-media a:hover {
     border: 0;
     width: 80%;
     max-width: 600px;
-    height: 450px;
 }
 
 #contact-us {
@@ -264,13 +278,20 @@ footer .social-media a:hover {
     padding: 3rem;
 }
 
-#grow-with-us .card-title,
-#find-us h2,
-#contact-us h2 {
-    color: #317427;
-    font-size: 2.5em;
-    margin-bottom: 1rem;
-    border-bottom: none;
+#grow-with-us .card-body {
+    padding: 3rem;
+}
+
+#grow-with-us .leaf-icon {
+    top: 1rem;
+    right: 1rem;
+    font-size: 3.5rem;
+    opacity: 0.7;
+}
+
+#grow-with-us .card-title {
+    text-align: left;
+    padding-right: 2rem;
 }
 
 #grow-with-us .lead,
@@ -300,6 +321,30 @@ footer .social-media a:hover {
 #mailing-list-form .btn-success:hover {
     background-color: #285e1f;
     transform: translateY(-2px);
+}
+
+@media (max-width: 767px) {
+    #mailing-list-form .input-group {
+        flex-direction: column;
+    }
+
+    #mailing-list-form .form-control,
+    #mailing-list-form .btn-success {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    #mailing-list-form .form-control {
+        border-radius: 25px 25px 0 0;
+    }
+
+    #mailing-list-form .btn-success {
+        border-radius: 0 0 25px 25px;
+    }
+
+    #mailing-list-form .input-group-append {
+        width: 100%;
+    }
 }
 
 #grow-with-us small {
@@ -332,25 +377,9 @@ footer .social-media a:hover {
     transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-    #grow-with-us .card-body,
-    #contact-us .card-body {
-        padding: 2rem;
-    }
-
-    #mailing-list-form .form-control,
-    #mailing-list-form .btn-success {
-        border-radius: 25px;
-        margin-bottom: 1rem;
-    }
-
-    #find-us .card {
-        height: auto !important;
-    }
-
-    #find-us iframe {
-        height: 300px;
-    }
+#grow-with-us .fa-leaf {
+    color: #317427;
+    opacity: 0.7;
 }
 
 html {
