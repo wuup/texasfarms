@@ -240,6 +240,7 @@ footer .social-media a:hover {
 
     #find-us .card {
         height: auto !important;
+        margin-bottom: 1rem;
     }
 
     #find-us iframe {
@@ -255,6 +256,8 @@ footer .social-media a:hover {
     border: 0;
     width: 80%;
     max-width: 600px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #contact-us {
@@ -368,15 +371,33 @@ footer .social-media a:hover {
     font-size: 0.9em;
 }
 
-#find-us .card-title {
+#find-us .card-title,
+#find-us h3.text-center {
     font-size: 1.5em;
     color: #317427;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #317427;
+    padding-bottom: 0.5rem;
+}
+
+#find-us .card-text {
+    font-size: 1.1em;
+    margin-bottom: 1rem;
+}
+
+#find-us ul {
+    padding-left: 0;
+}
+
+#find-us ul li {
+    margin-bottom: 0.5rem;
 }
 
 #find-us .btn-primary {
     background-color: #317427;
     border-color: #317427;
     transition: background-color 0.3s, transform 0.3s;
+    margin-top: 1rem;
 }
 
 #find-us .btn-primary:hover {
@@ -428,4 +449,15 @@ html {
     .navbar-toggler {
         display: none;
     }
+}
+
+#find-us iframe {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#find-us h3.text-center {
+    font-size: 1.75em;
+    color: #317427;
+    margin-bottom: 1rem;
 }
