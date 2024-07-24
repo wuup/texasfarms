@@ -149,14 +149,32 @@
                             <i class="fas fa-leaf text-success position-absolute leaf-icon"></i>
                             <h2 class="card-title">Grow with us</h2>
                             <p class="lead mb-4">Join our mailing list to get exclusive updates, special offers, and follow our farm's journey.</p>
-                            <form id="mailing-list-form" class="justify-content-center">
-                                <div class="input-group">
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-success">Subscribe</button>
+                            
+                            <!-- Mailchimp Embed Code Start -->
+                            <div id="mc_embed_signup">
+                                <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                                    <div id="mc_embed_signup_scroll">
+                                        <div class="mc-field-group">
+                                            <label for="mce-EMAIL" class="sr-only">Email Address <span class="asterisk">*</span></label>
+                                            <input type="email" name="EMAIL" class="required email form-control" id="mce-EMAIL" required="" placeholder="Enter your email">
+                                        </div>
+                                        <div id="mce-responses" class="clear foot">
+                                            <div class="response" id="mce-error-response" style="display: none;"></div>
+                                            <div class="response" id="mce-success-response" style="display: none;"></div>
+                                        </div>
+                                        <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                            <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
+                                        </div>
+                                        <div class="optionalParent">
+                                            <div class="clear foot">
+                                                <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-success w-100" value="Subscribe">
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
+                            <!-- Mailchimp Embed Code End -->
+                            
                             <small class="text-muted mt-3 d-block">By subscribing, you agree to receive emails from Texas Farms Vermont. You can unsubscribe at any time.</small>
                         </div>
                     </div>
@@ -300,6 +318,25 @@
             const x = e.clientX / window.innerWidth;
             const y = e.clientY / window.innerHeight;
             hero.style.setProperty('--overlay-color', `rgba(49, 116, 39, ${0.6 + x * 0.2})`);
+        });
+
+        // AJAX form submission for Mailchimp
+        document.getElementById('mailing-list-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+            const xhr = new XMLHttpRequest();
+            xhr.open(form.method, form.action);
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState !== XMLHttpRequest.DONE) return;
+                if (xhr.status === 200) {
+                    form.innerHTML = '<p class="text-success">Thank you for subscribing!</p>';
+                } else {
+                    form.innerHTML = '<p class="text-danger">Oops! Something went wrong.</p>';
+                }
+            };
+            xhr.send(data);
         });
     </script>
 </body>

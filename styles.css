@@ -511,3 +511,97 @@ html {
 .typed-cursor {
     color: #ffc107;
 }
+
+/* Mailchimp form styles */
+#mc_embed_signup {
+    background: transparent;
+    clear: left;
+    font: inherit;
+    width: 100%;
+}
+
+#mc_embed_signup form {
+    padding: 0;
+}
+
+#mc_embed_signup .mc-field-group {
+    width: 100%;
+    padding-bottom: 0;
+    min-height: auto;
+}
+
+#mc_embed_signup input[type="email"] {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#mc_embed_signup .button {
+    background-color: #28a745;
+    border: none;
+    border-radius: 0.25rem;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    height: auto;
+    line-height: 1.5;
+    padding: 0.375rem 0.75rem;
+    width: 100%;
+}
+
+#mc_embed_signup .button:hover {
+    background-color: #218838;
+}
+
+#mc_embed_signup div.response {
+    margin: 1rem 0;
+    padding: 1rem;
+    font-weight: bold;
+    float: none;
+    top: -1.5rem;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 0.25rem;
+}
+
+#mc_embed_signup #mce-success-response {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+/* Add these styles at the end of your existing styles.css file */
+
+.bg-custom-green {
+    background-color: #317427;
+}
+
+.card-title {
+    color: #317427;
+    border-bottom: 2px solid #317427;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.btn-primary, .btn-success, .btn-info {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+footer .social-media a {
+    font-size: 1.5em;
+    transition: color 0.3s;
+}
+
+footer .social-media a:hover {
+    color: #ffeb3b;
+}
