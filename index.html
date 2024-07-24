@@ -17,6 +17,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="manifest" href="favicon/site.webmanifest">
     <link rel="icon" href="favicon/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
 </head>
 <body>
     <header class="bg-custom-green text-white py-3 shadow">
@@ -42,10 +43,11 @@
         </div>
     </header>
     <section id="home" class="hero">
+        <div class="parallax-bg"></div>
         <div class="hero-content text-center text-white">
-            <h1 class="mb-4">Sustainable Farming, Exceptional Quality</h1>
+            <h1 class="mb-4"><span id="typed-text"></span></h1>
             <p class="lead mb-5">Dedicated to ethical farming, providing exceptional products for families, restaurants, and local markets.</p>
-            <a href="#about" class="btn btn-warning mt-3">Learn More</a>
+            <a href="#about" class="btn btn-warning mt-3 learn-more-btn">Learn More</a>
         </div>
     </section>
     <section id="about" class="content-section py-5 bg-light">
@@ -103,8 +105,8 @@
                 </div>
                 <div class="col-md-6 order-md-1">
                     <h2><i class="fas fa-piggy-bank mr-3"></i>Gloucestershire Old Spot Pigs</h2>
-                    <p>The Gloucestershire Old Spot pig is the oldest pedigreed spotted pig in the world. Once popular on small family farms where they were raised on dropped orchard fruit, earning them the nicknames of the “orchard pig” or “cottage pig.” This breed is known for being excellent foragers, attentive mothers, and their gentle temperaments.</p>
-                    <p>The richly marbled meat has a depth of flavor that is completely unmatched. It’s no surprise this breed is the favorite of the British Royalty!</p>
+                    <p>The Gloucestershire Old Spot pig is the oldest pedigreed spotted pig in the world. Once popular on small family farms where they were raised on dropped orchard fruit, earning them the nicknames of the "orchard pig" or "cottage pig." This breed is known for being excellent foragers, attentive mothers, and their gentle temperaments.</p>
+                    <p>The richly marbled meat has a depth of flavor that is completely unmatched. It's no surprise this breed is the favorite of the British Royalty!</p>
                     <p>We sell feeder piglets as well as registered GOS breeding stock. Pricing and reservation instructions are below. See the farm store for pricing on half and whole shares as well as individual retail cuts.</p>
                 </div>
             </div>
@@ -275,6 +277,29 @@
           sections.forEach(section => {
             observer.observe(section);
           });
+        });
+
+        // Typed.js initialization
+        var typed = new Typed('#typed-text', {
+            strings: ['Sustainable Farming', 'Exceptional Quality'],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true
+        });
+
+        // Smooth parallax effect
+        window.addEventListener('scroll', function() {
+            const parallax = document.querySelector('.parallax-bg');
+            let scrollPosition = window.pageYOffset;
+            parallax.style.transform = 'translateY(' + scrollPosition * 0.3 + 'px)';
+        });
+
+        // Dynamic color overlay
+        const hero = document.querySelector('.hero');
+        hero.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            hero.style.setProperty('--overlay-color', `rgba(49, 116, 39, ${0.6 + x * 0.2})`);
         });
     </script>
 </body>
