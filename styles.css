@@ -122,6 +122,12 @@ header {
     display: inline-block;
 }
 
+.content-section h2 i {
+    color: #317427;
+    font-size: 0.8em;
+    vertical-align: middle;
+}
+
 .content-section p {
     text-align: left;
     font-size: 1.2em;
@@ -203,15 +209,26 @@ footer .social-media a:hover {
     }
 
     .content-section {
-        padding: 2rem 1rem;
+        padding: 3rem 1rem;
     }
 
     .content-section h2 {
         font-size: 2em;
+        margin-top: 1.5rem;
     }
 
     .content-section p {
         font-size: 1em;
+    }
+
+    .content-section .row {
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .content-section .col-md-6 {
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     #mailing-list-form .form-control,
