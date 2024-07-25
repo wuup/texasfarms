@@ -59,6 +59,19 @@ header {
     .nav-link {
         padding: 0.5rem 0;
     }
+
+    .navbar-toggler {
+        border: none;
+        padding: 0;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    .menu-text {
+        display: none;
+    }
 }
 
 .hero {
@@ -251,9 +264,13 @@ footer .social-media a:hover {
     box-shadow: 0 0 0 0.2rem rgba(49, 116, 39, 0.25);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
+    header .logo img {
+        max-height: 60px;
+    }
+
     .hero h1 {
-        font-size: 2em;
+        font-size: 1.8em;
     }
 
     .hero p {
@@ -261,12 +278,11 @@ footer .social-media a:hover {
     }
 
     .content-section {
-        padding: 3rem 1rem;
+        padding: 2rem 0;
     }
 
     .content-section h2 {
-        font-size: 2em;
-        margin-top: 1.5rem;
+        font-size: 1.8em;
     }
 
     .content-section p {
@@ -285,7 +301,7 @@ footer .social-media a:hover {
 
     #mailing-list-form .form-control,
     #mailing-list-form .btn-success {
-        border-radius: 25px;
+        border-radius: 5px;
         margin-bottom: 1rem;
         width: 100%;
     }
@@ -296,7 +312,7 @@ footer .social-media a:hover {
     }
 
     #find-us iframe {
-        height: 300px;
+        height: 250px;
     }
 }
 
