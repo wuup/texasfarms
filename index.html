@@ -3,14 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Texas Farms Vermont</title>
+    <!-- Primary Meta Tags -->
+    <title>Texas Farms Vermont - Heritage Meat & Heirloom Produce | Off-grid Farm</title>
+    <meta name="title" content="Texas Farms Vermont - Heritage Meat & Heirloom Produce | Off-grid Farm">
+    <meta name="description" content="Discover heritage meats and heirloom produce from our off-grid, regenerative farm in Vermont. Featuring Gloucestershire Old Spot pigs, Nubian goats, and sustainable farming practices.">
+    <meta name="keywords" content="heritage meat, heirloom produce, Vermont farm, off-grid farming, regenerative agriculture, Gloucestershire Old Spot pigs, Nubian goats, sustainable farming">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://texasfarmsvermont.com/">
+    <meta property="og:title" content="Texas Farms Vermont - Heritage Meat & Heirloom Produce">
+    <meta property="og:description" content="Discover heritage meats and heirloom produce from our off-grid, regenerative farm in Vermont. Featuring Gloucestershire Old Spot pigs, Nubian goats, and sustainable farming practices.">
+    <meta property="og:image" content="https://texasfarmsvermont.com/images/texass-farms-home.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://texasfarmsvermont.com/">
+    <meta property="twitter:title" content="Texas Farms Vermont - Heritage Meat & Heirloom Produce">
+    <meta property="twitter:description" content="Discover heritage meats and heirloom produce from our off-grid, regenerative farm in Vermont. Featuring Gloucestershire Old Spot pigs, Nubian goats, and sustainable farming practices.">
+    <meta property="twitter:image" content="https://texasfarmsvermont.com/images/texass-farms-home.jpg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://texasfarmsvermont.com/">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RTSGC9G3QR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RTSGC9G3QR');
+    </script>
+
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
@@ -20,12 +52,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
 </head>
 <body>
-    <header class="bg-custom-green text-white py-2 shadow">
+    <div class="announcement-banner bg-warning text-dark py-2">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center">
+                <p class="mb-0">
+                    <i class="fas fa-star mr-2"></i>
+                    <strong>Exciting News:</strong> Texas Farms Vermont is officially launching! 
+                    <a href="launch-announcement.html" class="text-dark ml-2"><u>Read the announcement</u> <i class="fas fa-arrow-right"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <header class="bg-custom-green py-2 shadow">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-8 col-md-4">
                     <div class="logo">
-                        <img src="images/texas-farms-logo.png" alt="Texas Farms Vermont" class="img-fluid">
+                        <img src="images/logo2.png" alt="Texas Farms Vermont" class="img-fluid logo-image">
                     </div>
                 </div>
                 <div class="col-4 col-md-8 text-right">
@@ -35,11 +78,45 @@
                         </button>
                         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                             <ul class="navbar-nav">
-                                <li class="nav-item"><a class="nav-link text-white active" href="#home">Home</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" href="#about">About Us</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" href="#goats">Animals</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" href="#vegetables">Vegetables</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" href="#">Online Store</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white active" href="index.html">Home</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white dropdown-toggle" href="#" id="ourFarmDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Our Farm
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="ourFarmDropdown">
+                                        <a class="dropdown-item" href="about-us.html">About Us</a>
+                                        <a class="dropdown-item" href="find-us.html">Find Us</a>
+                                        <a class="dropdown-item" href="faqs.html">FAQs</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white dropdown-toggle" href="our-animals.html" id="ourAnimalsDropdown" role="button">
+                                        Our Animals
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="ourAnimalsDropdown">
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="animals/gloucestershire-old-spot-pigs.html">Gloucestershire Old Spot Pigs</a>
+                                        <a class="dropdown-item" href="animals/nubian-goats.html">Nubian Goats</a>
+                                        <a class="dropdown-item" href="animals/speckled-sussex-chickens.html">Speckled Sussex Chickens</a>
+                                        <a class="dropdown-item" href="animals/champagne-d-argent-rabbits.html">Champagne D'Argent Rabbits</a>
+                                        <a class="dropdown-item" href="animals/toulouse-geese.html">Toulouse Geese</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white dropdown-toggle" href="#" id="ourProduceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Our Produce
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="ourProduceDropdown">
+                                        <a class="dropdown-item" href="produce/what-we-grow.html">What We Grow</a>
+                                        <a class="dropdown-item" href="produce/bulk-boxes.html">Bulk Boxes</a>
+                                        <a class="dropdown-item" href="produce/how-we-grow.html">How We Grow</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item"><a class="nav-link text-white" href="farm-story.html">Farm Story</a></li>
+                                <li class="nav-item"><a class="nav-link text-white" href="https://shop.texasfarmsvermont.com/">Farm Shop</a></li>
+                                <li class="nav-item"><a class="nav-link text-white" href="https://blog.texasfarmsvermont.com/">Blog</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -47,212 +124,127 @@
             </div>
         </div>
     </header>
-    <section id="home" class="hero">
-        <div class="parallax-bg"></div>
-        <div class="hero-content text-center text-white">
-            <h1 class="mb-4"><span id="typed-text"></span></h1>
-            <p class="lead mb-5">Dedicated to ethical farming, providing exceptional products for families, restaurants, and local markets.</p>
-            <a href="#about" class="btn btn-warning mt-3 learn-more-btn">Learn More</a>
+    <section id="home" class="hero" style="min-height: 100vh; position: relative; display: flex; align-items: center; justify-content: center;">
+        <div class="parallax-bg" style="background-image: url('images/texass-farms-home.jpg'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center;" aria-hidden="true"></div>
+        <div class="hero-content text-center text-white" style="position: relative; z-index: 1; width: 100%;">
+            <h1 class="mb-4">Texas Farms Vermont</h1>
+            <p class="lead mb-5" style="white-space: nowrap;">Heritage Meat & Heirloom Produce <br /> Off-grid, Regenerative Farming</p>
+            <a href="#about" class="btn btn-warning mt-3 learn-more-btn" aria-label="Learn more about Texas Farms Vermont">Learn More</a>
         </div>
     </section>
-    <section id="about" class="content-section py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-4"><i class="fas fa-heart mr-3"></i>Our Passion, Your Plate</h2>
-            <p class="lead text-left mb-5">At Texas Farms Vermont, we're driven by a passion for creating the highest quality, farm-fresh products. Our commitment to sustainable farming practices and animal welfare ensures that every bite tells a story of care, dedication, and respect for nature.</p>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-leaf mr-2"></i>Sustainable Practices</h5>
-                            <p class="card-text">We employ eco-friendly farming methods that protect our land and resources for future generations.</p>
-                        </div>
+    <main>
+        <section id="about" class="content-section py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-4"><i class="fas fa-heart mr-3 text-success" aria-hidden="true"></i>Our Passion, Your Plate</h2>
+                <p class="lead text-left mb-5">At Texas Farms Vermont, we're driven by a passion for creating the highest quality, farm-fresh products. Our commitment to sustainable farming practices and animal welfare ensures that every bite tells a story of care, dedication, and respect for nature.</p>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <article class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title h5"><i class="fas fa-leaf mr-2" aria-hidden="true"></i>Sustainable Practices</h3>
+                                <p class="card-text">We're an offgrid, regenerative farm, dedicated to protecting our land and resources for future generations.</p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <article class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title h5"><i class="fas fa-paw mr-2" aria-hidden="true"></i>Animal Welfare</h3>
+                                <p class="card-text">Our animals are raised with love and respect, ensuring their well-being and the quality of our products.</p>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <article class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h3 class="card-title h5"><i class="fas fa-users mr-2" aria-hidden="true"></i>Community Focus</h3>
+                                <p class="card-text">We're proud to support our local community by providing fresh and nutritious food.</p>
+                            </div>
+                        </article>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-paw mr-2"></i>Animal Welfare</h5>
-                            <p class="card-text">Our animals are raised with love and respect, ensuring their well-being and the quality of our products.</p>
-                        </div>
+            </div>
+        </section>
+        <section id="name-origin" class="content-section py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center mb-4"><i class="fas fa-book-open mr-3 text-success" aria-hidden="true"></i>The Story Behind Our Name</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <article class="card shadow-lg border-0">
+                            <div class="card-body p-5">
+                                <h3 class="card-title text-success mb-4">Why "Texas" in Vermont?</h3>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <p>Our farm sits on historic agricultural land that was once a thriving Vermont homestead. The name "Texas Farms" has a charming connection to local history:</p>
+                                        <blockquote class="blockquote border-left pl-4 my-4" cite="local-historical-records">
+                                            <p class="mb-0 font-italic">"A local lad, caught up in the westward migration frenzy, vowed he was leaving and would never again have to use a side-hill plow. Instead, he settled and farmed near Concord Corners on his ancestral ridges. His amused neighbors playfully dubbed the area 'Texas'."</p>
+                                        </blockquote>
+                                        <p>Today, we're honored to breathe new life into this cherished piece of Vermont farmland, restoring its agricultural heritage while building toward a sustainable future. There's something magical about returning this land to its original purpose - growing food and nurturing life, just as generations before us did.</p>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <figure>
+                                            <img src="images/concord-texas-vermont.png" alt="Historic view of Texas in Concord, Vermont" class="img-fluid rounded shadow-sm mb-3">
+                                            <figcaption class="text-muted text-center"><small>Texas in Concord, Vermont</small></figcaption>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title"><i class="fas fa-users mr-2"></i>Community Focus</h5>
-                            <p class="card-text">We're proud to support our local community by providing fresh and nutritious food.</p>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
-    </section>
-    <section id="goats" class="content-section py-5 bg-pattern">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-4 mb-md-0">
-                    <img src="images/goats1.jpeg" alt="Goats" class="img-fluid custom-shadow rounded">
-                </div>
-                <div class="col-md-6">
-                    <h2><i class="fas fa-horse mr-3"></i>Nubian Goats</h2>
-                    <p>The Nubian goat is a large, graceful breed known for its long, floppy ears and Roman nose. This breed is highly valued for its high-quality milk, which has a higher butterfat content compared to other dairy goats, making it ideal for cheese and butter production. Nubian goats are also known for their gentle and friendly temperament, making them a favorite among farmers and families alike.</p>
-                    <p>Our Nubian goats are raised in a natural, free-range environment, providing them with plenty of space to roam and graze. We take pride in ensuring our goats are healthy and happy, which in turn produces the best quality milk and meat products for our customers.</p>
-                    <p>We offer farm-fresh Nubian goat milk and meat products at our farmstand. Additionally, we have breeding stock and kids available for local pickup (with reservation) in the Spring and Summer.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="pigs" class="content-section py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 order-md-2 mb-4 mb-md-0">
-                    <img src="images/gloucestershire-old-spot-pigs.jpeg" alt="Pigs" class="img-fluid custom-shadow rounded">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2><i class="fas fa-piggy-bank mr-3"></i>Gloucestershire Old Spot Pigs</h2>
-                    <p>The Gloucestershire Old Spot pig is the oldest pedigreed spotted pig in the world. Once popular on small family farms where they were raised on dropped orchard fruit, earning them the nicknames of the "orchard pig" or "cottage pig." This breed is known for being excellent foragers, attentive mothers, and their gentle temperaments.</p>
-                    <p>The richly marbled meat has a depth of flavor that is completely unmatched. It's no surprise this breed is the favorite of the British Royalty!</p>
-                    <p>We sell feeder piglets as well as registered GOS breeding stock. Pricing and reservation instructions are below. See the farm store for pricing on half and whole shares as well as individual retail cuts.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="chickens" class="content-section py-5 bg-pattern">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-4 mb-md-0">
-                    <img src="images/chantecler1.jpeg" alt="Chickens" class="img-fluid custom-shadow rounded">
-                </div>
-                <div class="col-md-6">
-                    <h2><i class="fas fa-drumstick-bite mr-3"></i>Chickens</h2>
-                    <p>Our Chantecler chickens produce delicious, nutrient-rich eggs and tender meat, raised without antibiotics or hormones.</p>
-                    <p>We believe in raising our chickens in a natural and humane way. They have access to open spaces and are free to roam, which contributes to their overall health and the quality of the eggs and meat they produce.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="vegetables" class="content-section py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 order-md-2 mb-4 mb-md-0">
-                    <img src="images/vegetables2.png" alt="Vegetables" class="img-fluid rounded">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2><i class="fas fa-carrot mr-3"></i>Vegetables</h2>
-                    <p>Fresh, organically grown vegetables harvested at peak ripeness to ensure the best taste and nutritional value.</p>
-                    <p>Our vegetables are grown using sustainable farming practices, without the use of synthetic pesticides or fertilizers. We focus on soil health and biodiversity to produce the freshest and most nutritious vegetables possible.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="grow-with-us" class="content-section py-5 bg-pattern">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card shadow">
-                        <div class="card-body text-left position-relative">
-                            <i class="fas fa-leaf text-success position-absolute leaf-icon"></i>
-                            <h2 class="card-title">Grow with us</h2>
-                            <p class="lead mb-4">Join our mailing list to get exclusive updates, special offers, and follow our farm's journey.</p>
-                            
-                            <!-- Mailchimp Embed Code Start -->
-                            <div id="mc_embed_signup">
-                                <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-                                    <div id="mc_embed_signup_scroll">
-                                        <div class="mc-field-group">
-                                            <label for="mce-EMAIL" class="sr-only">Email Address <span class="asterisk">*</span></label>
-                                            <input type="email" name="EMAIL" class="required email form-control" id="mce-EMAIL" required="" placeholder="Enter your email">
-                                        </div>
-                                        <div id="mce-responses" class="clear foot">
-                                            <div class="response" id="mce-error-response" style="display: none;"></div>
-                                            <div class="response" id="mce-success-response" style="display: none;"></div>
-                                        </div>
-                                        <div aria-hidden="true" style="position: absolute; left: -5000px;">
-                                            <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
-                                        </div>
-                                        <div class="optionalParent">
-                                            <div class="clear foot">
-                                                <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-success w-100" value="Subscribe">
+        </section>
+        <section id="grow-with-us" class="content-section py-5 bg-pattern">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card shadow">
+                            <div class="card-body text-left position-relative">
+                                <i class="fas fa-leaf text-success position-absolute leaf-icon" aria-hidden="true"></i>
+                                <h2 class="card-title">Grow with us</h2>
+                                <p class="lead mb-4">Join our mailing list to get exclusive updates, special offers, and follow our farm's journey.</p>
+                                
+                                <!-- Mailchimp Embed Code Start -->
+                                <div id="mc_embed_signup">
+                                    <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                                        <div id="mc_embed_signup_scroll">
+                                            <div class="mc-field-group">
+                                                <label for="mce-EMAIL">Email Address <span class="sr-only">(required)</span></label>
+                                                <input type="email" name="EMAIL" class="required email form-control" id="mce-EMAIL" required placeholder="Enter your email address" aria-required="true">
+                                            </div>
+                                            <div id="mce-responses" class="clear foot">
+                                                <div class="response" id="mce-error-response" style="display: none" role="alert"></div>
+                                                <div class="response" id="mce-success-response" style="display: none" role="alert"></div>
+                                            </div>
+                                            <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                                                <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups -->
+                                                <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
+                                            </div>
+                                            <div class="optionalParent">
+                                                <div class="clear foot">
+                                                    <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-success w-100" value="Subscribe">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- Mailchimp Embed Code End -->
-                            
-                            <small class="text-muted mt-3 d-block">By subscribing, you agree to receive emails from Texas Farms Vermont. You can unsubscribe at any time.</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="find-us" class="content-section py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-4"><i class="fas fa-map-marker-alt mr-3"></i>Find Us</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title"><i class="fas fa-home mr-2"></i>Our Location</h3>
-                            <p class="card-text"><i class="fas fa-map-pin mr-2"></i>Texas, Concord, VT 05824</p>
-                            <a href="https://goo.gl/maps/your-farm-location" target="_blank" class="btn btn-primary"><i class="fas fa-directions mr-2"></i>Get Directions</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h3 class="card-title"><i class="fas fa-store mr-2"></i>Texas Farms Farmstand</h3>
-                            <p class="card-text">Come on by the Texas Farms Farmstand, located in Texas, Vermont! Our self-serve stand is stocked with farm-fresh eggs and seasonal veggies as available.</p>
-                            <ul class="list-unstyled">
-                                <li><i class="far fa-clock mr-2"></i>Open daily March through November, 8am – 8pm</li>
-                                <li><i class="fas fa-money-bill-wave mr-2"></i>We accept exact cash, check, and PayPal</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <h3 class="text-center mb-4"><i class="fas fa-map mr-2"></i>Map</h3>
-                    <div class="card">
-                        <div class="card-body p-0">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22797.977172377774!2d-71.84513471561624!3d44.417834098849525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cb44022b85365b1%3A0x11498503757bdd3d!2sTexas%2C%20Concord%2C%20VT%2005824!5e0!3m2!1sen!2sus!4v1721768590907!5m2!1sen!2sus" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="contact-us" class="content-section py-5 bg-pattern">
-        <div class="container">
-            <h2 class="text-center mb-4"><i class="fas fa-envelope mr-3"></i>Contact Us</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card shadow">
-                        <div class="card-body text-center">
-                            <p class="lead mb-3"><i class="fas fa-comments mr-2"></i>We'd love to hear from you!</p>
-                            <p><i class="fas fa-envelope mr-2"></i>Email: <a href="mailto:contact@texasfarmsvermont.com">contact@texasfarmsvermont.com</a></p>
-                            <p><i class="fas fa-phone mr-2"></i>Phone: <a href="tel:+15555555555">+1 555 555 5555</a></p>
-                            <div class="social-media mt-4">
-                                <a href="#" class="text-dark mx-2"><i class="fab fa-facebook-f fa-2x"></i></a>
-                                <a href="#" class="text-dark mx-2"><i class="fab fa-twitter fa-2x"></i></a>
-                                <a href="#" class="text-dark mx-2"><i class="fab fa-instagram fa-2x"></i></a>
+                                    </form>
+                                </div>
+                                <!-- Mailchimp Embed Code End -->
+                                
+                                <small class="text-muted mt-3 d-block">By subscribing, you agree to receive emails from Texas Farms Vermont. You can unsubscribe at any time.</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
             <p><i class="far fa-copyright mr-2"></i>2024 Texas Farms Vermont. All rights reserved.</p>
             <div class="social-media">
-                <a href="#" class="text-white mx-2"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/people/Texas-Farms-Vermont/61571384308702/" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/TexasFarmsVT" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/texasfarmsvt/" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
     </footer>
@@ -260,9 +252,11 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Add Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script>
-        // JavaScript to add 'active' class to the current menu item
         document.addEventListener('DOMContentLoaded', function() {
+            // Navigation active state
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
                 link.addEventListener('click', function() {
@@ -278,70 +272,60 @@
                     if (entry.isIntersecting) {
                         navLinks.forEach(nav => nav.classList.remove('active'));
                         const id = entry.target.getAttribute('id');
-                        document.querySelector(`.nav-link[href="#${id}"]`).classList.add('active');
+                        const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                        }
                     }
                 });
             }, { threshold: 0.5 });
 
             sections.forEach(section => observer.observe(section));
-        });
 
-        document.addEventListener('DOMContentLoaded', function() {
-          const sections = document.querySelectorAll('.content-section');
-          
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-              }
+            // Content section animations
+            const contentSections = document.querySelectorAll('.content-section');
+            const contentObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            contentSections.forEach(section => {
+                contentObserver.observe(section);
             });
-          }, { threshold: 0.1 });
 
-          sections.forEach(section => {
-            observer.observe(section);
-          });
-        });
-
-        // Typed.js initialization
-        var typed = new Typed('#typed-text', {
-            strings: ['Sustainable Farming', 'Exceptional Quality'],
-            typeSpeed: 50,
-            backSpeed: 30,
-            loop: true
-        });
-
-        // Smooth parallax effect
-        window.addEventListener('scroll', function() {
-            const parallax = document.querySelector('.parallax-bg');
-            let scrollPosition = window.pageYOffset;
-            parallax.style.transform = 'translateY(' + scrollPosition * 0.3 + 'px)';
-        });
-
-        // Dynamic color overlay
-        const hero = document.querySelector('.hero');
-        hero.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            hero.style.setProperty('--overlay-color', `rgba(49, 116, 39, ${0.6 + x * 0.2})`);
-        });
-
-        // AJAX form submission for Mailchimp
-        document.getElementById('mailing-list-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const form = event.target;
-            const data = new FormData(form);
-            const xhr = new XMLHttpRequest();
-            xhr.open(form.method, form.action);
-            xhr.setRequestHeader('Accept', 'application/json');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState !== XMLHttpRequest.DONE) return;
-                if (xhr.status === 200) {
-                    form.innerHTML = '<p class="text-success">Thank you for subscribing!</p>';
-                } else {
-                    form.innerHTML = '<p class="text-danger">Oops! Something went wrong.</p>';
+            // Smooth parallax effect
+            window.addEventListener('scroll', function() {
+                const parallax = document.querySelector('.parallax-bg');
+                if (parallax) {
+                    let scrollPosition = window.pageYOffset;
+                    parallax.style.transform = 'translateY(' + scrollPosition * 0.3 + 'px)';
                 }
-            };
-            xhr.send(data);
+            });
+
+            // Mailchimp form submission
+            const mailingListForm = document.getElementById('mailing-list-form');
+            if (mailingListForm) {
+                mailingListForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const form = event.target;
+                    const data = new FormData(form);
+                    const xhr = new XMLHttpRequest();
+                    xhr.open(form.method, form.action);
+                    xhr.setRequestHeader('Accept', 'application/json');
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState !== XMLHttpRequest.DONE) return;
+                        if (xhr.status === 200) {
+                            form.innerHTML = '<p class="text-success">Thank you for subscribing!</p>';
+                        } else {
+                            form.innerHTML = '<p class="text-danger">Oops! Something went wrong.</p>';
+                        }
+                    };
+                    xhr.send(data);
+                });
+            }
         });
     </script>
 </body>

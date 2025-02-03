@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RTSGC9G3QR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-RTSGC9G3QR');
+    </script>
+    <title>Nubian Goats - Texas Farms Vermont</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .breed-header {
+            background-color: #2c3e50;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            background-image: url('../images/nubian-goat.jpeg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            color: white;
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .breed-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+        }
+        .breed-header .display-4 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            color: #ffffff;
+            padding: 0.5rem 1.5rem;
+            display: inline-block;
+            background-color: transparent;
+        }
+        .breed-header .lead {
+            font-size: 1.8rem;
+            font-weight: 400;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            letter-spacing: 2px;
+            color: #ffffff;
+            padding: 0.5rem 1.5rem;
+            display: inline-block;
+            background-color: transparent;
+        }
+        .breed-header .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        .characteristic-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            height: 100%;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .characteristic-item:hover {
+            transform: translateY(-5px);
+        }
+        .characteristic-icon {
+            font-size: 2.5rem;
+            color: #28a745;
+            margin-bottom: 1.5rem;
+        }
+        .characteristic-item h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .characteristic-item p {
+            color: #666;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: #317427;
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .gallery-img {
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .gallery-img:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="announcement-banner bg-warning text-dark py-2">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center">
+                <p class="mb-0">
+                    <i class="fas fa-star mr-2"></i>
+                    <strong>Exciting News:</strong> Texas Farms Vermont is officially launching! 
+                    <a href="../launch-announcement.html" class="text-dark ml-2"><u>Read the announcement</u> <i class="fas fa-arrow-right"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <header class="bg-custom-green py-2 shadow">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-8 col-md-4">
+                    <div class="logo">
+                        <a href="../index.html">
+                            <img src="../images/logo2.png" alt="Texas Farms Vermont" class="img-fluid logo-image">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-4 col-md-8 text-right">
+                    <nav class="navbar navbar-expand-lg navbar-light justify-content-end">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="../index.html">Home</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white dropdown-toggle" href="#" id="ourFarmDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Our Farm
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="ourFarmDropdown">
+                                        <a class="dropdown-item" href="../about-us.html">About Us</a>
+                                        <a class="dropdown-item" href="../find-us.html">Find Us</a>
+                                        <a class="dropdown-item" href="../faqs.html">FAQs</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white dropdown-toggle active" href="../our-animals.html" id="ourAnimalsDropdown" role="button">
+                                        Our Animals
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="ourAnimalsDropdown">
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="gloucestershire-old-spot-pigs.html">Gloucestershire Old Spot Pigs</a>
+                                        <a class="dropdown-item active" href="nubian-goats.html">Nubian Goats</a>
+                                        <a class="dropdown-item" href="speckled-sussex-chickens.html">Speckled Sussex Chickens</a>
+                                        <a class="dropdown-item" href="champagne-d-argent-rabbits.html">Champagne D'Argent Rabbits</a>
+                                        <a class="dropdown-item" href="toulouse-geese.html">Toulouse Geese</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white dropdown-toggle" href="#" id="ourProduceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Our Produce
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="ourProduceDropdown">
+                                        <a class="dropdown-item" href="../produce/what-we-grow.html">What We Grow</a>
+                                        <a class="dropdown-item" href="../produce/bulk-boxes.html">Bulk Boxes</a>
+                                        <a class="dropdown-item" href="../produce/how-we-grow.html">How We Grow</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item"><a class="nav-link text-white" href="../farm-story.html">Farm Story</a></li>
+                                <li class="nav-item"><a class="nav-link text-white" href="https://shop.texasfarmsvermont.com/">Farm Shop</a></li>
+                                <li class="nav-item"><a class="nav-link text-white" href="https://blog.texasfarmsvermont.com/">Blog</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="breed-header text-center">
+        <div class="container">
+            <h1 class="display-4">Nubian Goats</h1>
+            <p class="lead">The Queens of Milk Production</p>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-8 offset-md-2">
+                    <div class="content-card">
+                        <h2 class="text-center mb-4">About the Breed</h2>
+                        <p class="lead text-center mb-4">Our purebred ADGA registered Nubian goats are known for their distinctive floppy ears and exceptional milk production.</p>
+                        <p>We raise purebred ADGA registered Nubian goats (the ones with the floppy ears). They are known for their rich, sweet tasting milk which is perfect for cheesemaking. We focus on correct confirmation and high milk yield. All of our goats are well socialized and easy to handle. We are a CAE-free tested herd. Our herd was added to the farm in 2023 and we're expecting our first babies in 2025.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="content-card">
+                        <h2 class="text-center mb-4">Breed Characteristics</h2>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="characteristic-item text-center">
+                                    <div class="characteristic-icon">
+                                        <i class="fas fa-tint"></i>
+                                    </div>
+                                    <h4>Superior Milk Production</h4>
+                                    <p>Known for rich, high-butterfat milk perfect for cheese and soap making.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="characteristic-item text-center">
+                                    <div class="characteristic-icon">
+                                        <i class="fas fa-smile"></i>
+                                    </div>
+                                    <h4>Friendly Temperament</h4>
+                                    <p>Social and affectionate nature makes them excellent family farm animals.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="characteristic-item text-center">
+                                    <div class="characteristic-icon">
+                                        <i class="fas fa-thermometer-half"></i>
+                                    </div>
+                                    <h4>Climate Adaptable</h4>
+                                    <p>Thrive in Vermont's varied climate conditions throughout the year.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="content-card">
+                        <h2 class="text-center mb-4">Life on Our Farm</h2>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Daily Life</h4>
+                                    <p>Our Nubian goats enjoy spacious pastures where they can browse on a variety of vegetation. They have access to clean, comfortable barns and plenty of climbing structures to satisfy their natural instincts.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Milking Program (coming in 2026)</h4>
+                                    <p>We will maintain a careful milking schedule in 2026, with does being milked twice daily. Their milk is used for our artisanal cheese production and natural soap making. All milk will be pasteruized.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <h4>Breeding Program</h4>
+                                    <p>Our breeding program focuses on maintaining the high standards of the Nubian breed while selecting for traits that excel in our Vermont climate.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="content-card">
+                        <h2 class="text-center mb-4">Photo Gallery</h2>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <img src="../images/nubian2.jpeg" alt="Close-up portrait of a Nubian goat with distinctive black and white markings and floppy ears" class="img-fluid gallery-img w-100" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <img src="../images/goat2.jpeg" alt="Nubian goat grazing" class="img-fluid gallery-img w-100" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <img src="../images/goats1.jpeg" alt="Nubian goat with kids" class="img-fluid gallery-img w-100" style="height: 300px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <img src="../images/nubian-goat.jpeg" alt="Nubian goat herd" class="img-fluid gallery-img w-100" style="height: 300px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card shadow">
+                        <div class="card-body text-center">
+                            <h2 class="card-title">Products from Our Goats</h2>
+                            <p class="lead">Starting in 2025, we will offer:</p>
+                            <ul class="list-unstyled mb-4">
+                                <li>ADGA registered breeding stock</li>
+                                <li>Natural fertilizer for gardens</li>
+                            </ul>
+                            <p class="mt-3"><small class="text-muted">Contact us to learn more about our upcoming goat products and breeding program.</small></p>
+                            <a href="https://shop.texasfarmsvermont.com/goats" class="btn btn-success mt-3">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p><i class="far fa-copyright mr-2"></i>2024 Texas Farms Vermont. All rights reserved.</p>
+            <div class="social-media">
+                <a href="https://www.facebook.com/people/Texas-Farms-Vermont/61571384308702/" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/TexasFarmsVT" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/texasfarmsvt/" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 
