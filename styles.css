@@ -1,13 +1,13 @@
 body {
     font-family: 'Montserrat', sans-serif;
     color: #4a4a4a;
-    background-color: #f4f1ea;
+    background-color: #FFF;
     background-image: none;
     background-repeat: repeat;
 }
 
 .bg-custom-green {
-    background-color: rgba(234, 230, 224, 0.9); /* Slightly transparent background */
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 header {
@@ -29,7 +29,6 @@ header {
 .logo-image {
     max-height: 80px;
     width: auto;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); /* Add shadow to the logo */
     transition: transform 0.3s ease;
 }
 
@@ -65,7 +64,7 @@ header {
 
 @media (max-width: 991px) {
     .navbar-collapse {
-        background-color: #eae6e0;
+        background-color: #fff;
         padding: 1rem;
         margin-top: 1rem;
         border-radius: 5px;
@@ -263,7 +262,7 @@ header {
 }
 
 .content-section.bg-light {
-    background-color: #f9f9f9;
+    background-color: #fff;
 }
 
 .content-section img.img-fluid {
@@ -314,8 +313,8 @@ footer .social-media a:hover {
 }
 
 .bg-pattern {
-    background-color: #f8f9fa;
-    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e9ecef' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    background-color: #fff;
+    background-image: none;
 }
 
 .form-control {
@@ -414,7 +413,7 @@ footer .social-media a:hover {
 #grow-with-us,
 #find-us,
 #contact-us {
-    background-color: #f9f9f9;
+    background-color: #fff;
 }
 
 #grow-with-us .card,
@@ -440,21 +439,6 @@ footer .social-media a:hover {
 
 #grow-with-us .card-body {
     padding: 2.5rem;
-}
-
-#grow-with-us .leaf-icon {
-    top: -15px;
-    right: -15px;
-    font-size: 2rem;
-    opacity: 0.2;
-    transform: rotate(45deg);
-}
-
-#grow-with-us .card-title {
-    color: #285e1f;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: none;
 }
 
 #grow-with-us .lead,
@@ -536,30 +520,27 @@ footer .social-media a:hover {
 }
 
 #find-us .btn-primary {
-    background-color: #eae6e0;
-    border-color: #eae6e0;
+    background-color: #fff;
+    border-color: #285e1f;
+    color: #285e1f;
     transition: background-color 0.3s, transform 0.3s;
     margin-top: 1rem;
 }
 
 #find-us .btn-primary:hover {
     background-color: #285e1f;
+    color: #fff;
     transform: translateY(-2px);
 }
 
 #contact-us .social-media a {
-    color: #eae6e0;
+    color: #285e1f;
     transition: color 0.3s, transform 0.3s;
 }
 
 #contact-us .social-media a:hover {
     color: #285e1f;
     transform: translateY(-2px);
-}
-
-#grow-with-us .fa-leaf {
-    color: #eae6e0;
-    opacity: 0.7;
 }
 
 html {
@@ -867,11 +848,11 @@ footer {
 }
 
 .bg-light {
-    background-color: #f9f7f4 !important;
+    background-color: #fff !important;
 }
 
 .bg-pattern {
-    background-color: #f4f1ea;
+    background-color: #fff;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -896,7 +877,7 @@ footer .social-media a:hover {
 }
 
 .story-header {
-    background-color: #f4f1ea;
+    background-color: #fff;
     padding: 50px 0;
     margin-bottom: 30px;
 }
@@ -919,7 +900,7 @@ footer .social-media a:hover {
 }
 
 .farm-story {
-    background-color: #f9f7f4;
+    background-color: #fff;
     padding: 50px 0;
 }
 

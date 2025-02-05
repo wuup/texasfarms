@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         .chapter-actions-bar {
-            background-color: #f8f9fa;
+            background-color: white;
             padding: 1rem 0;
             border-bottom: 1px solid #e0e0e0;
         }
@@ -142,47 +142,44 @@
         </div>
     </header>
 
-    <!-- Add this new section just before the <div id="wrapper"> -->
-    <div class="chapter-actions-bar">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="audiobook-player">
-                        <h5 class="listen-title mb-2"><i class="fas fa-headphones mr-2"></i> Listen to Chapter 1 - The First Weekend</h5>
-                        <audio id="chapterAudio" src="audiobook/chapter1.mp3"></audio>
-                        <div class="audio-controls d-flex align-items-center">
-                            <button id="playPauseBtn" class="btn btn-primary btn-sm mr-2">
-                                <i class="fas fa-play"></i>
-                            </button>
-                            <div class="progress-container flex-grow-1 mr-2">
-                                <input type="range" id="seekBar" value="0" class="custom-range">
-                                <div class="time-display">
-                                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
-                                </div>
-                            </div>
-                            <div class="volume-control">
-                                <button id="muteBtn" class="btn btn-link btn-sm">
-                                    <i class="fas fa-volume-up"></i>
-                                </button>
-                                <input type="range" id="volumeBar" min="0" max="1" step="0.1" value="1" class="custom-range">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 text-right">
-                    <a href="https://www.patreon.com/texasfarmsvermont" class="btn btn-success" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-patreon mr-2"></i>Support the Farm on Patreon
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="wrapper">
         <div id="container">
             <section class="open-book">
                 <article>
                     <div class="chapter-title">Chapter 1: The First Weekend</div>
+                    
+                    <!-- Audio Player Integration -->
+                    <div class="book-audio-player mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="audio-section flex-grow-1">
+                                <h5 class="listen-title mb-2"><i class="fas fa-headphones"></i> Listen to Chapter 1</h5>
+                                <audio id="ch1Audio" src="audiobook/chapter1.mp3"></audio>
+                                <div class="audio-controls d-flex align-items-center">
+                                    <button id="ch1PlayPauseBtn" class="btn btn-primary btn-sm mr-2">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <div class="progress-container flex-grow-1 mr-2">
+                                        <input type="range" id="ch1SeekBar" value="0" class="custom-range">
+                                        <div class="time-display">
+                                            <span id="ch1CurrentTime">0:00</span> / <span id="ch1Duration">0:00</span>
+                                        </div>
+                                    </div>
+                                    <div class="volume-control">
+                                        <button id="ch1MuteBtn" class="btn btn-link btn-sm">
+                                            <i class="fas fa-volume-up"></i>
+                                        </button>
+                                        <input type="range" id="ch1VolumeBar" min="0" max="1" step="0.1" value="1" class="custom-range">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="patreon-section ml-3">
+                                <a href="https://www.patreon.com/texasfarmsvermont" class="btn btn-success" target="_blank" rel="noopener noreferrer">
+                                    <i class="fab fa-patreon mr-2"></i>Support on Patreon
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="chapter-image"><img src="images/destruction.jpeg" alt="Farming Image" class="img-fluid"></div>
                         
                     <p>
@@ -572,7 +569,7 @@
                     </div>
                     <nav class="chapter-navigation">
                         <a href="introduction.html" class="prev-chapter"><i class="fas fa-arrow-left"></i> Back to Introduction</a>
-                        <a href="#" class="next-chapter">Next Chapter <i class="fas fa-arrow-right"></i></a>
+                        <a href="chapter-2.html" class="next-chapter">Next Chapter <i class="fas fa-arrow-right"></i></a>
                     </nav>
                 </article>
                 <footer>
@@ -606,13 +603,13 @@
 
     <!-- Replace the existing script at the end of the body with this updated version -->
     <script>
-        const audio = document.getElementById('chapterAudio');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const seekBar = document.getElementById('seekBar');
-        const currentTime = document.getElementById('currentTime');
-        const duration = document.getElementById('duration');
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeBar = document.getElementById('volumeBar');
+        const audio = document.getElementById('ch1Audio');
+        const playPauseBtn = document.getElementById('ch1PlayPauseBtn');
+        const seekBar = document.getElementById('ch1SeekBar');
+        const currentTime = document.getElementById('ch1CurrentTime');
+        const duration = document.getElementById('ch1Duration');
+        const muteBtn = document.getElementById('ch1MuteBtn');
+        const volumeBar = document.getElementById('ch1VolumeBar');
 
         function updatePlayPauseButton() {
             playPauseBtn.innerHTML = audio.paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
