@@ -1,0 +1,25 @@
+# Site settings
+title: Texas Farms Vermont
+description: Heritage Meat & Heirloom Produce from our off-grid, regenerative farm in Vermont
+url: "https://texasfarmsvermont.com"
+baseurl: ""
+
+# Social links
+facebook: "https://www.facebook.com/people/Texas-Farms-Vermont/61571384308702/"
+twitter: "https://x.com/TexasFarmsVT"
+instagram: "https://www.instagram.com/texasfarmsvt/"
+shop_url: "https://shop.texasfarmsvermont.com/"
+
+# Analytics
+google_analytics: "G-RTSGC9G3QR"
+
+# Build settings
+markdown: kramdown
+
+# Exclude from build
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor

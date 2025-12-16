@@ -1,216 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RTSGC9G3QR"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-RTSGC9G3QR');
-    </script>
-    <title>How We Grow - Texas Farms Vermont</title>
-    <meta name="description" content="Learn about our sustainable farming practices, no-till methods, and seed saving techniques at Texas Farms Vermont.">
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../styles.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <style>
-        .grow-header {
-            background: url('../images/farm-soil.jpg') no-repeat center center;
-            background-size: cover;
-            padding: 6rem 0;
-            position: relative;
-            color: white;
-            text-align: center;
-        }
-        .grow-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .grow-header .container {
-            position: relative;
-            z-index: 1;
-        }
-        .grow-content {
-            background: white;
-            padding: 3rem 0;
-        }
-        .method-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
-        }
-        .method-card:hover {
-            transform: translateY(-5px);
-        }
-        .method-icon {
-            font-size: 2.5rem;
-            color: #2F5851;
-            margin-bottom: 1rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="announcement-banner bg-warning text-dark py-2">
-        <div class="container">
-            <div class="d-flex justify-content-center align-items-center">
-                <p class="mb-0">
-                    <i class="fas fa-star mr-2"></i>
-                    <strong>Place an order for local delivery! <a href="https://shop.texasfarmsvermont.com/" class="text-dark" style="text-decoration: underline;">Click here to order</a></strong>
-                </p>
-            </div>
-        </div>
+---
+layout: default
+title: How We Grow
+description: Learn about our sustainable farming practices, no-till methods, and seed saving techniques at Texas Farms Vermont.
+nav_section: produce
+---
+<style>
+    .grow-header {
+        background: url('/images/farm-soil.jpg') no-repeat center center;
+        background-size: cover;
+        padding: 6rem 0;
+        position: relative;
+        color: white;
+        text-align: center;
+    }
+    .grow-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    .grow-header .container {
+        position: relative;
+        z-index: 1;
+    }
+    .grow-content {
+        background: white;
+        padding: 3rem 0;
+    }
+    .method-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease;
+    }
+    .method-card:hover {
+        transform: translateY(-5px);
+    }
+    .method-icon {
+        font-size: 2.5rem;
+        color: #2F5851;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="grow-header">
+    <div class="container">
+        <h1 class="display-4 mb-3">How We Grow</h1>
+        <p class="lead">Sustainable farming practices for a better tomorrow</p>
     </div>
-    <header class="bg-custom-green py-2 shadow">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-8 col-md-4">
-                    <div class="logo">
-                        <a href="../index.html">
-                            <img src="../images/logo2.png" alt="Texas Farms Vermont" class="img-fluid logo-image">
-                        </a>
-                    </div>
+</div>
+
+<div class="grow-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <i class="fas fa-tree fa-3x text-success mb-3"></i>
+                    <p class="lead">Our mission is to grow nutrient-rich and incredibly delicious produce while working with nature and being good stewards of the land. Though we are not currently certified organic, we aim to meet and exceed USDA standards.</p>
                 </div>
-                <div class="col-4 col-md-8 text-right">
-                    <nav class="navbar navbar-expand-lg navbar-light justify-content-end">
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" href="../home.html">Home</a>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link text-white dropdown-toggle" href="#" id="ourFarmDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Our Farm
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="ourFarmDropdown">
-                                        <a class="dropdown-item" href="../about-us.html">About Us</a>
-                                        <a class="dropdown-item" href="../find-us.html">Find Us</a>
-                                        <a class="dropdown-item" href="../faqs.html">FAQs</a>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link text-white dropdown-toggle" href="../our-animals.html" id="ourAnimalsDropdown" role="button">
-                                        Our Animals
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="ourAnimalsDropdown">
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="../animals/gloucestershire-old-spot-pigs.html">Gloucestershire Old Spot Pigs</a>
-                                        <a class="dropdown-item" href="../animals/speckled-sussex-chickens.html">Speckled Sussex Chickens</a>
-                                        <a class="dropdown-item" href="../animals/champagne-d-argent-rabbits.html">Champagne D'Argent Rabbits</a>
-                                        <a class="dropdown-item" href="../animals/toulouse-geese.html">Toulouse Geese</a>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link text-white dropdown-toggle active" href="#" id="ourProduceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Our Produce
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="ourProduceDropdown">
-                                        <a class="dropdown-item" href="what-we-grow.html">What We Grow</a>
-                                        <a class="dropdown-item" href="bulk-boxes.html">Bulk Boxes</a>
-                                        <a class="dropdown-item active" href="how-we-grow.html">How We Grow</a>
-                                    </div>
-                                </li>
-                                <li class="nav-item"><a class="nav-link text-white" href="../farm-story.html">Farm Story</a></li>
-                                <li class="nav-item"><a class="nav-link text-white" href="https://shop.texasfarmsvermont.com/">Farm Shop</a></li>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="method-card">
+                            <div class="text-center">
+                                <i class="fas fa-seedling method-icon"></i>
+                                <h3 class="mb-3">No-Till Farming</h3>
+                            </div>
+                            <p>We practice no-till farming, meaning the soil is disturbed as little as possible. This allows us to:</p>
+                            <ul class="mb-0">
+                                <li>Limit soil erosion</li>
+                                <li>Capture carbon in the soil</li>
+                                <li>Use less amendments and fertilizers</li>
+                                <li>Limit the use of large farming equipment</li>
+                                <li>Foster the health of the microbiome in the soil</li>
                             </ul>
                         </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="grow-header">
-        <div class="container">
-            <h1 class="display-4 mb-3">How We Grow</h1>
-            <p class="lead">Sustainable farming practices for a better tomorrow</p>
-        </div>
-    </div>
-
-    <div class="grow-content">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="text-center mb-5">
-                        <i class="fas fa-tree fa-3x text-success mb-3"></i>
-                        <p class="lead">Our mission is to grow nutrient-rich and incredibly delicious produce while working with nature and being good stewards of the land. Though we are not currently certified organic, we aim to meet and exceed USDA standards.</p>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="method-card">
-                                <div class="text-center">
-                                    <i class="fas fa-seedling method-icon"></i>
-                                    <h3 class="mb-3">No-Till Farming</h3>
-                                </div>
-                                <p>We practice no-till farming, meaning the soil is disturbed as little as possible. This allows us to:</p>
-                                <ul class="mb-0">
-                                    <li>Limit soil erosion</li>
-                                    <li>Capture carbon in the soil</li>
-                                    <li>Use less amendments and fertilizers</li>
-                                    <li>Limit the use of large farming equipment</li>
-                                    <li>Foster the health of the microbiome in the soil</li>
-                                </ul>
+                    <div class="col-md-6">
+                        <div class="method-card">
+                            <div class="text-center">
+                                <i class="fas fa-spa method-icon"></i>
+                                <h3 class="mb-3">Seed Saving</h3>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="method-card">
-                                <div class="text-center">
-                                    <i class="fas fa-spa method-icon"></i>
-                                    <h3 class="mb-3">Seed Saving</h3>
-                                </div>
-                                <p>Because we specialize in open-pollinated and heirloom varieties, we are able to practice seed saving. This process involves:</p>
-                                <ul class="mb-0">
-                                    <li>Growing extra produce for seed harvesting</li>
-                                    <li>Creating genetically diverse crops</li>
-                                    <li>Adapting plants to local conditions</li>
-                                    <li>Reducing reliance on big seed companies</li>
-                                    <li>Developing unique strains for our farm</li>
-                                </ul>
-                            </div>
+                            <p>Because we specialize in open-pollinated and heirloom varieties, we are able to practice seed saving. This process involves:</p>
+                            <ul class="mb-0">
+                                <li>Growing extra produce for seed harvesting</li>
+                                <li>Creating genetically diverse crops</li>
+                                <li>Adapting plants to local conditions</li>
+                                <li>Reducing reliance on big seed companies</li>
+                                <li>Developing unique strains for our farm</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <footer class="bg-dark text-white py-4">
-        <div class="container text-center">
-            <p><i class="far fa-copyright mr-2"></i>2024 Texas Farms Vermont. All rights reserved.</p>
-            <div class="social-media">
-                <a href="https://www.facebook.com/people/Texas-Farms-Vermont/61571384308702/" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://x.com/TexasFarmsVT" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
-                <a href="https://www.instagram.com/texasfarmsvt/" class="text-white mx-2" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html> 
+</div>
