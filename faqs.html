@@ -4,153 +4,175 @@ title: Frequently Asked Questions
 nav_section: our-farm
 ---
 <style>
-    .faq-section {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    .faq-item {
-        margin-bottom: 1.5rem;
-        border-bottom: 1px solid #e9ecef;
-        padding-bottom: 1.5rem;
-    }
-    .faq-item:last-child {
-        border-bottom: none;
-    }
-    .faq-question {
-        color: #317427;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: start;
-    }
-    .faq-question i {
-        margin-right: 0.75rem;
-        margin-top: 0.25rem;
-    }
-    .faq-answer {
-        padding-left: 2rem;
-    }
-    .category-title {
-        color: #317427;
-        border-bottom: 2px solid #317427;
-        padding-bottom: 0.5rem;
-        margin-bottom: 1.5rem;
-        margin-top: 2rem;
-    }
+.faq-hero {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
+
+.faq-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
+
+.faq-hero p {
+    color: #e8e4db;
+    font-size: 1.1rem;
+}
+
+.faq-content {
+    padding: 4rem 0;
+    background: white;
+}
+
+.faq-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.faq-category {
+    margin-bottom: 3rem;
+}
+
+.faq-category-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    color: var(--forest);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--copper);
+    margin-bottom: 1.5rem;
+}
+
+.faq-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.faq-question {
+    font-weight: 600;
+    color: var(--forest);
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+
+.faq-answer {
+    color: var(--text-light);
+    line-height: 1.7;
+}
+
+.faq-cta {
+    background: var(--cream);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.faq-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 1.5rem;
+}
+
+.btn-contact {
+    display: inline-block;
+    background: var(--forest);
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease;
+}
+
+.btn-contact:hover {
+    background: var(--forest-mid);
+    color: white;
+    text-decoration: none;
+}
 </style>
 
-<div class="container py-5">
-    <h1 class="text-center mb-5">Frequently Asked Questions</h1>
+<section class="faq-hero">
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about our farm</p>
+</section>
 
-    <div class="faq-section">
-        <h2 class="category-title">About Our Farm</h2>
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Why did you choose Vermont for your farm?</span>
+<section class="faq-content">
+    <div class="faq-inner">
+        <div class="faq-category">
+            <h2 class="faq-category-title">About Our Farm</h2>
+            <div class="faq-item">
+                <div class="faq-question">Why did you choose Vermont for your farm?</div>
+                <div class="faq-answer">We fell in love with Vermont's natural beauty, strong agricultural community, and commitment to sustainable farming. The climate and soil conditions here are perfect for our diverse farming operations.</div>
             </div>
-            <div class="faq-answer">
-                <p>We fell in love with Vermont's natural beauty, strong agricultural community, and commitment to sustainable farming. The climate and soil conditions here are perfect for our diverse farming operations, and the local community has been incredibly welcoming.</p>
+            <div class="faq-item">
+                <div class="faq-question">Are you really called Texas Farms Vermont?</div>
+                <div class="faq-answer">Yes! We're located in the historic district of Texas, in Concord Vermont.</div>
             </div>
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Are you really called Texas Farms Vermont?</span>
+        <div class="faq-category">
+            <h2 class="faq-category-title">Visiting the Farm</h2>
+            <div class="faq-item">
+                <div class="faq-question">Can I visit the farm?</div>
+                <div class="faq-answer">Yes, by appointment only. Contact us to schedule a visit.</div>
             </div>
-            <div class="faq-answer">
-                <p>Yes! We're located in the historic district of Texas, in Concord Vermont.</p>
-            </div>
-        </div>
-
-        <h2 class="category-title">Visiting the Farm</h2>
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Can I visit the farm?</span>
-            </div>
-            <div class="faq-answer">
-                <p>Yes, by appointment only.</p>
+            <div class="faq-item">
+                <div class="faq-question">Do you offer educational programs?</div>
+                <div class="faq-answer">Yes, we offer various educational programs including school tours, farming workshops, and seasonal events. Contact us for more information.</div>
             </div>
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Do you offer educational programs?</span>
+        <div class="faq-category">
+            <h2 class="faq-category-title">Our Products</h2>
+            <div class="faq-item">
+                <div class="faq-question">Where can I buy your products?</div>
+                <div class="faq-answer">Our products are available through our online Farm Shop and select local farmers markets.</div>
             </div>
-            <div class="faq-answer">
-                <p>Yes, we offer various educational programs including school tours, farming workshops, and seasonal events. Contact us for more information about our educational offerings.</p>
-            </div>
-        </div>
-
-        <h2 class="category-title">Our Products</h2>
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Where can I buy your products?</span>
-            </div>
-            <div class="faq-answer">
-                <p>Our products are available through our online Farm Shop and select local farmers markets.</p>
+            <div class="faq-item">
+                <div class="faq-question">Are your products organic?</div>
+                <div class="faq-answer">While we're not certified organic, we follow sustainable and natural farming practices. We avoid synthetic pesticides and fertilizers, focusing instead on regenerative agriculture techniques.</div>
             </div>
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Are your products organic?</span>
+        <div class="faq-category">
+            <h2 class="faq-category-title">Animals & Livestock</h2>
+            <div class="faq-item">
+                <div class="faq-question">Why do you raise heritage breeds?</div>
+                <div class="faq-answer">Heritage breeds offer unique qualities in terms of meat quality, adaptability, and genetic diversity. We're committed to preserving these traditional breeds while providing exceptional products.</div>
             </div>
-            <div class="faq-answer">
-                <p>While we're not certified organic, we follow sustainable and natural farming practices. We avoid synthetic pesticides and fertilizers, focusing instead on regenerative agriculture techniques.</p>
-            </div>
-        </div>
-
-        <h2 class="category-title">Animals & Livestock</h2>
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>Why do you raise heritage breeds?</span>
-            </div>
-            <div class="faq-answer">
-                <p>Heritage breeds offer unique qualities in terms of meat quality, adaptability, and genetic diversity. We're committed to preserving these traditional breeds while providing our customers with exceptional products.</p>
+            <div class="faq-item">
+                <div class="faq-question">How do you ensure animal welfare?</div>
+                <div class="faq-answer">Our animals are raised with the highest standards of care, including access to pasture, appropriate shelter, and regular veterinary care. We believe happy animals produce better products.</div>
             </div>
         </div>
 
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>How do you ensure animal welfare?</span>
+        <div class="faq-category">
+            <h2 class="faq-category-title">Sustainability</h2>
+            <div class="faq-item">
+                <div class="faq-question">What sustainable practices do you use?</div>
+                <div class="faq-answer">We employ various sustainable practices including solar power, rotational grazing, composting, and natural pest management. Our goal is to be good stewards of the land.</div>
             </div>
-            <div class="faq-answer">
-                <p>Our animals are raised with the highest standards of care, including access to pasture, appropriate shelter, and regular veterinary care. We believe happy animals produce better products.</p>
-            </div>
-        </div>
-
-        <h2 class="category-title">Sustainability</h2>
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>What sustainable practices do you use?</span>
-            </div>
-            <div class="faq-answer">
-                <p>We employ various sustainable practices including solar power, rotational grazing, composting, and natural pest management. Our goal is to be good stewards of the land while producing high-quality food.</p>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">
-                <i class="fas fa-question-circle text-success"></i>
-                <span>How do you handle waste management?</span>
-            </div>
-            <div class="faq-answer">
-                <p>We have a comprehensive waste management system that includes composting, recycling, and using animal waste as natural fertilizer. We strive to create a closed-loop system on our farm.</p>
+            <div class="faq-item">
+                <div class="faq-question">How do you handle waste management?</div>
+                <div class="faq-answer">We have a comprehensive waste management system that includes composting, recycling, and using animal waste as natural fertilizer. We strive to create a closed-loop system.</div>
             </div>
         </div>
     </div>
+</section>
 
-    <div class="text-center mt-5">
-        <p class="lead">Still have questions?</p>
-        <a href="/find-us.html" class="btn btn-success">Contact Us</a>
-    </div>
-</div>
+<section class="faq-cta">
+    <h2>Still have questions?</h2>
+    <a href="/find-us.html" class="btn-contact">Contact Us</a>
+</section>

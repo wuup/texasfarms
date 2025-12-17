@@ -3,139 +3,300 @@ layout: default
 title: What We Grow
 nav_section: produce
 ---
-<main class="py-5">
-    <div class="container">
-        <h1 class="text-center mb-5">What We Grow</h1>
+<style>
+.produce-hero {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
 
-        <div class="row mb-5">
-            <div class="col-md-6 order-md-2 mb-4 mb-md-0">
-                <img src="/images/vegetables2.png" alt="Vegetables" class="img-fluid rounded shadow-sm">
-            </div>
-            <div class="col-md-6 order-md-1">
-                <h2><i class="fas fa-carrot mr-3 text-success"></i>Our Vegetables</h2>
-                <p class="lead">Fresh, organically grown vegetables harvested at peak ripeness to ensure the best taste and nutritional value.</p>
-                <p>Our vegetables are grown using sustainable farming practices, without the use of synthetic pesticides or fertilizers. We focus on soil health and biodiversity to produce the freshest and most nutritious vegetables possible.</p>
+.produce-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
+
+.produce-hero p {
+    color: #e8e4db;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.produce-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+}
+
+.produce-intro-image {
+    background: url('/images/vegetables2.png') center/cover;
+    min-height: 400px;
+}
+
+.produce-intro-content {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.produce-intro-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.produce-intro-content p {
+    color: var(--text-light);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+    .produce-intro {
+        grid-template-columns: 1fr;
+    }
+    .produce-intro-image {
+        min-height: 300px;
+        order: -1;
+    }
+    .produce-intro-content {
+        padding: 2rem 1.5rem;
+    }
+}
+
+.seasons-section {
+    padding: 4rem 0;
+    background: var(--cream);
+}
+
+.seasons-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.seasons-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.seasons-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+}
+
+.seasons-header p {
+    color: var(--text-light);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.seasons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.season-card {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.season-card-header {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1rem 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+}
+
+.season-card-body {
+    padding: 1.5rem;
+}
+
+.season-card-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.season-card-body li {
+    padding: 0.5rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.season-card-body li:last-child {
+    border-bottom: none;
+}
+
+.season-card-body li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 700px) {
+    .seasons-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.produce-cta {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
+
+.produce-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+}
+
+.produce-cta p {
+    color: #e8e4db;
+    margin-bottom: 2rem;
+}
+
+.produce-cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-cta {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-cta-primary {
+    background: var(--copper);
+    color: white;
+}
+
+.btn-cta-primary:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-cta-outline {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.btn-cta-outline:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+}
+</style>
+
+<section class="produce-hero">
+    <h1>What We Grow</h1>
+    <p>Fresh, sustainably grown heirloom vegetables from our Vermont farm</p>
+</section>
+
+<section class="produce-intro">
+    <div class="produce-intro-image"></div>
+    <div class="produce-intro-content">
+        <h2>Our Vegetables</h2>
+        <p>Fresh, organically grown vegetables harvested at peak ripeness to ensure the best taste and nutritional value.</p>
+        <p>Our vegetables are grown using sustainable farming practices, without synthetic pesticides or fertilizers. We focus on soil health and biodiversity to produce the freshest and most nutritious vegetables possible.</p>
+    </div>
+</section>
+
+<section class="seasons-section">
+    <div class="seasons-header">
+        <span class="label">Throughout the Year</span>
+        <h2>Our Seasonal Vegetables</h2>
+        <p>We grow a diverse selection of heirloom vegetables, focusing on flavor, nutrition, and sustainability. Our growing seasons are carefully planned to provide fresh, local produce throughout the year.</p>
+    </div>
+    <div class="seasons-grid">
+        <div class="season-card">
+            <div class="season-card-header">Spring & Early Summer</div>
+            <div class="season-card-body">
+                <ul>
+                    <li>Lettuce & Mixed Greens</li>
+                    <li>Peas & Sugar Snap Peas</li>
+                    <li>Spring Onions & Garlic Scapes</li>
+                    <li>Radishes & Spring Turnips</li>
+                    <li>Early Herbs</li>
+                </ul>
             </div>
         </div>
-
-        <div class="row mb-5">
-            <div class="col-md-12">
-                <h2 class="mb-4">Our Seasonal Vegetables</h2>
-                <p class="lead">We take pride in growing a diverse selection of heirloom vegetables, focusing on flavor, nutrition, and sustainability. Our growing seasons are carefully planned to provide fresh, local produce throughout the year.</p>
+        <div class="season-card">
+            <div class="season-card-header">Summer</div>
+            <div class="season-card-body">
+                <ul>
+                    <li>Heirloom Tomatoes</li>
+                    <li>Sweet Peppers & Hot Peppers</li>
+                    <li>Summer Squash & Zucchini</li>
+                    <li>Green Beans & Shell Beans</li>
+                    <li>Fresh Herbs</li>
+                </ul>
             </div>
         </div>
-
-        <div class="row mb-5">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <h3 class="bg-success text-white p-3 mb-0">Spring & Early Summer</h3>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">Lettuce & Mixed Greens</li>
-                            <li class="mb-2">Peas & Sugar Snap Peas</li>
-                            <li class="mb-2">Spring Onions & Garlic Scapes</li>
-                            <li class="mb-2">Radishes & Spring Turnips</li>
-                            <li class="mb-2">Early Herbs</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <h3 class="bg-success text-white p-3 mb-0">Summer</h3>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">Heirloom Tomatoes</li>
-                            <li class="mb-2">Sweet Peppers & Hot Peppers</li>
-                            <li class="mb-2">Summer Squash & Zucchini</li>
-                            <li class="mb-2">Green Beans & Shell Beans</li>
-                            <li class="mb-2">Fresh Herbs</li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="season-card">
+            <div class="season-card-header">Fall</div>
+            <div class="season-card-body">
+                <ul>
+                    <li>Winter Squash & Pumpkins</li>
+                    <li>Root Vegetables</li>
+                    <li>Fall Greens</li>
+                    <li>Storage Onions & Garlic</li>
+                    <li>Late Season Tomatoes</li>
+                </ul>
             </div>
         </div>
-
-        <div class="row mb-5">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <h3 class="bg-success text-white p-3 mb-0">Fall</h3>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">Winter Squash & Pumpkins</li>
-                            <li class="mb-2">Root Vegetables</li>
-                            <li class="mb-2">Fall Greens</li>
-                            <li class="mb-2">Storage Onions & Garlic</li>
-                            <li class="mb-2">Late Season Tomatoes</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <h3 class="bg-success text-white p-3 mb-0">Winter Storage Crops</h3>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">Potatoes</li>
-                            <li class="mb-2">Winter Squash</li>
-                            <li class="mb-2">Storage Onions</li>
-                            <li class="mb-2">Garlic</li>
-                            <li class="mb-2">Root Vegetables</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">Interested in our produce?</h4>
-                    <p>Check out our <a href="/produce/bulk-boxes.html" class="alert-link">Bulk Boxes</a> for seasonal vegetable packages, or visit our <a href="{{ site.shop_url }}" class="alert-link">Farm Shop</a> to see what's currently available.</p>
-                </div>
+        <div class="season-card">
+            <div class="season-card-header">Winter Storage Crops</div>
+            <div class="season-card-body">
+                <ul>
+                    <li>Potatoes</li>
+                    <li>Winter Squash</li>
+                    <li>Storage Onions</li>
+                    <li>Garlic</li>
+                    <li>Root Vegetables</li>
+                </ul>
             </div>
         </div>
     </div>
-</main>
+</section>
 
-<div class="grow-with-us-section py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="card-title">Grow with us</h2>
-                        <p class="lead mb-4">Join our mailing list to get exclusive updates, special offers, and follow our farm's journey.</p>
-
-                        <!-- Mailchimp Embed Code Start -->
-                        <div id="mc_embed_signup">
-                            <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-                                <div id="mc_embed_signup_scroll">
-                                    <div class="mc-field-group">
-                                        <label for="mce-EMAIL" class="sr-only">Email Address <span class="asterisk">*</span></label>
-                                        <input type="email" name="EMAIL" class="required email form-control" id="mce-EMAIL" required="" placeholder="Enter your email">
-                                    </div>
-                                    <div id="mce-responses" class="clear foot">
-                                        <div class="response" id="mce-error-response" style="display: none;"></div>
-                                        <div class="response" id="mce-success-response" style="display: none;"></div>
-                                    </div>
-                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
-                                        <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
-                                    </div>
-                                    <div class="optionalParent">
-                                        <div class="clear foot">
-                                            <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-success w-100" value="Subscribe">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Mailchimp Embed Code End -->
-
-                        <small class="text-muted mt-3 d-block">By subscribing, you agree to receive emails from Texas Farms Vermont. You can unsubscribe at any time.</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section class="produce-cta">
+    <h2>Interested in our produce?</h2>
+    <p>Check out our Bulk Boxes for seasonal packages, or visit our Farm Shop</p>
+    <div class="produce-cta-buttons">
+        <a href="/produce/bulk-boxes.html" class="btn-cta btn-cta-primary">View Bulk Boxes</a>
+        <a href="{{ site.shop_url }}" class="btn-cta btn-cta-outline">Farm Shop</a>
     </div>
-</div>
+</section>

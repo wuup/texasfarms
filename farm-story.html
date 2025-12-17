@@ -1,100 +1,318 @@
 ---
 layout: default
 title: Farm Story
+nav_section: our-farm
 ---
-<div class="story-header">
-    <div class="container">
-        <h1 class="story-title text-center">Our Texas Farms Story</h1>
-        <p class="story-subtitle text-center">A tale of determination, growth, and sustainable farming in the Green Mountains</p>
-    </div>
-</div>
+<style>
+.story-hero {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
 
-<div class="farm-story">
-    <div class="container">
-        <div class="story-container">
-            <div class="chapter">
-                <h2>Introduction: A Leap into the Unknown</h2>
-                <p>In the midst of a global pandemic, Heather and Alan discover a wooded plot in Vermont and contemplate a life-changing decision that would transform their world.</p>
-                <a href="/introduction.html" class="btn btn-outline-success">Read Introduction <i class="fas fa-arrow-right ml-2"></i></a>
-            </div>
+.story-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
 
-            <div class="chapter-list">
-                <div class="chapter">
-                    <h3>Chapter 1: First Weekend</h3>
-                    <p>Join us on our first adventure to Vermont as we navigate Labor Day traffic, explore our new property, and begin to understand what we've gotten ourselves into.</p>
-                    <a href="/chapter-1.html" class="btn btn-outline-success">Read Chapter <i class="fas fa-arrow-right ml-2"></i></a>
-                </div>
-                <div class="chapter">
-                    <h3>Chapter 2: Solar Install in a Snowstorm</h3>
-                    <p>A necessary contradiction in terms.</p>
-                    <a href="/chapter-2.html" class="btn btn-outline-success">Read Chapter <i class="fas fa-arrow-right ml-2"></i></a>
-                </div>
-                <div class="chapter text-muted">
-                    <h3>Chapter 3: Moving In</h3>
-                    <p>Some things are better left to the professionals.</p>
-                    <span class="badge badge-secondary">Coming Soon</span>
-                </div>
-                <div class="chapter text-muted">
-                    <h3>Chapter 4: Land Clearing</h3>
-                    <p>Terraforming the land.</p>
-                    <span class="badge badge-secondary">Coming Soon</span>
-                </div>
-                <div class="chapter text-muted">
-                    <h3>Chapter 5: First Builds</h3>
-                    <p>The rush to build before the new arrivals.</p>
-                    <span class="badge badge-secondary">Coming Soon</span>
-                </div>
-            </div>
+.story-hero p {
+    color: #e8e4db;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
 
-            <div class="upcoming-chapters mt-5 text-center">
-                <div class="card border-success">
-                    <div class="card-body">
-                        <h3 class="text-success mb-3"><i class="fas fa-book-open mr-2"></i>More Chapters Coming Soon</h3>
-                        <p class="lead mb-0">Follow our journey as we continue to build and grow Texas Farms Vermont. New chapters released monthly.</p>
-                        <p class="text-muted mt-3"><small>Sign up for our mailing list to be notified when new chapters are available.</small></p>
-                    </div>
-                </div>
-            </div>
+.chapters-section {
+    padding: 4rem 0;
+    background: white;
+}
+
+.chapters-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.intro-chapter {
+    background: var(--cream);
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    border-left: 4px solid var(--copper);
+}
+
+.intro-chapter h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.intro-chapter p {
+    color: var(--text-light);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.btn-chapter {
+    display: inline-block;
+    background: var(--forest);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease;
+}
+
+.btn-chapter:hover {
+    background: var(--forest-mid);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-chapter i {
+    margin-left: 0.5rem;
+}
+
+.chapter-list-header {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--forest);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--copper);
+}
+
+.chapter-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.chapter-item:last-child {
+    border-bottom: none;
+}
+
+.chapter-item h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    color: var(--forest);
+    margin-bottom: 0.5rem;
+}
+
+.chapter-item p {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.chapter-item.coming-soon h3 {
+    color: var(--text-muted);
+}
+
+.chapter-item.coming-soon p {
+    color: var(--text-muted);
+}
+
+.coming-badge {
+    display: inline-block;
+    background: var(--cream-dark);
+    color: var(--text-muted);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.more-coming {
+    background: var(--cream);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.more-coming h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--forest);
+    margin-bottom: 0.75rem;
+}
+
+.more-coming p {
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.more-coming .note {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.newsletter-section {
+    padding: 4rem 0;
+    background: var(--cream);
+}
+
+.newsletter-card {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 3rem;
+    text-align: center;
+}
+
+.newsletter-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.newsletter-card > p {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.newsletter-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.newsletter-form label {
+    display: block;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.newsletter-form input[type="email"] {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background: var(--cream);
+}
+
+.newsletter-form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--forest);
+}
+
+.btn-subscribe {
+    display: block;
+    width: 100%;
+    background: var(--forest);
+    color: white;
+    padding: 1rem;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.btn-subscribe:hover {
+    background: var(--forest-mid);
+}
+
+.newsletter-card .disclaimer {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}
+</style>
+
+<section class="story-hero">
+    <h1>Our Texas Farms Story</h1>
+    <p>A tale of determination, growth, and sustainable farming in the Green Mountains</p>
+</section>
+
+<section class="chapters-section">
+    <div class="chapters-inner">
+        <div class="intro-chapter">
+            <h2>Introduction: A Leap into the Unknown</h2>
+            <p>In the midst of a global pandemic, Heather and Alan discover a wooded plot in Vermont and contemplate a life-changing decision that would transform their world.</p>
+            <a href="/introduction.html" class="btn-chapter">Read Introduction <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <h3 class="chapter-list-header">Chapters</h3>
+
+        <div class="chapter-item">
+            <h3>Chapter 1: First Weekend</h3>
+            <p>Join us on our first adventure to Vermont as we navigate Labor Day traffic, explore our new property, and begin to understand what we've gotten ourselves into.</p>
+            <a href="/chapter-1.html" class="btn-chapter">Read Chapter <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="chapter-item">
+            <h3>Chapter 2: Solar Install in a Snowstorm</h3>
+            <p>A necessary contradiction in terms.</p>
+            <a href="/chapter-2.html" class="btn-chapter">Read Chapter <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="chapter-item coming-soon">
+            <h3>Chapter 3: Moving In</h3>
+            <p>Some things are better left to the professionals.</p>
+            <span class="coming-badge">Coming Soon</span>
+        </div>
+
+        <div class="chapter-item coming-soon">
+            <h3>Chapter 4: Land Clearing</h3>
+            <p>Terraforming the land.</p>
+            <span class="coming-badge">Coming Soon</span>
+        </div>
+
+        <div class="chapter-item coming-soon">
+            <h3>Chapter 5: First Builds</h3>
+            <p>The rush to build before the new arrivals.</p>
+            <span class="coming-badge">Coming Soon</span>
+        </div>
+
+        <div class="more-coming">
+            <h3>More Chapters Coming Soon</h3>
+            <p>Follow our journey as we continue to build and grow Texas Farms Vermont.</p>
+            <p class="note">New chapters released monthly.</p>
         </div>
     </div>
+</section>
 
-    <div class="container mt-5 pt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-body text-left position-relative p-4">
-                        <h2 class="card-title mb-3">Grow with us</h2>
-                        <p class="lead mb-4">Join our mailing list to get exclusive updates, special offers, and follow our farm's journey.</p>
+<section class="newsletter-section">
+    <div class="newsletter-card">
+        <h2>Grow with Us</h2>
+        <p>Join our mailing list to get exclusive updates, special offers, and follow our farm's journey.</p>
 
-                        <!-- Mailchimp Embed Code Start -->
-                        <div id="mc_embed_signup">
-                            <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-                                <div id="mc_embed_signup_scroll">
-                                    <div class="mc-field-group mb-3">
-                                        <label for="mce-EMAIL" class="form-label">Email Address <span class="sr-only">(required)</span></label>
-                                        <input type="email" name="EMAIL" class="required email form-control" id="mce-EMAIL" required placeholder="Enter your email address" aria-required="true">
-                                    </div>
-                                    <div id="mce-responses" class="clear foot">
-                                        <div class="response" id="mce-error-response" style="display: none" role="alert"></div>
-                                        <div class="response" id="mce-success-response" style="display: none" role="alert"></div>
-                                    </div>
-                                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
-                                        <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
-                                    </div>
-                                    <div class="optionalParent">
-                                        <div class="clear foot">
-                                            <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="button btn btn-success w-100" value="Subscribe">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+        <div id="mc_embed_signup">
+            <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate newsletter-form" target="_blank">
+                <div id="mc_embed_signup_scroll">
+                    <div class="mc-field-group">
+                        <label for="mce-EMAIL">Email Address</label>
+                        <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required placeholder="Enter your email address" aria-required="true">
+                    </div>
+                    <div id="mce-responses" class="clear foot">
+                        <div class="response" id="mce-error-response" style="display: none" role="alert"></div>
+                        <div class="response" id="mce-success-response" style="display: none" role="alert"></div>
+                    </div>
+                    <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                        <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
+                    </div>
+                    <div class="optionalParent">
+                        <div class="clear foot">
+                            <input type="submit" name="subscribe" id="mc-embedded-subscribe" class="btn-subscribe" value="Subscribe">
                         </div>
-                        <!-- Mailchimp Embed Code End -->
-
-                        <small class="text-muted mt-3 d-block">By subscribing, you agree to receive emails from Texas Farms Vermont. You can unsubscribe at any time.</small>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
+
+        <p class="disclaimer">By subscribing, you agree to receive emails from Texas Farms Vermont. You can unsubscribe at any time.</p>
     </div>
-</div>
+</section>

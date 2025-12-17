@@ -5,100 +5,277 @@ description: Learn about our sustainable farming practices, no-till methods, and
 nav_section: produce
 ---
 <style>
-    .grow-header {
-        background: url('/images/farm-soil.jpg') no-repeat center center;
-        background-size: cover;
-        padding: 6rem 0;
-        position: relative;
-        color: white;
-        text-align: center;
+.grow-hero {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
+
+.grow-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
+
+.grow-hero p {
+    color: #e8e4db;
+    font-size: 1.1rem;
+}
+
+.grow-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+}
+
+.grow-intro-image {
+    background: url('/images/farm-soil.jpg') center/cover;
+    min-height: 400px;
+}
+
+.grow-intro-content {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.grow-intro-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.grow-intro-content p {
+    color: var(--text-light);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+    .grow-intro {
+        grid-template-columns: 1fr;
     }
-    .grow-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+    .grow-intro-image {
+        min-height: 300px;
+        order: -1;
     }
-    .grow-header .container {
-        position: relative;
-        z-index: 1;
+    .grow-intro-content {
+        padding: 2rem 1.5rem;
     }
-    .grow-content {
-        background: white;
-        padding: 3rem 0;
+}
+
+.methods-section {
+    padding: 4rem 0;
+    background: var(--cream);
+}
+
+.methods-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.methods-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.methods-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+}
+
+.methods-header p {
+    color: var(--text-light);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.methods-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.method-card {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 2rem;
+}
+
+.method-card-icon {
+    color: var(--copper);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.method-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.method-card p {
+    color: var(--text-light);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.method-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.method-card li {
+    padding: 0.4rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.method-card li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 700px) {
+    .methods-grid {
+        grid-template-columns: 1fr;
     }
-    .method-card {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        padding: 2rem;
-        margin-bottom: 2rem;
-        transition: transform 0.3s ease;
-    }
-    .method-card:hover {
-        transform: translateY(-5px);
-    }
-    .method-icon {
-        font-size: 2.5rem;
-        color: #2F5851;
-        margin-bottom: 1rem;
-    }
+}
+
+.grow-cta {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
+
+.grow-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+}
+
+.grow-cta p {
+    color: #e8e4db;
+    margin-bottom: 2rem;
+}
+
+.grow-cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-cta {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-cta-primary {
+    background: var(--copper);
+    color: white;
+}
+
+.btn-cta-primary:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-cta-outline {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.btn-cta-outline:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+}
 </style>
 
-<div class="grow-header">
-    <div class="container">
-        <h1 class="display-4 mb-3">How We Grow</h1>
-        <p class="lead">Sustainable farming practices for a better tomorrow</p>
+<section class="grow-hero">
+    <h1>How We Grow</h1>
+    <p>Sustainable farming practices for a better tomorrow</p>
+</section>
+
+<section class="grow-intro">
+    <div class="grow-intro-image"></div>
+    <div class="grow-intro-content">
+        <h2>Our Philosophy</h2>
+        <p>Our mission is to grow nutrient-rich and incredibly delicious produce while working with nature and being good stewards of the land.</p>
+        <p>Though we are not currently certified organic, we aim to meet and exceed USDA standards. We focus on soil health, biodiversity, and sustainable practices that benefit both the environment and the quality of our produce.</p>
     </div>
-</div>
+</section>
 
-<div class="grow-content">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="text-center mb-5">
-                    <i class="fas fa-tree fa-3x text-success mb-3"></i>
-                    <p class="lead">Our mission is to grow nutrient-rich and incredibly delicious produce while working with nature and being good stewards of the land. Though we are not currently certified organic, we aim to meet and exceed USDA standards.</p>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="method-card">
-                            <div class="text-center">
-                                <i class="fas fa-seedling method-icon"></i>
-                                <h3 class="mb-3">No-Till Farming</h3>
-                            </div>
-                            <p>We practice no-till farming, meaning the soil is disturbed as little as possible. This allows us to:</p>
-                            <ul class="mb-0">
-                                <li>Limit soil erosion</li>
-                                <li>Capture carbon in the soil</li>
-                                <li>Use less amendments and fertilizers</li>
-                                <li>Limit the use of large farming equipment</li>
-                                <li>Foster the health of the microbiome in the soil</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="method-card">
-                            <div class="text-center">
-                                <i class="fas fa-spa method-icon"></i>
-                                <h3 class="mb-3">Seed Saving</h3>
-                            </div>
-                            <p>Because we specialize in open-pollinated and heirloom varieties, we are able to practice seed saving. This process involves:</p>
-                            <ul class="mb-0">
-                                <li>Growing extra produce for seed harvesting</li>
-                                <li>Creating genetically diverse crops</li>
-                                <li>Adapting plants to local conditions</li>
-                                <li>Reducing reliance on big seed companies</li>
-                                <li>Developing unique strains for our farm</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="methods-section">
+    <div class="methods-header">
+        <span class="label">Our Practices</span>
+        <h2>Sustainable Growing Methods</h2>
+        <p>We employ time-tested techniques combined with modern sustainable practices to produce the highest quality vegetables while caring for the land.</p>
+    </div>
+    <div class="methods-grid">
+        <div class="method-card">
+            <i class="fas fa-seedling method-card-icon"></i>
+            <h3>No-Till Farming</h3>
+            <p>We practice no-till farming, meaning the soil is disturbed as little as possible. This allows us to:</p>
+            <ul>
+                <li>Limit soil erosion</li>
+                <li>Capture carbon in the soil</li>
+                <li>Use less amendments and fertilizers</li>
+                <li>Limit the use of large farming equipment</li>
+                <li>Foster the health of the microbiome in the soil</li>
+            </ul>
+        </div>
+        <div class="method-card">
+            <i class="fas fa-spa method-card-icon"></i>
+            <h3>Seed Saving</h3>
+            <p>Because we specialize in open-pollinated and heirloom varieties, we are able to practice seed saving. This process involves:</p>
+            <ul>
+                <li>Growing extra produce for seed harvesting</li>
+                <li>Creating genetically diverse crops</li>
+                <li>Adapting plants to local conditions</li>
+                <li>Reducing reliance on big seed companies</li>
+                <li>Developing unique strains for our farm</li>
+            </ul>
         </div>
     </div>
-</div>
+</section>
+
+<section class="grow-cta">
+    <h2>See the results of our methods</h2>
+    <p>Explore what we grow and find our products</p>
+    <div class="grow-cta-buttons">
+        <a href="/produce/what-we-grow.html" class="btn-cta btn-cta-primary">What We Grow</a>
+        <a href="/produce/bulk-boxes.html" class="btn-cta btn-cta-outline">Bulk Boxes</a>
+    </div>
+</section>

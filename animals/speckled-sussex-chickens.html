@@ -1,143 +1,431 @@
 ---
-layout: animal
+layout: default
 title: Speckled Sussex Chickens
-subtitle: Heritage Dual-Purpose Birds
 nav_section: animals
-hero_image: /images/chantecler1.jpeg
 ---
-<div class="container-fluid py-4" style="background-color: white;">
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="content-card">
-                <h2 class="text-center mb-4">About the Breed</h2>
-                <p class="lead text-center mb-4">The Speckled Sussex is an ancient English breed known for its beautiful mahogany feathers with white speckles and excellent dual-purpose qualities.</p>
-                <p>The Speckled Sussex chicken is an English heritage breed chicken dating back to the Romans. This large, dual-purpose breed has a friendly/curious disposition, are active foragers, and wonderful mothers. They are good layers, laying about 250 large eggs a year, and put on weight well, topping out around 7-9 lbs.</p>
-            </div>
-        </div>
-    </div>
+<style>
+.animal-page {
+    font-family: 'DM Sans', sans-serif;
+}
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="content-card">
-                <h2 class="text-center mb-4">Breed Characteristics</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="characteristic-item text-center">
-                            <div class="characteristic-icon">
-                                <i class="fas fa-egg"></i>
-                            </div>
-                            <h4>Excellent Layers</h4>
-                            <p>Produces 200-250 large brown eggs annually, laying consistently through winter.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="characteristic-item text-center">
-                            <div class="characteristic-icon">
-                                <i class="fas fa-feather"></i>
-                            </div>
-                            <h4>Unique Appearance</h4>
-                            <p>Distinctive mahogany feathers with white speckles that increase with age.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="characteristic-item text-center">
-                            <div class="characteristic-icon">
-                                <i class="fas fa-sun"></i>
-                            </div>
-                            <h4>Hardy Nature</h4>
-                            <p>Excellent foragers that thrive in free-range environments and adapt well to Vermont winters.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+.animal-hero {
+    min-height: 60vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--forest);
+}
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="content-card">
-                <h2 class="text-center mb-4">Life on Our Farm</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4>Daily Life</h4>
-                            <p>Our Speckled Sussex chickens enjoy free-range access to our pastures, where they forage for insects and plants. They have access to cozy coops with nesting boxes and protected outdoor areas.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4>Breeding Program</h4>
-                            <p>We carefully select breeding pairs to maintain the heritage characteristics of the breed while improving hardiness for Vermont's climate.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4>Sustainable Practices</h4>
-                            <p>Our chickens play a vital role in pest control and soil fertility, naturally managing insects while fertilizing our pastures.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+.animal-hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--cream);
+}
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="content-card">
-                <h2 class="text-center mb-4">Photo Gallery</h2>
-                <div class="row">
-                    <div class="col-md-4 gallery-item">
-                        <a href="/images/speckled-sussex.jpeg"
-                           data-toggle="lightbox"
-                           data-gallery="chicken-gallery"
-                           data-title="Our Speckled Sussex Chickens"
-                           data-footer="Our beautiful Speckled Sussex chickens showing off their distinctive mahogany feathers with white speckles.">
-                            <img src="/images/speckled-sussex.jpeg"
-                                 alt="Speckled Sussex chickens foraging"
-                                 class="gallery-img">
-                        </a>
-                        <p class="gallery-caption">Speckled Sussex chickens foraging</p>
-                    </div>
-                    <div class="col-md-4 gallery-item">
-                        <a href="/images/speckled-sussex2.jpeg"
-                           data-toggle="lightbox"
-                           data-gallery="chicken-gallery"
-                           data-title="Speckled Sussex Close-up"
-                           data-footer="A close look at our Speckled Sussex chicken, showcasing their beautiful speckled plumage pattern.">
-                            <img src="/images/speckled-sussex2.jpeg"
-                                 alt="Close-up of Speckled Sussex chicken"
-                                 class="gallery-img">
-                        </a>
-                        <p class="gallery-caption">Up close with our Speckled Sussex</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+.animal-hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
 
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="card shadow">
-                <div class="card-body text-center">
-                    <h2 class="card-title">Products from Our Chickens</h2>
-                    <p class="lead">We offer a variety of products from our Speckled Sussex flock:</p>
-                    <ul class="list-unstyled mb-4">
-                        <li>Farm-fresh eggs</li>
-                        <li>Heritage breeding stock</li>
-                        <li>Day-old chicks (seasonal)</li>
-                        <li>Pasture-raised chicken</li>
-                    </ul>
-                    <div class="pricing-info mb-4">
-                        <h5 class="mb-3">Spring Breeding Stock Pricing:</h5>
-                        <ul class="list-unstyled">
-                            <li>Chicks - $60</li>
-                            <li>Hatching Eggs - $70</li>
-                        </ul>
-                        <p class="mt-3"><small class="text-muted">Note: We do not ship chicks. All chicks must be picked up at our farm in Northern Vermont.</small></p>
-                    </div>
-                    <a href="{{ site.shop_url }}poultry" class="btn btn-success mt-3">Shop Poultry Products</a>
-                </div>
-            </div>
+.animal-hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.1;
+    margin: 0 0 1rem 0;
+    color: #f7f4ed;
+}
+
+.animal-hero-subtitle {
+    font-size: 1.1rem;
+    color: #e8e4db;
+    max-width: 450px;
+    line-height: 1.7;
+}
+
+.animal-hero-image {
+    background: url('/images/chantecler1.jpeg') center/cover;
+}
+
+@media (max-width: 900px) {
+    .animal-hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .animal-hero-image {
+        height: 50vh;
+        order: -1;
+    }
+    .animal-hero-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Content sections */
+.animal-section {
+    padding: 4rem 0;
+}
+
+.animal-section.bg-white {
+    background: white;
+}
+
+.animal-section.bg-cream {
+    background: var(--cream);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: var(--forest);
+    margin: 0;
+}
+
+.section-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+/* Characteristics grid */
+.characteristics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.characteristic-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: white;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.characteristic-card i {
+    font-size: 2rem;
+    color: var(--copper);
+    margin-bottom: 1rem;
+}
+
+.characteristic-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    color: var(--forest);
+    margin-bottom: 0.75rem;
+}
+
+.characteristic-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .characteristics-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+}
+
+/* About breed section */
+.about-content {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.about-content p {
+    color: var(--text-light);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* Farm life section */
+.farm-life-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.farm-life-image {
+    background: url('/images/speckled-sussex.jpeg') center/cover;
+    min-height: 400px;
+}
+
+.farm-life-content {
+    background: var(--cream-dark);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.farm-life-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 1.5rem;
+}
+
+.farm-life-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.farm-life-list li {
+    padding: 0.75rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-light);
+    font-size: 1rem;
+    line-height: 1.6;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.farm-life-list li:last-child {
+    border-bottom: none;
+}
+
+.farm-life-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 900px) {
+    .farm-life-grid {
+        grid-template-columns: 1fr;
+    }
+    .farm-life-image {
+        height: 300px;
+    }
+    .farm-life-content {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* Gallery */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+@media (max-width: 600px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Products CTA */
+.products-section {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
+
+.products-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+}
+
+.products-section p {
+    color: #e8e4db;
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.products-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.products-list li {
+    color: #e8e4db;
+    font-size: 0.95rem;
+}
+
+.pricing-box {
+    background: rgba(255,255,255,0.1);
+    padding: 1.5rem 2rem;
+    display: inline-block;
+    margin-bottom: 2rem;
+}
+
+.pricing-box h5 {
+    color: var(--copper-light);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.pricing-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pricing-box li {
+    color: #e8e4db;
+    padding: 0.25rem 0;
+}
+
+.pricing-note {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 1rem;
+}
+
+.btn-shop {
+    display: inline-block;
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease;
+}
+
+.btn-shop:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+}
+</style>
+
+<div class="animal-page">
+
+<section class="animal-hero">
+    <div class="animal-hero-content">
+        <span class="animal-hero-label">Heritage Breed • Vermont</span>
+        <h1 class="animal-hero-title">Speckled Sussex Chickens</h1>
+        <p class="animal-hero-subtitle">An ancient English breed known for beautiful mahogany feathers with white speckles and excellent dual-purpose qualities.</p>
+    </div>
+    <div class="animal-hero-image"></div>
+</section>
+
+<section class="animal-section bg-white">
+    <div class="section-header">
+        <span class="label">The Breed</span>
+        <h2>About Speckled Sussex</h2>
+    </div>
+    <div class="about-content">
+        <p>The Speckled Sussex chicken is an English heritage breed dating back to the Romans. This large, dual-purpose breed has a friendly, curious disposition, are active foragers, and wonderful mothers. They are good layers, laying about 250 large eggs a year, and put on weight well, topping out around 7-9 lbs.</p>
+    </div>
+</section>
+
+<section class="animal-section bg-cream">
+    <div class="section-header">
+        <span class="label">Why We Love Them</span>
+        <h2>Breed Characteristics</h2>
+    </div>
+    <div class="characteristics-grid">
+        <div class="characteristic-card">
+            <i class="fas fa-egg"></i>
+            <h4>Excellent Layers</h4>
+            <p>Produces 200-250 large brown eggs annually, laying consistently through winter.</p>
+        </div>
+        <div class="characteristic-card">
+            <i class="fas fa-feather"></i>
+            <h4>Unique Appearance</h4>
+            <p>Distinctive mahogany feathers with white speckles that increase with age.</p>
+        </div>
+        <div class="characteristic-card">
+            <i class="fas fa-sun"></i>
+            <h4>Hardy Nature</h4>
+            <p>Excellent foragers that thrive in free-range environments and adapt well to Vermont winters.</p>
         </div>
     </div>
+</section>
+
+<section class="farm-life-grid">
+    <div class="farm-life-image"></div>
+    <div class="farm-life-content">
+        <h2>Life on Our Farm</h2>
+        <ul class="farm-life-list">
+            <li>Free-range access to pastures where they forage for insects and plants</li>
+            <li>Cozy coops with nesting boxes and protected outdoor areas</li>
+            <li>Careful breeding to maintain heritage characteristics</li>
+            <li>Vital role in pest control and soil fertility</li>
+            <li>Naturally managing insects while fertilizing our pastures</li>
+        </ul>
+    </div>
+</section>
+
+<section class="animal-section bg-white">
+    <div class="section-header">
+        <span class="label">Gallery</span>
+        <h2>Our Flock</h2>
+    </div>
+    <div class="gallery-grid">
+        <img src="/images/speckled-sussex.jpeg" alt="Speckled Sussex chickens foraging">
+        <img src="/images/speckled-sussex2.jpeg" alt="Close-up of Speckled Sussex chicken">
+    </div>
+</section>
+
+<section class="products-section">
+    <h2>Products from Our Chickens</h2>
+    <p>We offer a variety of products from our Speckled Sussex flock</p>
+    <ul class="products-list">
+        <li>Farm-fresh eggs</li>
+        <li>Heritage breeding stock</li>
+        <li>Day-old chicks (seasonal)</li>
+        <li>Pasture-raised chicken</li>
+    </ul>
+    <div class="pricing-box">
+        <h5>Spring Breeding Stock</h5>
+        <ul>
+            <li>Chicks — $60</li>
+            <li>Hatching Eggs — $70</li>
+        </ul>
+        <p class="pricing-note">Pickup only at our farm in Northern Vermont</p>
+    </div>
+    <br>
+    <a href="{{ site.shop_url }}poultry" class="btn-shop">Shop Poultry Products</a>
+</section>
+
 </div>

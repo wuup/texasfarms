@@ -3,77 +3,169 @@ layout: default
 title: Our Animals
 nav_section: animals
 ---
-<div class="container-fluid px-0">
-    <div class="page-header text-center py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <h1 class="display-4 mb-3">
-                        <i class="fas fa-paw text-success"></i>
-                        Our Heritage Animals
-                    </h1>
-                    <p class="lead">We specialize in raising heritage breed animals, preserving genetic diversity while producing exceptional quality products.</p>
-                </div>
-            </div>
-        </div>
+<style>
+.animals-hero {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
+
+.animals-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
+
+.animals-hero p {
+    color: #e8e4db;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.animal-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+}
+
+.animal-card.reverse {
+    direction: rtl;
+}
+
+.animal-card.reverse > * {
+    direction: ltr;
+}
+
+.animal-card-image {
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+}
+
+.animal-card-content {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.animal-card-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.animal-card-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.animal-card-content p {
+    color: var(--text-light);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.btn-learn {
+    display: inline-block;
+    background: var(--forest);
+    color: white;
+    padding: 0.875rem 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease;
+    align-self: flex-start;
+}
+
+.btn-learn:hover {
+    background: var(--forest-mid);
+    color: white;
+    text-decoration: none;
+}
+
+.animal-divider {
+    height: 1px;
+    background: var(--cream-dark);
+}
+
+@media (max-width: 900px) {
+    .animal-card,
+    .animal-card.reverse {
+        grid-template-columns: 1fr;
+        direction: ltr;
+    }
+    .animal-card-image {
+        min-height: 300px;
+    }
+    .animal-card-content {
+        padding: 2rem 1.5rem;
+    }
+}
+</style>
+
+<section class="animals-hero">
+    <h1>Our Heritage Animals</h1>
+    <p>We specialize in raising heritage breed animals, preserving genetic diversity while producing exceptional quality products.</p>
+</section>
+
+<div class="animal-card">
+    <div class="animal-card-image" style="background-image: url('/images/gloucestershire-old-spot-pigs.jpeg');"></div>
+    <div class="animal-card-content">
+        <span class="animal-card-label">Heritage Pigs</span>
+        <h2>Gloucestershire Old Spot Pigs</h2>
+        <p>The oldest pedigreed spotted pig in the world. Once popular on small family farms, earning them the nickname "orchard pig." Known for excellent foraging, attentive mothers, gentle temperaments, and richly marbled meat with unmatched flavor—the favorite of British Royalty.</p>
+        <p>We sell feeder piglets, registered breeding stock, and pork by the half, whole, or individual cuts.</p>
+        <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-learn">Learn More</a>
     </div>
+</div>
 
-    <div class="container">
-        <section id="pigs" class="animal-section mb-5">
-            <div class="row align-items-center px-4">
-                <div class="col-md-6 order-md-2">
-                    <img src="/images/gloucestershire-old-spot-pigs.jpeg" alt="Gloucestershire Old Spot Pigs" class="img-fluid rounded shadow-lg mb-4">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2 class="mb-4"><i class="fas fa-piggy-bank text-success mr-3"></i>Gloucestershire Old Spot Pigs</h2>
-                    <p class="mb-4">The Gloucestershire Old Spot pig is the oldest pedigreed spotted pig in the world. Once popular on small family farms where they were raised on dropped orchard fruit, earning them the nicknames of the "orchard pig" or "cottage pig." This breed is known for being excellent foragers, attentive mothers, and their gentle temperaments.</p>
-                    <p class="mb-4">The richly marbled meat has a depth of flavor that is completely unmatched. It's no surprise this breed is the favorite of the British Royalty!</p>
-                    <p class="mb-4">We sell feeder piglets as well as registered GOS breeding stock. See the farm store for pricing on half and whole shares as well as individual retail cuts.</p>
-                    <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn btn-success btn-lg">Learn More About Our Pigs</a>
-                </div>
-            </div>
-        </section>
+<div class="animal-divider"></div>
 
-        <section id="chickens" class="animal-section mb-5">
-            <div class="row align-items-center px-4">
-                <div class="col-md-6 order-md-2">
-                    <img src="/images/chantecler1.jpeg" alt="Speckled Sussex Chickens" class="img-fluid rounded shadow-lg mb-4">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2 class="mb-4"><i class="fas fa-drumstick-bite text-success mr-3"></i>Speckled Sussex Chickens</h2>
-                    <p class="mb-4">The Speckled Sussex is a heritage breed chicken known for its beautiful plumage and excellent dual-purpose characteristics. These friendly birds are exceptional foragers and adapt well to free-range environments.</p>
-                    <p class="mb-4">Our chickens produce delicious, nutrient-rich eggs and tender meat, raised without antibiotics or hormones. We believe in raising our chickens in a natural and humane way.</p>
-                    <a href="/animals/speckled-sussex-chickens.html" class="btn btn-success btn-lg">Learn More About Our Chickens</a>
-                </div>
-            </div>
-        </section>
+<div class="animal-card reverse">
+    <div class="animal-card-image" style="background-image: url('/images/chantecler1.jpeg');"></div>
+    <div class="animal-card-content">
+        <span class="animal-card-label">Heritage Poultry</span>
+        <h2>Speckled Sussex Chickens</h2>
+        <p>A heritage breed known for beautiful plumage and excellent dual-purpose characteristics. These friendly birds are exceptional foragers and adapt well to free-range environments.</p>
+        <p>Our chickens produce delicious, nutrient-rich eggs and tender meat, raised without antibiotics or hormones in a natural and humane way.</p>
+        <a href="/animals/speckled-sussex-chickens.html" class="btn-learn">Learn More</a>
+    </div>
+</div>
 
-        <section id="rabbits" class="animal-section mb-5">
-            <div class="row align-items-center px-4">
-                <div class="col-md-6">
-                    <img src="/images/rabbits1.jpeg" alt="Champagne D'Argent Rabbits" class="img-fluid rounded shadow-lg mb-4">
-                </div>
-                <div class="col-md-6">
-                    <h2 class="mb-4"><i class="fas fa-carrot text-success mr-3"></i>Champagne D'Argent Rabbits</h2>
-                    <p class="mb-4">The Champagne D'Argent is one of the oldest rabbit breeds, originating in France. Known for their striking silver coat that develops with age, these rabbits are prized for both their beautiful appearance and excellent meat quality.</p>
-                    <p class="mb-4">Our rabbits are raised in spacious, clean environments with plenty of enrichment activities. We focus on breeding for both show quality and meat production.</p>
-                    <a href="/animals/champagne-d-argent-rabbits.html" class="btn btn-success btn-lg">Learn More About Our Rabbits</a>
-                </div>
-            </div>
-        </section>
+<div class="animal-divider"></div>
 
-        <section id="geese" class="animal-section mb-5">
-            <div class="row align-items-center px-4">
-                <div class="col-md-6 order-md-2">
-                    <img src="/images/geese1.jpeg" alt="Toulouse Geese" class="img-fluid rounded shadow-lg mb-4">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2 class="mb-4"><i class="fas fa-feather text-success mr-3"></i>Toulouse Geese</h2>
-                    <p class="mb-4">The Toulouse goose is a heritage breed known for its calm temperament and impressive size. Originally from France, these geese are excellent foragers and natural lawn maintainers.</p>
-                    <p class="mb-4">Our Toulouse geese are raised free-range, contributing to our sustainable farming practices by helping with weed control and soil fertilization.</p>
-                    <a href="/animals/toulouse-geese.html" class="btn btn-success btn-lg">Learn More About Our Geese</a>
-                </div>
-            </div>
-        </section>
+<div class="animal-card">
+    <div class="animal-card-image" style="background-image: url('/images/rabbits1.jpeg');"></div>
+    <div class="animal-card-content">
+        <span class="animal-card-label">Heritage Rabbits</span>
+        <h2>Champagne D'Argent Rabbits</h2>
+        <p>One of the oldest rabbit breeds, originating in France. Known for their striking silver coat that develops with age, these rabbits are prized for both their beautiful appearance and excellent meat quality.</p>
+        <p>Our rabbits are raised in spacious, clean environments with plenty of enrichment. We breed for both show quality and meat production.</p>
+        <a href="/animals/champagne-d-argent-rabbits.html" class="btn-learn">Learn More</a>
+    </div>
+</div>
+
+<div class="animal-divider"></div>
+
+<div class="animal-card reverse">
+    <div class="animal-card-image" style="background-image: url('/images/geese1.jpeg');"></div>
+    <div class="animal-card-content">
+        <span class="animal-card-label">Heritage Waterfowl</span>
+        <h2>Toulouse Geese</h2>
+        <p>A heritage breed known for its calm temperament and impressive size. Originally from France, these geese are excellent foragers and natural lawn maintainers.</p>
+        <p>Our Toulouse geese are raised free-range, contributing to sustainable farming through weed control and soil fertilization.</p>
+        <a href="/animals/toulouse-geese.html" class="btn-learn">Learn More</a>
     </div>
 </div>

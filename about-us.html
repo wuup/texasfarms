@@ -3,34 +3,101 @@ layout: default
 title: About Us
 nav_section: our-farm
 ---
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <article class="card shadow-lg border-0">
-                    <div class="card-body p-5">
-                        <h1 class="card-title text-success mb-4">About Us</h1>
+<style>
+.about-hero {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--cream);
+}
 
-                        <div class="text-center mb-5">
-                            <img src="/images/hamlyn-family.jpeg"
-                                 alt="The Hamlyn Family at Texas Farms Vermont"
-                                 class="img-fluid rounded shadow-sm"
-                                 style="max-width: 800px; width: 100%;">
-                            <p class="text-muted mt-2"><small>The Hamlyn Family at Texas Farms Vermont</small></p>
-                        </div>
+.about-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
 
-                        <div class="about-content">
-                            <p>This farm has been a dream long in the making. In rural Norfolk, England, Alan grew up playing (and causing some mischief) in nearby farmers' fields. Over the years, his love for the country morphed into a yearning to farm.</p>
+.about-hero p {
+    color: #e8e4db;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
 
-                            <p>Heather grew up in the suburbs of Massachusetts but had very rarely put her hand to soil. Despite this, she had always dreamt of having a home with lots of land, animals, and gardens. Throughout our courtship, we spoke about our dreams and originally planned to pursue them as a later-in-life goal. During the 2020 pandemic, while it felt like the world was burning around us it made us truly think about the kind of life we want to lead and what would fulfill us most. Why wait till retirement to make our dreams come true?</p>
+.about-content {
+    padding: 4rem 0;
+    background: white;
+}
 
-                            <p>In the summer of 2021, we found an overgrown logging plot complete with a 20 year old abandoned off-grid mobile home in the highlands of the Northeast Kingdom of Vermont. After jumping at the chance to call this place our home we cleared 4 acres in the fall of 2022, discovering a lightly sloping south facing hillside. It was clear our dreams were beginning to become a reality.</p>
+.about-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
 
-                            <p><a href="/farm-story.html" class="text-success font-weight-bold">Read more about our story <i class="fas fa-arrow-right ml-1"></i></a></p>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </div>
+.family-image {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.family-image img {
+    max-width: 100%;
+    width: 700px;
+}
+
+.family-image figcaption {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.about-inner p {
+    color: var(--text-light);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+}
+
+.read-more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--forest);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-top: 1rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--copper);
+}
+
+.read-more-link:hover {
+    color: var(--copper);
+    text-decoration: none;
+}
+</style>
+
+<section class="about-hero">
+    <h1>About Us</h1>
+    <p>The Hamlyn family's journey from dream to reality</p>
+</section>
+
+<section class="about-content">
+    <div class="about-inner">
+        <figure class="family-image">
+            <img src="/images/hamlyn-family.jpeg" alt="The Hamlyn Family at Texas Farms Vermont">
+            <figcaption>The Hamlyn Family at Texas Farms Vermont</figcaption>
+        </figure>
+
+        <p>This farm has been a dream long in the making. In rural Norfolk, England, Alan grew up playing (and causing some mischief) in nearby farmers' fields. Over the years, his love for the country morphed into a yearning to farm.</p>
+
+        <p>Heather grew up in the suburbs of Massachusetts but had very rarely put her hand to soil. Despite this, she had always dreamt of having a home with lots of land, animals, and gardens. Throughout our courtship, we spoke about our dreams and originally planned to pursue them as a later-in-life goal.</p>
+
+        <p>During the 2020 pandemic, while it felt like the world was burning around us it made us truly think about the kind of life we want to lead and what would fulfill us most. Why wait till retirement to make our dreams come true?</p>
+
+        <p>In the summer of 2021, we found an overgrown logging plot complete with a 20 year old abandoned off-grid mobile home in the highlands of the Northeast Kingdom of Vermont. After jumping at the chance to call this place our home we cleared 4 acres in the fall of 2022, discovering a lightly sloping south facing hillside. It was clear our dreams were beginning to become a reality.</p>
+
+        <a href="/farm-story.html" class="read-more-link">Read more about our story <i class="fas fa-arrow-right"></i></a>
     </div>
 </section>
