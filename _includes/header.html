@@ -26,10 +26,10 @@
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link text-white{% if page.url == '/home.html' %} active{% endif %}" href="/home.html">Home</a>
+                                <a class="nav-link{% if page.url == '/home.html' %} active{% endif %}" href="/home.html">Home</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle{% if page.nav_section == 'our-farm' %} active{% endif %}" href="#" id="ourFarmDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle{% if page.nav_section == 'our-farm' %} active{% endif %}" href="#" id="ourFarmDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Our Farm
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="ourFarmDropdown">
@@ -39,11 +39,10 @@
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle{% if page.nav_section == 'animals' %} active{% endif %}" href="/our-animals.html" id="ourAnimalsDropdown" role="button">
+                                <a class="nav-link dropdown-toggle{% if page.nav_section == 'animals' %} active{% endif %}" href="/our-animals.html" id="ourAnimalsDropdown" role="button">
                                     Our Animals
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="ourAnimalsDropdown">
-                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="/animals/gloucestershire-old-spot-pigs.html">Gloucestershire Old Spot Pigs</a>
                                     <a class="dropdown-item" href="/animals/speckled-sussex-chickens.html">Speckled Sussex Chickens</a>
                                     <a class="dropdown-item" href="/animals/champagne-d-argent-rabbits.html">Champagne D'Argent Rabbits</a>
@@ -51,7 +50,7 @@
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link text-white dropdown-toggle{% if page.nav_section == 'produce' %} active{% endif %}" href="#" id="ourProduceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle{% if page.nav_section == 'produce' %} active{% endif %}" href="#" id="ourProduceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Our Produce
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="ourProduceDropdown">
@@ -60,8 +59,8 @@
                                     <a class="dropdown-item" href="/produce/how-we-grow.html">How We Grow</a>
                                 </div>
                             </li>
-                            <li class="nav-item"><a class="nav-link text-white{% if page.url == '/farm-story.html' %} active{% endif %}" href="/farm-story.html">Farm Story</a></li>
-                            <li class="nav-item"><a class="nav-link text-white" href="{{ site.shop_url }}">Farm Shop</a></li>
+                            <li class="nav-item"><a class="nav-link{% if page.url == '/farm-story.html' %} active{% endif %}" href="/farm-story.html">Farm Story</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ site.shop_url }}">Farm Shop</a></li>
                         </ul>
                     </div>
                 </nav>

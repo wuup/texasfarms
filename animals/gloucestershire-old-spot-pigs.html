@@ -1,154 +1,664 @@
 ---
-layout: animal
+layout: default
 title: Gloucestershire Old Spot Pigs
-subtitle: The Orchard Pig of England
 nav_section: animals
-hero_image: /images/cover.jpeg
 ---
-<div class="container-fluid py-4" style="background-color: white;">
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="content-card">
-                <div class="row">
-                    <div class="col-md-6">
-                        <img src="/images/gloucestershire-old-spot-pigs.jpeg" alt="Gloucestershire Old Spot Pig" class="img-fluid rounded shadow-sm mb-4">
-                    </div>
-                    <div class="col-md-6">
-                        <p>The Gloucestershire Old Spot pig is the oldest pedigreed spotted pig in the world. Once popular on small family farms where they were raised on dropped orchard fruit earning them the nicknames of the "orchard pig" or "cottage pig". This breed is known for being excellent foragers, attentive mothers, and their gentle temperaments.</p>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-                        <p>The richly marbled meat has a depth of flavor that is completely unmatched. It's no surprise this breed is the favorite of the British Royalty!</p>
+<style>
+:root {
+    --forest: #1a2e1a;
+    --forest-light: #2d4a2d;
+    --cream: #f7f4ed;
+    --cream-dark: #ebe6db;
+    --copper: #b87333;
+    --copper-light: #d4915c;
+    --text: #1a1a1a;
+    --text-light: #555;
+}
 
-                        <p>We sell feeder piglets as well as registered GOS breeding stock. Please contact us early to reserve. Visit our farm store to purchase our pork bundles and individual retail cuts.</p>
-                    </div>
-                </div>
+.gos-page {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+}
 
-                <div class="sales-section mt-5">
-                    <div class="card border-success">
-                        <div class="card-header bg-success text-white">
-                            <h3 class="mb-0">For Sale</h3>
-                        </div>
-                        <div class="card-body">
-                            <p class="lead mb-2">GOS feeder piglets expected Spring 2025</p>
-                            <p class="h4 text-success font-weight-bold">$200/feeder piglet</p>
-                        </div>
-                    </div>
-                </div>
+.gos-page * {
+    box-sizing: border-box;
+}
 
-                <div class="gallery-section mt-5">
-                    <h3 class="text-success mb-4">Photo Gallery</h3>
-                    <div class="row">
-                        <div class="col-md-4 gallery-item">
-                            <a href="/images/gloucestershire-old-spot-pigs.jpeg"
-                               data-toggle="lightbox"
-                               data-gallery="gos-gallery"
-                               data-title="Gloucestershire Old Spot Pigs"
-                               data-footer="Our heritage breed Gloucestershire Old Spot pigs enjoying the pasture.">
-                                <img src="/images/gloucestershire-old-spot-pigs.jpeg"
-                                     alt="Gloucestershire Old Spot pigs in pasture"
-                                     class="gallery-img">
-                            </a>
-                            <p class="gallery-caption">GOS pigs enjoying the pasture</p>
-                        </div>
-                        <div class="col-md-4 gallery-item">
-                            <a href="/images/gloucestershire-old-spot-pigs2.jpeg"
-                               data-toggle="lightbox"
-                               data-gallery="gos-gallery"
-                               data-title="Gloucestershire Old Spot Close-up"
-                               data-footer="A close look at our Gloucestershire Old Spot pig, showing their distinctive spotted pattern.">
-                                <img src="/images/gloucestershire-old-spot-pigs2.jpeg"
-                                     alt="Close-up of Gloucestershire Old Spot pig"
-                                     class="gallery-img">
-                            </a>
-                            <p class="gallery-caption">Up close with our GOS pigs</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+/* Hero */
+.hero-section {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--forest);
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--cream);
+    position: relative;
+}
+
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 600;
+    line-height: 1;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+    color: #f7f4ed;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    max-width: 400px;
+    margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary-hero {
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary-hero:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-outline-hero {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-hero:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    border-color: rgba(255,255,255,0.5);
+}
+
+.hero-image {
+    background: url('/images/cover.jpeg') center/cover;
+    position: relative;
+}
+
+.hero-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(to top, var(--forest), transparent);
+}
+
+@media (max-width: 900px) {
+    .hero-section {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .hero-image {
+        height: 50vh;
+        order: -1;
+    }
+    .hero-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Options Band */
+.options-band {
+    background: var(--cream);
+    padding: 4rem 0 3rem;
+    position: relative;
+}
+
+.options-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.options-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.option-item {
+    background: white;
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.option-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+.option-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--copper);
+    opacity: 0.15;
+    line-height: 1;
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+}
+
+.option-item h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem 0;
+    color: var(--forest);
+}
+
+.option-price {
+    font-size: 0.95rem;
+    color: var(--copper);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.option-item p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.option-link {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest);
+    text-decoration: none;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--copper);
+    transition: all 0.2s ease;
+}
+
+.option-link:hover {
+    color: var(--copper);
+    text-decoration: none;
+}
+
+@media (max-width: 800px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+}
+
+/* Feature Banner */
+.feature-banner {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1.25rem 0;
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.feature-list span {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #f0ede6;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .feature-list {
+        gap: 1rem 2.5rem;
+    }
+}
+
+/* Story Section */
+.story-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.story-image {
+    background: url('/images/gloucestershire-old-spot-pigs.jpeg') center/cover;
+    min-height: 500px;
+}
+
+.story-content {
+    background: var(--cream-dark);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.story-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.story-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.story-content > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.story-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+}
+
+.story-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.story-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 900px) {
+    .story-section {
+        grid-template-columns: 1fr;
+    }
+    .story-image {
+        height: 350px;
+        min-height: auto;
+    }
+    .story-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Gallery Strip */
+.gallery-strip {
+    padding: 3rem 0;
+    background: white;
+}
+
+.gallery-strip h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--forest);
+    margin: 0 0 2rem 0;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gallery-grid img:hover {
+    transform: scale(1.03);
+}
+
+@media (max-width: 700px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+    .gallery-grid img {
+        height: 220px;
+    }
+}
+
+/* Inquiry Section */
+.inquiry-section {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 4rem 0;
+    position: relative;
+}
+
+.inquiry-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.inquiry-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+}
+
+.inquiry-text .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.inquiry-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    color: #f7f4ed;
+}
+
+.inquiry-text > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    margin-bottom: 1.5rem;
+}
+
+.inquiry-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.inquiry-points li {
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
+    color: #e8e4db;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.inquiry-points li::before {
+    content: '✓';
+    color: var(--copper-light);
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.inquiry-form {
+    background: white;
+    padding: 1.5rem;
+    color: var(--text);
+}
+
+.inquiry-form iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+}
+
+@media (max-width: 900px) {
+    .inquiry-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Final CTA */
+.final-cta {
+    background: var(--cream);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.final-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.final-cta p {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.btn-shop {
+    display: inline-block;
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1rem 2.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-shop:hover {
+    background: var(--forest-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(26,46,26,0.3);
+}
+</style>
+
+<div class="gos-page">
+
+<!-- Hero -->
+<section class="hero-section">
+    <div class="hero-content">
+        <span class="hero-label">Heritage Breed • Vermont</span>
+        <h1 class="hero-title">Gloucestershire Old Spots</h1>
+        <p class="hero-subtitle">The oldest pedigreed spotted pig in the world. Pasture-raised on our Vermont farm with exceptional marbling and flavor.</p>
+        <div class="hero-cta">
+            <a href="#options" class="btn-primary-hero">See Options</a>
+            <a href="https://shop.texasfarmsvermont.com/" class="btn-outline-hero" target="_blank">Shop Cuts</a>
         </div>
     </div>
+    <div class="hero-image"></div>
+</section>
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="content-card">
-                <h2 class="text-center mb-4">Breed Characteristics</h2>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="characteristic-item text-center">
-                            <div class="characteristic-icon">
-                                <i class="fas fa-apple-alt"></i>
-                            </div>
-                            <h4>Excellent Grazers</h4>
-                            <p>Natural foragers that help maintain pastures while requiring minimal supplemental feed.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="characteristic-item text-center">
-                            <div class="characteristic-icon">
-                                <i class="fas fa-heart"></i>
-                            </div>
-                            <h4>Gentle Temperament</h4>
-                            <p>Known for their docile nature and excellent maternal instincts.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="characteristic-item text-center">
-                            <div class="characteristic-icon">
-                                <i class="fas fa-drumstick-bite"></i>
-                            </div>
-                            <h4>Superior Meat Quality</h4>
-                            <p>Produces well-marbled, flavorful meat perfect for artisanal pork products.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Options -->
+<section id="options" class="options-band">
+    <div class="options-header">
+        <h2>Three Ways to Get Our Pork</h2>
+    </div>
+    <div class="options-grid">
+        <div class="option-item">
+            <span class="option-number">01</span>
+            <h3>Feeder Piglets</h3>
+            <div class="option-price">$200 each</div>
+            <p>Raise your own heritage pork. 8-week old registered GOS piglets, ready for your farm.</p>
+            <a href="#inquire" class="option-link">Reserve Yours</a>
+        </div>
+        <div class="option-item">
+            <span class="option-number">02</span>
+            <h3>Whole or Half Hog</h3>
+            <div class="option-price">Best value per lb</div>
+            <p>Fill your freezer with 75-200 lbs of premium pork. Custom cut to your specs.</p>
+            <a href="#inquire" class="option-link">Join Waitlist</a>
+        </div>
+        <div class="option-item">
+            <span class="option-number">03</span>
+            <h3>Individual Cuts</h3>
+            <div class="option-price">Shop anytime</div>
+            <p>Chops, bacon, sausage, roasts. Available for local pickup in Vermont.</p>
+            <a href="https://shop.texasfarmsvermont.com/" class="option-link" target="_blank">Browse Shop</a>
         </div>
     </div>
+</section>
 
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="content-card">
-                <h2 class="text-center mb-4">Life on Our Farm</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4>Daily Life</h4>
-                            <p>Our Gloucestershire Old Spots spend their days roaming our pastures and woodlands, foraging for roots, grass, and fallen fruit. They have access to comfortable shelters and mud wallows for natural cooling and skin protection.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4>Breeding Program</h4>
-                            <p>We maintain a careful breeding program to preserve the pure genetics of this rare breed while selecting for traits that thrive in Vermont's climate. Our sows typically raise two litters per year.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-content">
-                            <h4>Sustainable Practices</h4>
-                            <p>These pigs play a crucial role in our farm's ecosystem, helping to clear land, fertilize soil, and reduce food waste by consuming excess produce and windfall fruit.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Feature Banner -->
+<div class="feature-banner">
+    <div class="feature-list">
+        <span>Pasture Raised</span>
+        <span>No Antibiotics</span>
+        <span>Heritage Since 1800s</span>
+        <span>Vermont Farm</span>
+    </div>
+</div>
+
+<!-- Story -->
+<section class="story-section">
+    <div class="story-image"></div>
+    <div class="story-content">
+        <span class="story-label">The Breed</span>
+        <h2>Why Gloucestershire Old Spots?</h2>
+        <p>Known as the "orchard pig," this heritage breed has been prized for centuries. Once popular on small English farms where they foraged on fallen fruit, they're now a favorite of British Royalty.</p>
+        <ul class="story-list">
+            <li>Richly marbled meat with unmatched depth of flavor</li>
+            <li>Excellent foragers that thrive on pasture</li>
+            <li>Gentle temperament, easy to handle</li>
+            <li>Heritage genetics we've carefully maintained</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-strip">
+    <h2>Life on Pasture</h2>
+    <div class="gallery-grid">
+        <img src="/images/gloucestershire-old-spot-pigs.jpeg" alt="GOS pigs grazing">
+        <img src="/images/gloucestershire-old-spot-pigs2.jpeg" alt="Heritage spotted pig">
+        <img src="/images/cover.jpeg" alt="Vermont farm">
+    </div>
+</section>
+
+<!-- Inquiry -->
+<section id="inquire" class="inquiry-section">
+    <div class="inquiry-inner">
+        <div class="inquiry-text">
+            <span class="label">Get Started</span>
+            <h2>Reserve Your Pork</h2>
+            <p>Interested in feeder piglets or a whole hog? Get on our list and we'll reach out with availability and pricing.</p>
+            <ul class="inquiry-points">
+                <li>Piglets available spring</li>
+                <li>Whole hogs processed fall</li>
+                <li>We'll contact you within 48 hours</li>
+            </ul>
+        </div>
+        <div class="inquiry-form">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSepooklj4h3DNHroiFw24-FKAG_qpftkQV9VImJ4SEvXJzhPw/viewform?embedded=true">Loading…</iframe>
         </div>
     </div>
+</section>
 
-    <div class="row mb-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="content-card">
-                <h2 class="card-title text-center">Products from Our Pigs</h2>
-                <p class="lead text-center">We offer both breeding stock and meat products:</p>
-                <ul class="list-unstyled mb-4 text-center">
-                    <li>Registered GOS breeding stock</li>
-                    <li>Feeder piglets</li>
-                    <li>Half and whole shares</li>
-                    <li>Individual retail cuts</li>
-                </ul>
-                <p class="mt-3 text-center"><small class="text-muted">Please contact us for current pricing and to make reservations for breeding stock and feeder piglets. Visit our Farm Shop for meat pricing and availability.</small></p>
-                <div class="text-center">
-                    <a href="{{ site.shop_url }}" class="btn btn-success mt-3 mr-2">Shop Pork Products</a>
-                    <a href="/find-us.html" class="btn btn-outline-success mt-3">Contact for Breeding Stock</a>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Final CTA -->
+<section class="final-cta">
+    <h2>Just want to try our pork?</h2>
+    <p>Browse our shop for individual cuts, available for local pickup.</p>
+    <a href="https://shop.texasfarmsvermont.com/" class="btn-shop" target="_blank">Shop Individual Cuts →</a>
+</section>
+
 </div>
