@@ -14,7 +14,7 @@
 <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
 <meta name="title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}">
 <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
-<meta name="keywords" content="heritage meat, heirloom produce, Vermont farm, off-grid farming, regenerative agriculture, Gloucestershire Old Spot pigs, sustainable farming">
+<meta name="keywords" content="Vermont farm, Northeast Kingdom farm, Concord Vermont, heritage pork Vermont, Gloucestershire Old Spot pigs Vermont, GOS pigs, pasture-raised pork, heritage meat, heirloom produce, off-grid farming, regenerative agriculture, sustainable farming">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -22,6 +22,7 @@
 <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}">
 <meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
 <meta property="og:image" content="{{ site.url }}/images/texass-farms-home.jpg">
+<meta property="og:site_name" content="{{ site.title }}">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
@@ -32,6 +33,47 @@
 
 <!-- Canonical URL -->
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+{% if page.noindex %}
+<meta name="robots" content="noindex, nofollow">
+{% endif %}
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Farm",
+  "name": "{{ site.title }}",
+  "url": "{{ site.url }}",
+  "description": "{% if page.description %}{{ page.description | escape }}{% else %}{{ site.description | escape }}{% endif %}",
+  "image": "{{ site.url }}/images/texass-farms-home.jpg",
+  "logo": "{{ site.url }}/images/logo2.png",
+  "telephone": "+1-802-284-8776",
+  "email": "info@texasfarmsvermont.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Texas",
+    "addressRegion": "VT",
+    "postalCode": "05824",
+    "addressCountry": "US"
+  },
+  "areaServed": "Vermont",
+  "sameAs": [
+    "{{ site.facebook }}",
+    "{{ site.twitter }}",
+    "{{ site.instagram }}"
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Gloucestershire Old Spot (GOS) pork"
+      }
+    }
+  ]
+}
+</script>
 
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">

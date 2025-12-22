@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /thankyou.html
+Disallow: /service-coming-soon.html
+Disallow: /chapter-coming-soon.html
+
+Sitemap: https://texasfarmsvermont.com/sitemap.xml
