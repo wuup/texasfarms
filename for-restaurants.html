@@ -593,6 +593,78 @@ nav_section: our-farm
     }
 }
 
+/* Service Area */
+.service-area {
+    background: var(--cream-dark);
+    padding: 4rem 0;
+}
+
+.service-area-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.service-area .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.service-area h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+}
+
+.service-area > .service-area-inner > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+
+.service-towns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.service-towns span {
+    font-size: 0.9rem;
+    color: var(--text);
+    padding: 0.35rem 0;
+}
+
+.service-towns span::after {
+    content: '•';
+    margin-left: 1.5rem;
+    color: var(--copper);
+}
+
+.service-towns span:last-child::after {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .service-towns span::after {
+        display: none;
+    }
+    .service-towns {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
 /* Final CTA */
 .final-cta {
     background: var(--cream);
@@ -762,6 +834,27 @@ nav_section: our-farm
             <div class="step-number">3</div>
             <h3>Deliver</h3>
             <p>Fresh heritage pork, ready for your kitchen. Local pickup or delivery arrangements available.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Service Area -->
+<section class="service-area">
+    <div class="service-area-inner">
+        <span class="label">Proudly Local</span>
+        <h2>Serving Restaurants Across the Northeast Kingdom & Beyond</h2>
+        <p>Based in Concord, Vermont, we deliver heritage pork to restaurants throughout the Upper Valley, Northeast Kingdom, and Northern New Hampshire. Whether you're in a small village or a regional hub, we'd love to talk about getting our pork on your menu.</p>
+        <div class="service-towns">
+            <span>St. Johnsbury, VT</span>
+            <span>Littleton, NH</span>
+            <span>Lyndonville, VT</span>
+            <span>Newport, VT</span>
+            <span>Montpelier, VT</span>
+            <span>Barre, VT</span>
+            <span>Lancaster, NH</span>
+            <span>Woodsville, NH</span>
+            <span>Hardwick, VT</span>
+            <span>Franconia, NH</span>
         </div>
     </div>
 </section>
