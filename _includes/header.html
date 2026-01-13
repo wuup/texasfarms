@@ -37,6 +37,7 @@
                                     <a class="dropdown-item{% if page.url == '/find-us.html' %} active{% endif %}" href="/find-us.html">Find Us</a>
                                     <a class="dropdown-item{% if page.url == '/faqs.html' %} active{% endif %}" href="/faqs.html">FAQs</a>
                                     <a class="dropdown-item{% if page.url == '/for-restaurants.html' %} active{% endif %}" href="/for-restaurants.html">For Restaurants</a>
+                                    <a class="dropdown-item{% if page.url == '/wholesale.html' %} active{% endif %}" href="/wholesale.html">Wholesale</a>
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
@@ -50,15 +51,8 @@
                                     <a class="dropdown-item" href="/animals/toulouse-geese.html">Toulouse Geese</a>
                                 </div>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle{% if page.nav_section == 'produce' %} active{% endif %}" href="#" id="ourProduceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Our Produce
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="ourProduceDropdown">
-                                    <a class="dropdown-item" href="/produce/what-we-grow.html">What We Grow</a>
-                                    <a class="dropdown-item" href="/produce/bulk-boxes.html">Bulk Boxes</a>
-                                    <a class="dropdown-item" href="/produce/how-we-grow.html">How We Grow</a>
-                                </div>
+                            <li class="nav-item">
+                                <a class="nav-link{% if page.nav_section == 'blog' %} active{% endif %}" href="/blog.html">Blog</a>
                             </li>
                             <li class="nav-item"><a class="nav-link{% if page.url == '/farm-story.html' %} active{% endif %}" href="/farm-story.html">Farm Story</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ site.shop_url }}">Farm Shop</a></li>

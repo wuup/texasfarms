@@ -69,13 +69,18 @@ nav_section: animals
 
 .hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.1;
     margin: 0 0 1.5rem 0;
     letter-spacing: -0.02em;
     color: #f7f4ed;
-    text-wrap: balance;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--copper-light);
 }
 
 .hero-subtitle {
@@ -648,7 +653,7 @@ nav_section: animals
 <section class="hero-section">
     <div class="hero-content">
         <span class="hero-label">Heritage Breed • Vermont</span>
-        <h1 class="hero-title">Gloucestershire Old Spots</h1>
+        <h1 class="hero-title">Gloucestershire<br><span class="title-accent">Old Spots</span></h1>
         <p class="hero-subtitle">The oldest pedigreed spotted pig in the world. Pasture-raised in Vermont with exceptional marbling and flavor.</p>
         <div class="hero-cta">
             <a href="#options" class="btn-primary-hero">See Options</a>
@@ -680,9 +685,9 @@ nav_section: animals
         </div>
         <div class="option-item">
             <span class="option-number">03</span>
-            <h3>Individual Cuts</h3>
+            <h3>Cuts & Charcuterie</h3>
             <div class="option-price">Shop anytime</div>
-            <p>Chops, bacon, sausage, roasts. Available for local pickup in Vermont.</p>
+            <p>Chops, bacon, sausage, roasts, and artisan charcuterie. Local pickup in Vermont.</p>
             <a href="https://shop.texasfarmsvermont.com/" class="option-link" target="_blank">Browse Shop</a>
         </div>
     </div>

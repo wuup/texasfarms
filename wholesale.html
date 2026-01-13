@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Heritage Pork for Restaurants
-description: Premium heritage pork from Gloucestershire Old Spots for restaurants and chefs in Vermont. Whole hogs, half hogs, and restaurant cuts available.
+title: Wholesale Heritage Pork
+description: Wholesale heritage pork for retail stores and markets in Vermont and New Hampshire. Gloucestershire Old Spot pork from our Northeast Kingdom farm, available for local retailers.
 nav_section: our-farm
 ---
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,14 +18,14 @@ nav_section: our-farm
     --text-light: #555;
 }
 
-.restaurant-page {
+.wholesale-page {
     font-family: 'DM Sans', sans-serif;
     background: var(--cream);
     color: var(--text);
     overflow-x: hidden;
 }
 
-.restaurant-page * {
+.wholesale-page * {
     box-sizing: border-box;
 }
 
@@ -138,7 +138,7 @@ nav_section: our-farm
 }
 
 .hero-image {
-    background: url('/images/restaurants.png') center/cover;
+    background: url('/images/wholesale.png') center/cover;
     position: relative;
 }
 
@@ -330,6 +330,47 @@ nav_section: our-farm
     }
 }
 
+/* Testimonial */
+.testimonial-section {
+    background: white;
+    padding: 4rem 0;
+}
+
+.testimonial-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.testimonial-inner .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 1.5rem;
+    display: block;
+    font-weight: 600;
+}
+
+.testimonial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-style: italic;
+    color: var(--forest);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-author {
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+.testimonial-author strong {
+    color: var(--forest);
+}
+
 /* Story Section */
 .story-section {
     display: grid;
@@ -337,7 +378,7 @@ nav_section: our-farm
 }
 
 .story-image {
-    background: url('/images/cover.jpeg') center/cover;
+    background: url('/images/gloucestershire-old-spot-pigs2.jpeg') center/cover;
     min-height: 500px;
 }
 
@@ -408,18 +449,20 @@ nav_section: our-farm
     }
 }
 
-/* Process Section */
-.process-section {
-    background: white;
-    padding: 5rem 0;
+/* Service Area */
+.service-area {
+    background: var(--cream);
+    padding: 4rem 0;
 }
 
-.process-header {
+.service-area-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
     text-align: center;
-    margin-bottom: 3rem;
 }
 
-.process-header .label {
+.service-area .label {
     font-size: 0.75rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
@@ -429,55 +472,52 @@ nav_section: our-farm
     font-weight: 600;
 }
 
-.process-header h2 {
+.service-area h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
     font-weight: 600;
     color: var(--forest);
-    margin: 0;
+    margin: 0 0 1rem 0;
 }
 
-.process-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-.process-step {
-    text-align: center;
-    padding: 1.5rem;
-}
-
-.step-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: var(--copper);
-    line-height: 1;
-    margin-bottom: 1rem;
-}
-
-.process-step h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--forest);
-    margin: 0 0 0.5rem 0;
-}
-
-.process-step p {
-    font-size: 0.9rem;
+.service-area > .service-area-inner > p {
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--text-light);
-    line-height: 1.6;
+    margin-bottom: 1.5rem;
 }
 
-@media (max-width: 700px) {
-    .process-grid {
-        grid-template-columns: 1fr;
-        max-width: 400px;
+.service-towns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.service-towns span {
+    font-size: 0.9rem;
+    color: var(--text);
+    padding: 0.35rem 0;
+}
+
+.service-towns span::after {
+    content: '•';
+    margin-left: 1.5rem;
+    color: var(--copper);
+}
+
+.service-towns span:last-child::after {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .service-towns span::after {
+        display: none;
+    }
+    .service-towns {
+        flex-direction: column;
+        gap: 0.25rem;
     }
 }
 
@@ -593,81 +633,9 @@ nav_section: our-farm
     }
 }
 
-/* Service Area */
-.service-area {
-    background: var(--cream-dark);
-    padding: 4rem 0;
-}
-
-.service-area-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    text-align: center;
-}
-
-.service-area .label {
-    font-size: 0.75rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--copper);
-    margin-bottom: 0.75rem;
-    display: block;
-    font-weight: 600;
-}
-
-.service-area h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    font-weight: 600;
-    color: var(--forest);
-    margin: 0 0 1rem 0;
-}
-
-.service-area > .service-area-inner > p {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--text-light);
-    margin-bottom: 1.5rem;
-}
-
-.service-towns {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem 1.5rem;
-    margin-top: 1.5rem;
-}
-
-.service-towns span {
-    font-size: 0.9rem;
-    color: var(--text);
-    padding: 0.35rem 0;
-}
-
-.service-towns span::after {
-    content: '•';
-    margin-left: 1.5rem;
-    color: var(--copper);
-}
-
-.service-towns span:last-child::after {
-    display: none;
-}
-
-@media (max-width: 600px) {
-    .service-towns span::after {
-        display: none;
-    }
-    .service-towns {
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-}
-
 /* Final CTA */
 .final-cta {
-    background: var(--cream);
+    background: var(--cream-dark);
     padding: 4rem 2rem;
     text-align: center;
 }
@@ -735,17 +703,17 @@ nav_section: our-farm
 }
 </style>
 
-<div class="restaurant-page">
+<div class="wholesale-page">
 
 <!-- Hero -->
 <section class="hero-section">
     <div class="hero-content">
-        <span class="hero-label">For Restaurants & Chefs</span>
-        <h1 class="hero-title">Heritage Pork<br><span class="title-accent">for Your Kitchen</span></h1>
-        <p class="hero-subtitle">Pasture-raised Gloucestershire Old Spots from our Vermont farm. A story your guests will savor.</p>
+        <span class="hero-label">For Retailers & Markets</span>
+        <h1 class="hero-title">Wholesale<br><span class="title-accent">Heritage Pork</span></h1>
+        <p class="hero-subtitle">Stock your shelves with pasture-raised Gloucestershire Old Spot pork from our Vermont farm. A product your customers will come back for.</p>
         <div class="hero-cta">
-            <a href="#inquire" class="btn-primary-hero">Start a Conversation</a>
-            <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-outline-hero">Meet the Breed</a>
+            <a href="#inquire" class="btn-primary-hero">Become a Stockist</a>
+            <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-outline-hero">About the Breed</a>
         </div>
     </div>
     <div class="hero-image"></div>
@@ -754,45 +722,54 @@ nav_section: our-farm
 <!-- Feature Banner -->
 <div class="feature-banner">
     <div class="feature-list">
-        <span>Pasture-Raised Heritage Breed</span>
+        <span>Heritage Gloucestershire Old Spots</span>
+        <span>Pasture-Raised in Vermont</span>
         <span>Consistent Supply</span>
-        <span>Custom Cutting Available</span>
-        <span>A Story Worth Sharing</span>
+        <span>Local Delivery Available</span>
     </div>
 </div>
 
 <!-- Offerings -->
 <section class="offerings-section">
     <div class="offerings-header">
-        <span class="label">What We Offer</span>
-        <h2>Two Ways to Source Our Pork</h2>
-        <p>Whether you want the whole animal for nose-to-tail creativity or specific cuts for your signature dishes, we can work with you.</p>
+        <span class="label">Wholesale Options</span>
+        <h2>Pork That Sells Itself</h2>
+        <p>Heritage pork with real flavor, from a local farm your customers can visit. We make wholesale simple.</p>
     </div>
     <div class="offerings-grid">
         <div class="offering-card">
             <span class="number">01</span>
-            <h3>Whole & Half Hogs</h3>
-            <p>The best value and ultimate flexibility for kitchens committed to whole-animal utilization.</p>
+            <h3>Retail Cuts</h3>
+            <p>Individual cuts packaged and labeled for direct retail sale. Ready for your cooler or freezer case.</p>
             <ul>
-                <li>Half hog: ~75-100 lbs hanging weight</li>
-                <li>Whole hog: ~150-200 lbs hanging weight</li>
-                <li>Custom cut sheet to your specifications</li>
-                <li>Seasonal availability with advance ordering</li>
+                <li>Chops, bacon, sausage, ground pork</li>
+                <li>Artisan charcuterie</li>
+                <li>Professionally vacuum-sealed</li>
+                <li>Labeled with weights and cut info</li>
             </ul>
-            <a href="#inquire" class="offering-link">Inquire About Availability</a>
+            <a href="#inquire" class="offering-link">Get Wholesale Pricing</a>
         </div>
         <div class="offering-card">
             <span class="number">02</span>
-            <h3>Restaurant Cuts</h3>
-            <p>Select cuts for targeted menu items. Perfect for featuring heritage pork without full commitment.</p>
+            <h3>Whole & Half Hogs</h3>
+            <p>For butcher counters or stores wanting to break down their own. Best per-pound pricing.</p>
             <ul>
-                <li>Chops, belly, shoulder, tenderloin</li>
-                <li>Ground pork and sausage available</li>
-                <li>Artisan charcuterie</li>
-                <li>Ongoing supply arrangements possible</li>
+                <li>Half hog: ~75-100 lbs hanging weight</li>
+                <li>Whole hog: ~150-200 lbs hanging weight</li>
+                <li>Custom cut sheets available</li>
+                <li>Seasonal availability</li>
             </ul>
-            <a href="#inquire" class="offering-link">Discuss Your Needs</a>
+            <a href="#inquire" class="offering-link">Inquire About Availability</a>
         </div>
+    </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial-section">
+    <div class="testimonial-inner">
+        <span class="label">Current Stockist</span>
+        <p class="testimonial-quote">"We sold half our inventory in the first week. Customers specifically ask for Texas Farms pork—the quality speaks for itself."</p>
+        <p class="testimonial-author"><strong>Taproot Market</strong> · Lancaster, NH</p>
     </div>
 </section>
 
@@ -800,60 +777,35 @@ nav_section: our-farm
 <section class="story-section">
     <div class="story-image"></div>
     <div class="story-content">
-        <span class="story-label">The Heritage Difference</span>
-        <h2>Why Chefs Choose GOS Pork</h2>
-        <p>Gloucestershire Old Spots are one of the world's oldest pedigreed pig breeds. Known as "orchard pigs," they were prized on English farms for centuries for their foraging ability and exceptional meat quality.</p>
-        <p>The difference is on the plate: rich marbling, depth of flavor, and a texture that industrial pork simply cannot match.</p>
+        <span class="story-label">Why Stock Heritage Pork</span>
+        <h2>Give Your Customers Something Better</h2>
+        <p>Shoppers are tired of bland, factory-farmed pork. Heritage breeds like our Gloucestershire Old Spots offer something different: actual flavor, beautiful marbling, and a story worth telling.</p>
+        <p>When you stock our pork, you're offering your customers a premium local product they can't get at the chain stores.</p>
         <ul class="story-list">
-            <li>Superior marbling for moisture and flavor</li>
-            <li>Fat that renders beautifully for cooking</li>
-            <li>Heritage story that resonates with diners</li>
-            <li>Supporting regenerative, local agriculture</li>
+            <li>Pasture-raised on our Vermont farm</li>
+            <li>Heritage breed with superior marbling</li>
+            <li>Local story customers connect with</li>
+            <li>Repeat purchases from satisfied customers</li>
         </ul>
-    </div>
-</section>
-
-<!-- Process -->
-<section class="process-section">
-    <div class="process-header">
-        <span class="label">Simple Process</span>
-        <h2>How It Works</h2>
-    </div>
-    <div class="process-grid">
-        <div class="process-step">
-            <div class="step-number">1</div>
-            <h3>Connect</h3>
-            <p>Fill out our inquiry form with your restaurant details and what you're looking for.</p>
-        </div>
-        <div class="process-step">
-            <div class="step-number">2</div>
-            <h3>Plan</h3>
-            <p>We'll discuss availability, pricing, and cutting specifications that work for your menu.</p>
-        </div>
-        <div class="process-step">
-            <div class="step-number">3</div>
-            <h3>Deliver</h3>
-            <p>Fresh heritage pork, ready for your kitchen. Local pickup or delivery arrangements available.</p>
-        </div>
     </div>
 </section>
 
 <!-- Service Area -->
 <section class="service-area">
     <div class="service-area-inner">
-        <span class="label">Proudly Local</span>
-        <h2>Serving Restaurants Across the Northeast Kingdom & Beyond</h2>
-        <p>Based in Concord, Vermont, we deliver heritage pork to restaurants throughout the Upper Valley, Northeast Kingdom, and Northern New Hampshire. Whether you're in a small village or a regional hub, we'd love to talk about getting our pork on your menu.</p>
+        <span class="label">Wholesale Delivery Area</span>
+        <h2>Serving Retailers Across Vermont & New Hampshire</h2>
+        <p>We deliver wholesale orders to markets, co-ops, and specialty food stores throughout the Northeast Kingdom, Upper Valley, and Northern New Hampshire. If you're nearby, let's talk.</p>
         <div class="service-towns">
-            <span>St. Johnsbury, VT</span>
+            <span>Lancaster, NH</span>
             <span>Littleton, NH</span>
+            <span>St. Johnsbury, VT</span>
             <span>Lyndonville, VT</span>
             <span>Newport, VT</span>
             <span>Montpelier, VT</span>
             <span>Barre, VT</span>
-            <span>Lancaster, NH</span>
-            <span>Woodsville, NH</span>
             <span>Hardwick, VT</span>
+            <span>Woodsville, NH</span>
             <span>Franconia, NH</span>
         </div>
     </div>
@@ -864,13 +816,13 @@ nav_section: our-farm
     <div class="inquiry-inner">
         <div class="inquiry-text">
             <span class="label">Get Started</span>
-            <h2>Let's Talk Pork</h2>
-            <p>Tell us about your restaurant and what you're looking for. We'll get back to you within 48 hours to discuss how we can work together.</p>
+            <h2>Become a Stockist</h2>
+            <p>Interested in carrying our heritage pork? Tell us about your store and we'll send over wholesale pricing and availability.</p>
             <ul class="inquiry-points">
-                <li>No commitment required to inquire</li>
-                <li>Flexible arrangements for your needs</li>
-                <li>Direct relationship with the farm</li>
-                <li>Transparent pricing, no middlemen</li>
+                <li>No long-term commitments required</li>
+                <li>Flexible order sizes</li>
+                <li>Local delivery or pickup available</li>
+                <li>Marketing support and product info</li>
             </ul>
             <p class="contact-alt">Prefer email? Reach us at <a href="mailto:heather@texasfarmsvermont.com">heather@texasfarmsvermont.com</a></p>
         </div>
@@ -882,10 +834,10 @@ nav_section: our-farm
 
 <!-- Final CTA -->
 <section class="final-cta">
-    <h2>Not a restaurant?</h2>
-    <p>We also sell to individuals. Visit our shop for retail cuts or inquire about whole hogs for your freezer.</p>
+    <h2>Looking for restaurant wholesale?</h2>
+    <p>We also work with restaurants and chefs across the region.</p>
     <div class="cta-links">
-        <a href="https://shop.texasfarmsvermont.com/" class="btn-cta" target="_blank">Visit Farm Shop</a>
+        <a href="/for-restaurants.html" class="btn-cta">Restaurant Inquiries</a>
         <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-cta-outline">Learn About Our Pigs</a>
     </div>
 </section>

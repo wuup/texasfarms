@@ -1,0 +1,154 @@
+---
+layout: default
+title: Blog
+description: Stories, recipes, and insights from Texas Farms Vermont. Learn about heritage breeds, pasture-raised pork, and life on our regenerative farm in the Northeast Kingdom.
+nav_section: blog
+---
+
+<style>
+.blog-page {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+}
+
+.blog-hero {
+    background: #111;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: #fff;
+}
+
+.blog-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #fff;
+}
+
+.blog-hero p {
+    color: #e8e4db;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.blog-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.post-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    background: white;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+.post-card:hover {
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    transform: translateY(-4px);
+}
+
+.post-image {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+}
+
+.post-content {
+    padding: 2rem 2rem 2rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.post-meta {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.post-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.2;
+}
+
+.post-content h2 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-content h2 a:hover {
+    color: var(--copper);
+}
+
+.post-excerpt {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.read-more {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest);
+    text-decoration: none;
+    border-bottom: 2px solid var(--copper);
+    align-self: flex-start;
+    padding-bottom: 0.25rem;
+}
+
+.read-more:hover {
+    color: var(--copper);
+    text-decoration: none;
+}
+
+@media (max-width: 700px) {
+    .post-card {
+        grid-template-columns: 1fr;
+    }
+    .post-image {
+        height: 200px;
+    }
+    .post-content {
+        padding: 1.5rem;
+    }
+}
+</style>
+
+<div class="blog-page">
+
+<div class="blog-hero">
+    <h1>From the Farm</h1>
+    <p>Stories, recipes, and insights from our regenerative farm in Vermont's Northeast Kingdom.</p>
+</div>
+
+<div class="blog-content">
+    {% for post in site.posts %}
+    <article class="post-card">
+        <div class="post-image" style="background-image: url('{{ post.image }}');"></div>
+        <div class="post-content">
+            <span class="post-meta">{{ post.date | date: "%B %d, %Y" }} · {{ post.category }}</span>
+            <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+            <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+            <a href="{{ post.url }}" class="read-more">Read More</a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+</div>
