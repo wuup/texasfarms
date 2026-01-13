@@ -1,0 +1,794 @@
+---
+layout: default
+title: Heritage Pork for Restaurants
+description: Premium heritage pork from Gloucestershire Old Spots for restaurants and chefs in Vermont. Whole hogs, half hogs, and restaurant cuts available.
+nav_section: our-farm
+---
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --forest: #1a2e1a;
+    --forest-light: #2d4a2d;
+    --cream: #f7f4ed;
+    --cream-dark: #ebe6db;
+    --copper: #b87333;
+    --copper-light: #d4915c;
+    --text: #1a1a1a;
+    --text-light: #555;
+}
+
+.restaurant-page {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+.restaurant-page * {
+    box-sizing: border-box;
+}
+
+/* Hero */
+.hero-section {
+    min-height: 70vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--forest);
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--cream);
+    position: relative;
+}
+
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+    color: #f7f4ed;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    max-width: 420px;
+    margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary-hero {
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary-hero:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-outline-hero {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-hero:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    border-color: rgba(255,255,255,0.5);
+}
+
+.hero-image {
+    background: url('/images/restaurants.png') center/cover;
+    position: relative;
+}
+
+.hero-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(to top, var(--forest), transparent);
+}
+
+@media (max-width: 900px) {
+    .hero-section {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .hero-image {
+        height: 45vh;
+        order: -1;
+    }
+    .hero-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Feature Banner */
+.feature-banner {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.feature-list span {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #f0ede6;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .feature-list {
+        gap: 1rem 2.5rem;
+    }
+}
+
+/* Offerings Section */
+.offerings-section {
+    background: var(--cream);
+    padding: 5rem 0;
+}
+
+.offerings-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+}
+
+.offerings-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.offerings-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+}
+
+.offerings-header p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+}
+
+.offerings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.offering-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.offering-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+.offering-card .number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--copper);
+    opacity: 0.12;
+    line-height: 1;
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+}
+
+.offering-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: var(--forest);
+}
+
+.offering-card > p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+}
+
+.offering-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.offering-card ul li {
+    padding: 0.35rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.offering-card ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+.offering-link {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest);
+    text-decoration: none;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--copper);
+    transition: all 0.2s ease;
+}
+
+.offering-link:hover {
+    color: var(--copper);
+    text-decoration: none;
+}
+
+@media (max-width: 700px) {
+    .offerings-grid {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+    }
+}
+
+/* Story Section */
+.story-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.story-image {
+    background: url('/images/cover.jpeg') center/cover;
+    min-height: 500px;
+}
+
+.story-content {
+    background: var(--cream-dark);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.story-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.story-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.story-content > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.story-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+}
+
+.story-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.story-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 900px) {
+    .story-section {
+        grid-template-columns: 1fr;
+    }
+    .story-image {
+        height: 350px;
+        min-height: auto;
+    }
+    .story-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Process Section */
+.process-section {
+    background: white;
+    padding: 5rem 0;
+}
+
+.process-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.process-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.process-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.process-step {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.step-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--copper);
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.process-step h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.process-step p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+    .process-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+}
+
+/* Inquiry Section */
+.inquiry-section {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 5rem 0;
+    position: relative;
+}
+
+.inquiry-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.inquiry-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+}
+
+.inquiry-text .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.inquiry-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    color: #f7f4ed;
+}
+
+.inquiry-text > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    margin-bottom: 1.5rem;
+}
+
+.inquiry-points {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+}
+
+.inquiry-points li {
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
+    color: #e8e4db;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.inquiry-points li::before {
+    content: '\2713';
+    color: var(--copper-light);
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.contact-alt {
+    font-size: 0.85rem;
+    color: #c8c4bb;
+    margin-top: 1rem;
+}
+
+.contact-alt a {
+    color: var(--copper-light);
+    text-decoration: none;
+}
+
+.contact-alt a:hover {
+    text-decoration: underline;
+}
+
+.inquiry-form {
+    background: white;
+    padding: 1.5rem;
+    color: var(--text);
+}
+
+.inquiry-form iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+@media (max-width: 900px) {
+    .inquiry-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Final CTA */
+.final-cta {
+    background: var(--cream);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.final-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.final-cta p {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.cta-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-cta {
+    display: inline-block;
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cta:hover {
+    background: var(--forest-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(26,46,26,0.3);
+}
+
+.btn-cta-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--forest);
+    padding: 1rem 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--forest);
+    transition: all 0.3s ease;
+}
+
+.btn-cta-outline:hover {
+    background: var(--forest);
+    color: var(--cream);
+    text-decoration: none;
+}
+</style>
+
+<div class="restaurant-page">
+
+<!-- Hero -->
+<section class="hero-section">
+    <div class="hero-content">
+        <span class="hero-label">For Restaurants & Chefs</span>
+        <h1 class="hero-title">Heritage Pork for Your Kitchen</h1>
+        <p class="hero-subtitle">Pasture-raised Gloucestershire Old Spots from our Vermont farm. A story your guests will savor.</p>
+        <div class="hero-cta">
+            <a href="#inquire" class="btn-primary-hero">Start a Conversation</a>
+            <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-outline-hero">Meet the Breed</a>
+        </div>
+    </div>
+    <div class="hero-image"></div>
+</section>
+
+<!-- Feature Banner -->
+<div class="feature-banner">
+    <div class="feature-list">
+        <span>Pasture-Raised Heritage Breed</span>
+        <span>Consistent Supply</span>
+        <span>Custom Cutting Available</span>
+        <span>A Story Worth Sharing</span>
+    </div>
+</div>
+
+<!-- Offerings -->
+<section class="offerings-section">
+    <div class="offerings-header">
+        <span class="label">What We Offer</span>
+        <h2>Two Ways to Source Our Pork</h2>
+        <p>Whether you want the whole animal for nose-to-tail creativity or specific cuts for your signature dishes, we can work with you.</p>
+    </div>
+    <div class="offerings-grid">
+        <div class="offering-card">
+            <span class="number">01</span>
+            <h3>Whole & Half Hogs</h3>
+            <p>The best value and ultimate flexibility for kitchens committed to whole-animal utilization.</p>
+            <ul>
+                <li>Half hog: ~75-100 lbs hanging weight</li>
+                <li>Whole hog: ~150-200 lbs hanging weight</li>
+                <li>Custom cut sheet to your specifications</li>
+                <li>Seasonal availability with advance ordering</li>
+            </ul>
+            <a href="#inquire" class="offering-link">Inquire About Availability</a>
+        </div>
+        <div class="offering-card">
+            <span class="number">02</span>
+            <h3>Restaurant Cuts</h3>
+            <p>Select cuts for targeted menu items. Perfect for featuring heritage pork without full commitment.</p>
+            <ul>
+                <li>Chops, belly, shoulder, tenderloin</li>
+                <li>Ground pork and sausage available</li>
+                <li>Consistent sizing for portion control</li>
+                <li>Ongoing supply arrangements possible</li>
+            </ul>
+            <a href="#inquire" class="offering-link">Discuss Your Needs</a>
+        </div>
+    </div>
+</section>
+
+<!-- Story -->
+<section class="story-section">
+    <div class="story-image"></div>
+    <div class="story-content">
+        <span class="story-label">The Heritage Difference</span>
+        <h2>Why Chefs Choose GOS Pork</h2>
+        <p>Gloucestershire Old Spots are one of the world's oldest pedigreed pig breeds. Known as "orchard pigs," they were prized on English farms for centuries for their foraging ability and exceptional meat quality.</p>
+        <p>The difference is on the plate: rich marbling, depth of flavor, and a texture that industrial pork simply cannot match.</p>
+        <ul class="story-list">
+            <li>Superior marbling for moisture and flavor</li>
+            <li>Fat that renders beautifully for cooking</li>
+            <li>Heritage story that resonates with diners</li>
+            <li>Supporting regenerative, local agriculture</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Process -->
+<section class="process-section">
+    <div class="process-header">
+        <span class="label">Simple Process</span>
+        <h2>How It Works</h2>
+    </div>
+    <div class="process-grid">
+        <div class="process-step">
+            <div class="step-number">1</div>
+            <h3>Connect</h3>
+            <p>Fill out our inquiry form with your restaurant details and what you're looking for.</p>
+        </div>
+        <div class="process-step">
+            <div class="step-number">2</div>
+            <h3>Plan</h3>
+            <p>We'll discuss availability, pricing, and cutting specifications that work for your menu.</p>
+        </div>
+        <div class="process-step">
+            <div class="step-number">3</div>
+            <h3>Deliver</h3>
+            <p>Fresh heritage pork, ready for your kitchen. Local pickup or delivery arrangements available.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Inquiry -->
+<section id="inquire" class="inquiry-section">
+    <div class="inquiry-inner">
+        <div class="inquiry-text">
+            <span class="label">Get Started</span>
+            <h2>Let's Talk Pork</h2>
+            <p>Tell us about your restaurant and what you're looking for. We'll get back to you within 48 hours to discuss how we can work together.</p>
+            <ul class="inquiry-points">
+                <li>No commitment required to inquire</li>
+                <li>Flexible arrangements for your needs</li>
+                <li>Direct relationship with the farm</li>
+                <li>Transparent pricing, no middlemen</li>
+            </ul>
+            <p class="contact-alt">Prefer email? Reach us at <a href="mailto:texasfarmsvermont@gmail.com">texasfarmsvermont@gmail.com</a></p>
+        </div>
+        <div class="inquiry-form">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSepooklj4h3DNHroiFw24-FKAG_qpftkQV9VImJ4SEvXJzhPw/viewform?embedded=true">Loading...</iframe>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+    <h2>Not a restaurant?</h2>
+    <p>We also sell to individuals. Visit our shop for retail cuts or inquire about whole hogs for your freezer.</p>
+    <div class="cta-links">
+        <a href="https://shop.texasfarmsvermont.com/" class="btn-cta" target="_blank">Visit Farm Shop</a>
+        <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-cta-outline">Learn About Our Pigs</a>
+    </div>
+</section>
+
+</div>
