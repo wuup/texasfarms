@@ -1,98 +1,193 @@
 ---
 layout: default
 title: Champagne D'Argent Rabbits
+description: Heritage Champagne D'Argent rabbits for sale in Vermont. Breeding stock, show rabbits, and meat rabbits from one of the oldest French heritage breeds.
 nav_section: animals
 ---
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-.animal-page {
-    font-family: 'DM Sans', sans-serif;
+:root {
+    --forest: #1a2e1a;
+    --forest-light: #2d4a2d;
+    --cream: #f7f4ed;
+    --cream-dark: #ebe6db;
+    --copper: #b87333;
+    --copper-light: #d4915c;
+    --text: #1a1a1a;
+    --text-light: #555;
 }
 
-.animal-hero {
-    min-height: 60vh;
+.rabbit-page {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+.rabbit-page * {
+    box-sizing: border-box;
+}
+
+/* Hero */
+.hero-section {
+    min-height: 80vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
     background: var(--forest);
 }
 
-.animal-hero-content {
+.hero-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 4rem;
     color: var(--cream);
+    position: relative;
 }
 
-.animal-hero-label {
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.hero-label {
     font-size: 0.75rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--copper-light);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     font-weight: 600;
 }
 
-.animal-hero-title {
+.hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 600;
     line-height: 1.1;
-    margin: 0 0 1rem 0;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
     color: #f7f4ed;
 }
 
-.animal-hero-subtitle {
-    font-size: 1.1rem;
-    color: #e8e4db;
-    max-width: 450px;
-    line-height: 1.7;
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--copper-light);
 }
 
-.animal-hero-image {
-    background: url('/images/champagne-dargent-meat-rabbit.jpg') center/cover;
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    max-width: 420px;
+    margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary-hero {
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary-hero:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-outline-hero {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-hero:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    border-color: rgba(255,255,255,0.5);
+}
+
+.hero-image {
+    background: url('/images/champagne-d-argent-rabbit1.png') center/cover;
+    position: relative;
+}
+
+.hero-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(to top, var(--forest), transparent);
 }
 
 @media (max-width: 900px) {
-    .animal-hero {
+    .hero-section {
         grid-template-columns: 1fr;
         min-height: auto;
     }
-    .animal-hero-image {
+    .hero-image {
         height: 50vh;
         order: -1;
     }
-    .animal-hero-content {
+    .hero-content {
         padding: 3rem 1.5rem;
     }
 }
 
-.animal-section {
-    padding: 4rem 0;
-}
-
-.animal-section.bg-white {
-    background: white;
-}
-
-.animal-section.bg-cream {
+/* Options Band */
+.options-band {
     background: var(--cream);
+    padding: 5rem 0 4rem;
 }
 
-.section-header {
+.options-header {
     text-align: center;
     margin-bottom: 3rem;
 }
 
-.section-header h2 {
+.options-header h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
     color: var(--forest);
     margin: 0;
 }
 
-.section-header .label {
+.options-header .label {
     font-size: 0.75rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--copper);
     margin-bottom: 0.75rem;
@@ -100,109 +195,177 @@ nav_section: animals
     font-weight: 600;
 }
 
-.characteristics-grid {
+.options-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1000px;
+    gap: 1.5rem;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 2rem;
 }
 
-.characteristic-card {
-    text-align: center;
-    padding: 2rem 1.5rem;
+.option-item {
     background: white;
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
     border: 1px solid rgba(0,0,0,0.06);
 }
 
-.characteristic-card i {
-    font-size: 2rem;
-    color: var(--copper);
-    margin-bottom: 1rem;
+.option-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
 }
 
-.characteristic-card h4 {
+.option-number {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--copper);
+    opacity: 0.15;
+    line-height: 1;
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+}
+
+.option-item h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 0.35rem 0;
     color: var(--forest);
+}
+
+.option-price {
+    font-size: 0.95rem;
+    color: var(--copper);
+    font-weight: 600;
     margin-bottom: 0.75rem;
 }
 
-.characteristic-card p {
+.option-item p {
+    font-size: 0.9rem;
     color: var(--text-light);
-    font-size: 0.95rem;
     line-height: 1.6;
-    margin: 0;
+    margin-bottom: 1.25rem;
 }
 
-@media (max-width: 768px) {
-    .characteristics-grid {
+.option-link {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest);
+    text-decoration: none;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--copper);
+    transition: all 0.2s ease;
+}
+
+.option-link:hover {
+    color: var(--copper);
+    text-decoration: none;
+}
+
+@media (max-width: 800px) {
+    .options-grid {
         grid-template-columns: 1fr;
         max-width: 400px;
     }
 }
 
-.about-content {
-    max-width: 700px;
+/* Feature Banner */
+.feature-banner {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1.25rem 0;
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    max-width: 900px;
     margin: 0 auto;
     padding: 0 2rem;
-    text-align: center;
 }
 
-.about-content p {
-    color: var(--text-light);
-    font-size: 1.05rem;
-    line-height: 1.8;
+.feature-list span {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #f0ede6;
+    font-weight: 500;
 }
 
-.farm-life-grid {
+@media (max-width: 600px) {
+    .feature-list {
+        gap: 1rem 2.5rem;
+    }
+}
+
+/* Story Section */
+.story-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
 }
 
-.farm-life-image {
-    background: url('/images/champagne-d-argent.jpeg') center/cover;
-    min-height: 400px;
+.story-image {
+    background: url('/images/champagne-d-argent-rabbit2.png') center/cover;
+    min-height: 500px;
 }
 
-.farm-life-content {
+.story-content {
     background: var(--cream-dark);
-    padding: 3rem;
+    padding: 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.farm-life-content h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    color: var(--forest);
-    margin-bottom: 1.5rem;
+.story-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 1rem;
+    font-weight: 600;
 }
 
-.farm-life-list {
+.story-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.story-content > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.story-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0.5rem 0 0 0;
 }
 
-.farm-life-list li {
-    padding: 0.75rem 0;
-    padding-left: 1.5rem;
+.story-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.25rem;
     position: relative;
-    color: var(--text-light);
-    font-size: 1rem;
-    line-height: 1.6;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.95rem;
+    color: var(--text);
 }
 
-.farm-life-list li:last-child {
-    border-bottom: none;
-}
-
-.farm-life-list li::before {
+.story-list li::before {
     content: '—';
     position: absolute;
     left: 0;
@@ -210,218 +373,311 @@ nav_section: animals
 }
 
 @media (max-width: 900px) {
-    .farm-life-grid {
+    .story-section {
         grid-template-columns: 1fr;
     }
-    .farm-life-image {
-        height: 300px;
+    .story-image {
+        height: 350px;
+        min-height: auto;
     }
-    .farm-life-content {
-        padding: 2rem 1.5rem;
+    .story-content {
+        padding: 3rem 1.5rem;
     }
+}
+
+/* Gallery Strip */
+.gallery-strip {
+    padding: 4rem 0;
+    background: white;
+}
+
+.gallery-strip h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--forest);
+    margin: 0 0 2rem 0;
 }
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    max-width: 800px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
 }
 
 .gallery-grid img {
     width: 100%;
-    height: 280px;
+    height: 300px;
     object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
-@media (max-width: 600px) {
+.gallery-grid img:hover {
+    transform: scale(1.03);
+}
+
+@media (max-width: 700px) {
     .gallery-grid {
         grid-template-columns: 1fr;
     }
+    .gallery-grid img {
+        height: 250px;
+    }
 }
 
-.products-section {
+/* Inquiry Section */
+.inquiry-section {
     background: var(--forest);
-    padding: 4rem 0;
-    text-align: center;
     color: var(--cream);
+    padding: 5rem 0;
+    position: relative;
 }
 
-.products-section h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    color: var(--cream);
-    margin-bottom: 1rem;
+.inquiry-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
 }
 
-.products-section p {
-    color: #e8e4db;
-    margin-bottom: 2rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+.inquiry-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
 }
 
-.products-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 2rem 0;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.products-list li {
-    color: #e8e4db;
-    font-size: 0.95rem;
-}
-
-.pricing-box {
-    background: rgba(255,255,255,0.1);
-    padding: 1.5rem 2rem;
-    display: inline-block;
-    margin-bottom: 2rem;
-}
-
-.pricing-box h5 {
-    color: var(--copper-light);
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
+.inquiry-text .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    color: var(--copper-light);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
 }
 
-.pricing-box ul {
+.inquiry-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    color: #f7f4ed;
+}
+
+.inquiry-text > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    margin-bottom: 1.5rem;
+}
+
+.inquiry-points {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.pricing-box li {
+.inquiry-points li {
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
     color: #e8e4db;
-    padding: 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
 }
 
-.pricing-note {
+.inquiry-points li::before {
+    content: '✓';
+    color: var(--copper-light);
+    font-weight: bold;
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.6);
-    margin-top: 1rem;
+}
+
+.inquiry-form {
+    background: white;
+    padding: 1.5rem;
+    color: var(--text);
+}
+
+.inquiry-form iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+@media (max-width: 900px) {
+    .inquiry-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Final CTA */
+.final-cta {
+    background: var(--cream);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.final-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.final-cta p {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
 }
 
 .btn-shop {
     display: inline-block;
-    background: var(--copper);
-    color: white;
+    background: var(--forest);
+    color: var(--cream);
     padding: 1rem 2.5rem;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
-    transition: background 0.25s ease;
+    transition: all 0.3s ease;
 }
 
 .btn-shop:hover {
-    background: var(--copper-light);
+    background: var(--forest-light);
     color: white;
     text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(26,46,26,0.3);
 }
 </style>
 
-<div class="animal-page">
+<div class="rabbit-page">
 
-<section class="animal-hero">
-    <div class="animal-hero-content">
-        <span class="animal-hero-label">Heritage Breed • Vermont</span>
-        <h1 class="animal-hero-title">Champagne D'Argent Rabbits</h1>
-        <p class="animal-hero-subtitle">One of the oldest rabbit breeds, known for its unique silvering coat and excellent meat quality since the 1600s.</p>
-    </div>
-    <div class="animal-hero-image"></div>
-</section>
-
-<section class="animal-section bg-white">
-    <div class="section-header">
-        <span class="label">The Breed</span>
-        <h2>About Champagne D'Argent</h2>
-    </div>
-    <div class="about-content">
-        <p>The Champagne D'Argent rabbit is a French heritage breed prized for its meat and pelts. First recorded in France during the 1600s, it's one of the oldest meat rabbit breeds. They have calm temperaments, good mothering instincts, and fast growth rates. Kits are born completely black, gradually turning silver—showing at 4 weeks and fully silver by 5 to 6 months.</p>
-    </div>
-</section>
-
-<section class="animal-section bg-cream">
-    <div class="section-header">
-        <span class="label">Why We Love Them</span>
-        <h2>Breed Characteristics</h2>
-    </div>
-    <div class="characteristics-grid">
-        <div class="characteristic-card">
-            <i class="fas fa-palette"></i>
-            <h4>Unique Coloring</h4>
-            <p>Distinctive silvering process that creates a beautiful champagne-silver coat.</p>
-        </div>
-        <div class="characteristic-card">
-            <i class="fas fa-heart"></i>
-            <h4>Gentle Nature</h4>
-            <p>Calm and docile temperament makes them excellent for handling and showing.</p>
-        </div>
-        <div class="characteristic-card">
-            <i class="fas fa-seedling"></i>
-            <h4>Sustainable Choice</h4>
-            <p>Efficient feed conversion and good mothering abilities for sustainable farming.</p>
+<!-- Hero -->
+<section class="hero-section">
+    <div class="hero-content">
+        <span class="hero-label">Heritage Breed • Vermont</span>
+        <h1 class="hero-title">Champagne D'Argent<br><span class="title-accent">Rabbits</span></h1>
+        <p class="hero-subtitle">One of the oldest French heritage breeds, prized since the 1600s for exceptional meat quality and stunning silver coats.</p>
+        <div class="hero-cta">
+            <a href="#pricing" class="btn-primary-hero">See Pricing</a>
+            <a href="#inquire" class="btn-outline-hero">Reserve Yours</a>
         </div>
     </div>
+    <div class="hero-image"></div>
 </section>
 
-<section class="farm-life-grid">
-    <div class="farm-life-image"></div>
-    <div class="farm-life-content">
-        <h2>Life on Our Farm</h2>
-        <ul class="farm-life-list">
-            <li>Spacious, clean hutches with plenty of enrichment activities</li>
-            <li>Balanced diet of quality pellets, fresh hay, and seasonal vegetables</li>
-            <li>Careful breeding records for health and proper color development</li>
-            <li>Contribute to farm sustainability through efficient feed conversion</li>
-            <li>Provide valuable natural fertilizer for our gardens</li>
+<!-- Options -->
+<section id="pricing" class="options-band">
+    <div class="options-header">
+        <span class="label">Available Now</span>
+        <h2>Breeding Stock & Meat Rabbits</h2>
+    </div>
+    <div class="options-grid">
+        <div class="option-item">
+            <span class="option-number">01</span>
+            <h3>Junior Does</h3>
+            <div class="option-price">$70 each</div>
+            <p>2-5 months old. Ready to grow into proven breeding stock for your rabbitry.</p>
+            <a href="#inquire" class="option-link">Reserve Now</a>
+        </div>
+        <div class="option-item">
+            <span class="option-number">02</span>
+            <h3>Junior Bucks</h3>
+            <div class="option-price">$60 each</div>
+            <p>2-5 months old. Strong genetics for starting or improving your breeding program.</p>
+            <a href="#inquire" class="option-link">Reserve Now</a>
+        </div>
+        <div class="option-item">
+            <span class="option-number">03</span>
+            <h3>Proven Breeders</h3>
+            <div class="option-price">$60-90 each</div>
+            <p>6+ months, breeding-proven. Does $70-90, Bucks $60-70. Ready to produce.</p>
+            <a href="#inquire" class="option-link">Check Availability</a>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Banner -->
+<div class="feature-banner">
+    <div class="feature-list">
+        <span>Heritage Since 1600s</span>
+        <span>Excellent Meat Quality</span>
+        <span>Calm Temperament</span>
+        <span>Local Pickup</span>
+    </div>
+</div>
+
+<!-- Story -->
+<section class="story-section">
+    <div class="story-image"></div>
+    <div class="story-content">
+        <span class="story-label">The Breed</span>
+        <h2>Why Champagne D'Argent?</h2>
+        <p>The Champagne D'Argent is one of the oldest rabbit breeds in the world, originating in the Champagne region of France. Prized by French monks for centuries, they were bred for both their luxurious silver pelts and exceptional meat.</p>
+        <p>Kits are born jet black, gradually developing their signature silver coat—a transformation that's complete by 6 months.</p>
+        <ul class="story-list">
+            <li>Fine-grained, flavorful meat with excellent dress-out percentage</li>
+            <li>Docile temperament, easy to handle and show</li>
+            <li>Good mothering instincts and consistent litter sizes</li>
+            <li>Efficient feed conversion for sustainable homesteading</li>
         </ul>
     </div>
 </section>
 
-<section class="animal-section bg-white">
-    <div class="section-header">
-        <span class="label">Gallery</span>
-        <h2>Our Rabbits</h2>
-    </div>
+<!-- Gallery -->
+<section class="gallery-strip">
+    <h2>Our Rabbits</h2>
     <div class="gallery-grid">
-        <img src="/images/champagne-d-argent.jpeg" alt="Champagne D'Argent rabbit">
-        <img src="/images/champagne-d-argent2.jpeg" alt="Close-up of Champagne D'Argent rabbit">
+        <img src="/images/champagne-d-argent-rabbit1.png" alt="Champagne D'Argent rabbit showing silver coat">
+        <img src="/images/champagne-d-argent-rabbit2.png" alt="Champagne D'Argent rabbit on wooden platform">
+        <img src="/images/champagne-dargent-meat-rabbit.jpg" alt="Heritage Champagne D'Argent meat rabbit">
     </div>
 </section>
 
-<section class="products-section">
-    <h2>Products from Our Rabbits</h2>
-    <p>We offer heritage breeding stock and artisanal rabbit products</p>
-    <ul class="products-list">
-        <li>Heritage breeding stock</li>
-        <li>Show-quality rabbits</li>
-        <li>Artisanal rabbit products</li>
-        <li>Natural fertilizer</li>
-    </ul>
-    <div class="pricing-box">
-        <h5>Breeding Stock</h5>
-        <ul>
-            <li>Junior Buck (2-5 mo) — $60</li>
-            <li>Junior Doe (2-5 mo) — $70</li>
-            <li>Proven Buck (6+ mo) — $60-70</li>
-            <li>Proven Doe (6+ mo) — $70-90</li>
-        </ul>
-        <p class="pricing-note">Pickup only — we don't ship rabbits</p>
+<!-- Inquiry -->
+<section id="inquire" class="inquiry-section">
+    <div class="inquiry-inner">
+        <div class="inquiry-text">
+            <span class="label">Get Started</span>
+            <h2>Reserve Your Rabbits</h2>
+            <p>Interested in adding Champagne D'Argent to your homestead or rabbitry? Fill out our inquiry form and we'll contact you with current availability.</p>
+            <ul class="inquiry-points">
+                <li>Pickup in Concord, Vermont (we don't ship)</li>
+                <li>Pedigrees available for breeding stock</li>
+                <li>Happy to answer questions about the breed</li>
+                <li>We'll respond within 48 hours</li>
+            </ul>
+        </div>
+        <div class="inquiry-form">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSepooklj4h3DNHroiFw24-FKAG_qpftkQV9VImJ4SEvXJzhPw/viewform?embedded=true">Loading…</iframe>
+        </div>
     </div>
-    <br>
-    <a href="{{ site.shop_url }}rabbits" class="btn-shop">Shop Rabbit Products</a>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+    <h2>Looking for other heritage breeds?</h2>
+    <p>We also raise Gloucestershire Old Spot pigs and other heritage livestock.</p>
+    <a href="/our-animals.html" class="btn-shop">Explore Our Animals</a>
 </section>
 
 </div>
