@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include head.html %}
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* Reading mode - cleaner header */
+    .reading-mode-header {
+        background: var(--forest);
+        padding: 0.75rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .reading-header-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .reading-logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        color: var(--cream);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .reading-logo:hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    .reading-nav {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    .reading-nav a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: color 0.2s;
+    }
+
+    .reading-nav a:hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Book container */
+    .book-container {
+        background: #f5f3eb;
+        min-height: 100vh;
+        padding: 2rem 1rem 4rem;
+    }
+
+    .book-page {
+        background: #fffef8;
+        max-width: 750px;
+        margin: 0 auto;
+        padding: 3rem 2.5rem 4rem;
+        box-shadow:
+            0 0 0 1px rgba(0,0,0,0.03),
+            0 2px 20px rgba(0,0,0,0.08),
+            0 10px 40px rgba(0,0,0,0.05);
+        position: relative;
+    }
+
+    /* Subtle page edge effect */
+    .book-page::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to right, rgba(0,0,0,0.05), transparent);
+    }
+
+    /* Chapter header */
+    .chapter-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .chapter-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 0.8rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 0.75rem;
+    }
+
+    .chapter-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 600;
+        color: #2c2c2c;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    .chapter-subtitle {
+        font-family: 'Lora', serif;
+        font-style: italic;
+        color: #666;
+        margin-top: 0.75rem;
+        font-size: 1.05rem;
+    }
+
+    /* Decorative divider */
+    .chapter-divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .chapter-divider::before,
+    .chapter-divider::after {
+        content: '';
+        width: 40px;
+        height: 1px;
+        background: #ccc;
+    }
+
+    .chapter-divider-icon {
+        color: #999;
+        font-size: 0.6rem;
+    }
+
+    /* Audio player - collapsed style */
+    .audio-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f8f6f0;
+        border: 1px solid rgba(0,0,0,0.08);
+        border-radius: 2rem;
+        font-family: 'Lora', serif;
+        font-size: 0.85rem;
+        color: #555;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 1rem;
+    }
+
+    .audio-toggle:hover {
+        background: #f0ede5;
+        border-color: rgba(0,0,0,0.12);
+    }
+
+    .audio-player-expanded {
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f6f0;
+        border-radius: 8px;
+    }
+
+    .audio-player-expanded.show {
+        display: block;
+    }
+
+    .audio-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .play-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--forest);
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+        flex-shrink: 0;
+    }
+
+    .play-btn:hover {
+        background: var(--forest-mid);
+    }
+
+    .audio-progress {
+        flex: 1;
+    }
+
+    .audio-progress input[type="range"] {
+        width: 100%;
+        height: 4px;
+        -webkit-appearance: none;
+        background: #ddd;
+        border-radius: 2px;
+        outline: none;
+    }
+
+    .audio-progress input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: var(--forest);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .audio-time {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.25rem;
+    }
+
+    /* Chapter content */
+    .chapter-content {
+        font-family: 'Lora', serif;
+        font-size: 1.1rem;
+        line-height: 1.9;
+        color: #333;
+    }
+
+    .chapter-content p {
+        margin-bottom: 1.5rem;
+        text-align: justify;
+        text-indent: 1.5em;
+    }
+
+    .chapter-content p:first-of-type {
+        text-indent: 0;
+    }
+
+    /* Drop cap */
+    .chapter-content p:first-of-type::first-letter {
+        float: left;
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        line-height: 0.8;
+        padding: 0.1em 0.1em 0 0;
+        color: var(--forest);
+        font-weight: 600;
+    }
+
+    .chapter-content img {
+        width: 100%;
+        margin: 2rem 0;
+        border-radius: 4px;
+    }
+
+    .chapter-content figcaption {
+        font-size: 0.85rem;
+        color: #888;
+        text-align: center;
+        font-style: italic;
+        margin-top: -1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Chapter navigation */
+    .chapter-nav {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chapter-nav-link {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        max-width: 45%;
+    }
+
+    .chapter-nav-link.prev {
+        align-items: flex-start;
+    }
+
+    .chapter-nav-link.next {
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .chapter-nav-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #999;
+        margin-bottom: 0.25rem;
+    }
+
+    .chapter-nav-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: var(--forest);
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .chapter-nav-link:hover .chapter-nav-title {
+        color: var(--copper);
+    }
+
+    .chapter-nav-link:hover {
+        text-decoration: none;
+    }
+
+    /* Progress indicator */
+    .chapter-progress {
+        text-align: center;
+        padding: 1.5rem 0;
+    }
+
+    .progress-dots {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .progress-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ddd;
+        transition: all 0.2s;
+    }
+
+    .progress-dot.active {
+        background: var(--forest);
+        transform: scale(1.2);
+    }
+
+    .progress-dot.completed {
+        background: var(--copper);
+    }
+
+    .progress-text {
+        font-size: 0.75rem;
+        color: #999;
+        letter-spacing: 0.1em;
+    }
+
+    /* Share section */
+    .chapter-share {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .chapter-share-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .share-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .share-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f5f3eb;
+        color: #666;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .share-btn:hover {
+        background: var(--forest);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Coming soon state */
+    .coming-soon-content {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .coming-soon-icon {
+        font-size: 3rem;
+        color: #ccc;
+        margin-bottom: 1.5rem;
+    }
+
+    .coming-soon-text {
+        font-family: 'Lora', serif;
+        font-size: 1.1rem;
+        color: #888;
+        max-width: 400px;
+        margin: 0 auto 2rem;
+        line-height: 1.7;
+    }
+
+    .notify-form {
+        max-width: 350px;
+        margin: 0 auto;
+    }
+
+    .notify-form input[type="email"] {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1px solid rgba(0,0,0,0.15);
+        border-radius: 4px;
+        font-family: 'Lora', serif;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .notify-form input[type="email"]:focus {
+        outline: none;
+        border-color: var(--forest);
+    }
+
+    .notify-form button {
+        width: 100%;
+        padding: 0.875rem;
+        background: var(--forest);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-family: 'Lora', serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .notify-form button:hover {
+        background: var(--forest-mid);
+    }
+
+    /* Mobile styles */
+    @media (max-width: 768px) {
+        .book-container {
+            padding: 1rem 0.5rem 3rem;
+        }
+
+        .book-page {
+            padding: 2rem 1.25rem 3rem;
+            border-radius: 0;
+        }
+
+        .chapter-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .chapter-content {
+            font-size: 1.05rem;
+            line-height: 1.85;
+        }
+
+        .chapter-content p {
+            text-align: left;
+            text-indent: 0;
+            margin-bottom: 1.25rem;
+        }
+
+        .chapter-content p:first-of-type::first-letter {
+            font-size: 3.25rem;
+        }
+
+        .chapter-nav {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .chapter-nav-link {
+            max-width: 100%;
+            width: 100%;
+            padding: 1rem;
+            background: #f8f6f0;
+            border-radius: 8px;
+        }
+
+        .chapter-nav-link.prev,
+        .chapter-nav-link.next {
+            align-items: center;
+            text-align: center;
+        }
+
+        .reading-nav {
+            gap: 1rem;
+        }
+
+        .reading-nav a {
+            font-size: 0.8rem;
+        }
+
+        .audio-controls {
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .book-page {
+            padding: 1.5rem 1rem 2.5rem;
+        }
+
+        .chapter-title {
+            font-size: 1.5rem;
+        }
+
+        .chapter-content {
+            font-size: 1rem;
+        }
+    }
+
+    /* Hide default header when in chapter */
+    .announcement-banner,
+    header.bg-custom-green {
+        display: none;
+    }
+    </style>
+</head>
+<body>
+    <!-- Minimal reading header -->
+    <div class="reading-mode-header">
+        <div class="reading-header-inner">
+            <a href="/" class="reading-logo">Texas Farms Vermont</a>
+            <nav class="reading-nav">
+                <a href="/farm-story.html">All Chapters</a>
+                <a href="/home.html">Home</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="book-container">
+        <article class="book-page">
+            <!-- Chapter header -->
+            <header class="chapter-header">
+                <div class="chapter-number">{{ page.chapter_label | default: "Chapter" }}</div>
+                <h1 class="chapter-title">{{ page.title }}</h1>
+                {% if page.subtitle %}
+                <p class="chapter-subtitle">{{ page.subtitle }}</p>
+                {% endif %}
+                <div class="chapter-divider">
+                    <span class="chapter-divider-icon"><i class="fas fa-leaf"></i></span>
+                </div>
+
+                {% if page.audio %}
+                <button class="audio-toggle" onclick="toggleAudio()">
+                    <i class="fas fa-headphones"></i>
+                    <span>Listen to this chapter</span>
+                </button>
+                <div class="audio-player-expanded" id="audioPlayer">
+                    <div class="audio-controls">
+                        <button class="play-btn" id="playBtn" onclick="togglePlay()">
+                            <i class="fas fa-play" id="playIcon"></i>
+                        </button>
+                        <div class="audio-progress">
+                            <input type="range" id="seekBar" value="0" min="0" max="100">
+                            <div class="audio-time">
+                                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <audio id="chapterAudio" src="{{ page.audio }}"></audio>
+                </div>
+                {% endif %}
+            </header>
+
+            {% if page.coming_soon %}
+            <!-- Coming soon state -->
+            <div class="coming-soon-content">
+                <div class="coming-soon-icon">
+                    <i class="fas fa-feather-alt"></i>
+                </div>
+                <p class="coming-soon-text">{{ page.coming_soon_text | default: "This chapter is still being written. Subscribe below to be notified when it's ready." }}</p>
+
+                <div class="notify-form">
+                    <form action="https://texasfarmsvermont.us22.list-manage.com/subscribe/post?u=2ac7bf770b7f6c79515c719c3&amp;id=c571cc8838&amp;f_id=005cd6e1f0" method="post" target="_blank">
+                        <input type="email" name="EMAIL" placeholder="Your email address" required>
+                        <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                            <input type="text" name="b_2ac7bf770b7f6c79515c719c3_c571cc8838" tabindex="-1" value="">
+                        </div>
+                        <button type="submit">Notify Me</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <!-- Chapter image if provided -->
+            {% if page.image %}
+            <figure>
+                <img src="{{ page.image }}" alt="{{ page.title }}">
+                {% if page.image_caption %}
+                <figcaption>{{ page.image_caption }}</figcaption>
+                {% endif %}
+            </figure>
+            {% endif %}
+
+            <!-- Chapter content -->
+            <div class="chapter-content">
+                {{ content }}
+            </div>
+            {% endif %}
+
+            <!-- Progress indicator -->
+            <div class="chapter-progress">
+                <div class="progress-dots">
+                    {% for i in (1..page.total_chapters) %}
+                    <span class="progress-dot {% if i < page.chapter_number %}completed{% elsif i == page.chapter_number %}active{% endif %}"></span>
+                    {% endfor %}
+                </div>
+                <div class="progress-text">Chapter {{ page.chapter_number }} of {{ page.total_chapters }}</div>
+            </div>
+
+            <!-- Chapter navigation -->
+            <nav class="chapter-nav">
+                {% if page.prev_chapter %}
+                <a href="{{ page.prev_chapter.url }}" class="chapter-nav-link prev">
+                    <span class="chapter-nav-label"><i class="fas fa-arrow-left"></i> Previous</span>
+                    <span class="chapter-nav-title">{{ page.prev_chapter.title }}</span>
+                </a>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                {% if page.next_chapter %}
+                <a href="{{ page.next_chapter.url }}" class="chapter-nav-link next">
+                    <span class="chapter-nav-label">Next <i class="fas fa-arrow-right"></i></span>
+                    <span class="chapter-nav-title">{{ page.next_chapter.title }}</span>
+                </a>
+                {% else %}
+                <div></div>
+                {% endif %}
+            </nav>
+
+            {% unless page.coming_soon %}
+            <!-- Share -->
+            <div class="chapter-share">
+                <p class="chapter-share-title">Share this chapter</p>
+                <div class="share-buttons">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ site.url }}{{ page.url }}" target="_blank" rel="noopener" class="share-btn">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ site.url }}{{ page.url }}&text={{ page.title | url_encode }}" target="_blank" rel="noopener" class="share-btn">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="mailto:?subject={{ page.title | url_encode }}&body=Read this chapter from Texas Farms Vermont: {{ site.url }}{{ page.url }}" class="share-btn">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            {% endunless %}
+        </article>
+    </div>
+
+    {% include footer.html %}
+    {% include scripts.html %}
+
+    {% if page.audio %}
+    <script>
+    const audio = document.getElementById('chapterAudio');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const seekBar = document.getElementById('seekBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+
+    function toggleAudio() {
+        document.getElementById('audioPlayer').classList.toggle('show');
+    }
+
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play();
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
+        } else {
+            audio.pause();
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+        }
+    }
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    audio.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        seekBar.value = (audio.currentTime / audio.duration) * 100 || 0;
+    });
+
+    seekBar.addEventListener('input', () => {
+        audio.currentTime = (seekBar.value / 100) * audio.duration;
+    });
+
+    audio.addEventListener('ended', () => {
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+    });
+    </script>
+    {% endif %}
+</body>
+</html>

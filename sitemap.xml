@@ -92,15 +92,15 @@
 
   <!-- Story Chapters -->
   <url>
-    <loc>https://texasfarmsvermont.com/introduction.html</loc>
-    <priority>0.5</priority>
+    <loc>https://texasfarmsvermont.com/story/introduction.html</loc>
+    <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://texasfarmsvermont.com/chapter-1.html</loc>
-    <priority>0.5</priority>
+    <loc>https://texasfarmsvermont.com/story/chapter-1.html</loc>
+    <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://texasfarmsvermont.com/chapter-2.html</loc>
+    <loc>https://texasfarmsvermont.com/story/chapter-2.html</loc>
     <priority>0.5</priority>
   </url>
 
