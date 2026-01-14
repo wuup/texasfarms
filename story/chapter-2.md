@@ -1,6 +1,7 @@
 ---
 layout: chapter
 title: Solar Install in a Snowstorm
+description: Chapter 2 of our farm story - installing an off-grid solar system during a Vermont winter at Texas Farms Vermont.
 chapter_label: Chapter Two
 chapter_number: 3
 total_chapters: 3

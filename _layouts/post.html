@@ -2,6 +2,37 @@
 layout: default
 ---
 
+<!-- Article Schema for Blog Posts -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ page.title | escape }}",
+  "description": "{{ page.description | escape }}",
+  "image": "{{ page.image | absolute_url }}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+  "author": {
+    "@type": "Organization",
+    "name": "Texas Farms Vermont",
+    "url": "{{ site.url }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Texas Farms Vermont",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ '/images/logo2.png' | absolute_url }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.url | absolute_url }}"
+  }{% if page.category %},
+  "articleSection": "{{ page.category }}"{% endif %}
+}
+</script>
+
 <style>
 .post-page {
     font-family: 'DM Sans', sans-serif;
