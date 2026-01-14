@@ -6,24 +6,48 @@ nav_section: animals
 ---
 <style>
 .animals-hero {
-    background: var(--forest);
-    padding: 4rem 0;
+    background: linear-gradient(rgba(30, 48, 33, 0.85), rgba(30, 48, 33, 0.9)), url('/images/cover.jpeg');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 0;
     text-align: center;
     color: var(--cream);
 }
 
-.animals-hero h1 {
+.hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     color: #f7f4ed;
     margin-bottom: 1rem;
+    line-height: 1.15;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: #d4a574;
 }
 
 .animals-hero p {
     color: #e8e4db;
-    font-size: 1.1rem;
-    max-width: 600px;
+    font-size: 1.15rem;
+    max-width: 650px;
     margin: 0 auto;
+    line-height: 1.7;
+}
+
+.intro-band {
+    background: var(--cream);
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.intro-band p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    color: var(--text-light);
+    line-height: 1.8;
 }
 
 .animal-card {
@@ -41,13 +65,13 @@ nav_section: animals
 }
 
 .animal-card-image {
-    min-height: 400px;
+    min-height: 450px;
     background-size: cover;
     background-position: center;
 }
 
 .animal-card-content {
-    padding: 3rem;
+    padding: 3.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -64,23 +88,23 @@ nav_section: animals
 
 .animal-card-content h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
     color: var(--forest);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .animal-card-content p {
     color: var(--text-light);
     font-size: 1rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
 }
 
 .btn-learn {
     display: inline-block;
     background: var(--forest);
     color: white;
-    padding: 0.875rem 2rem;
+    padding: 1rem 2.25rem;
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -101,6 +125,45 @@ nav_section: animals
     background: var(--cream-dark);
 }
 
+.cta-section {
+    background: var(--forest);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: #f7f4ed;
+    margin-bottom: 1rem;
+}
+
+.cta-section p {
+    color: #e8e4db;
+    font-size: 1.05rem;
+    max-width: 550px;
+    margin: 0 auto 2rem;
+}
+
+.btn-cta {
+    display: inline-block;
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease;
+}
+
+.btn-cta:hover {
+    background: #c49567;
+    color: white;
+    text-decoration: none;
+}
+
 @media (max-width: 900px) {
     .animal-card,
     .animal-card.reverse {
@@ -113,22 +176,28 @@ nav_section: animals
     .animal-card-content {
         padding: 2rem 1.5rem;
     }
+    .animals-hero {
+        padding: 3.5rem 1.5rem;
+    }
 }
 </style>
 
 <section class="animals-hero">
-    <h1>Our Heritage Animals</h1>
-    <p>We raise Vermont heritage breed animals, preserving genetic diversity while producing exceptional quality pork, eggs, and more.</p>
+    <h1 class="hero-title">Heritage Animals<br><span class="title-accent">Raised with Care</span></h1>
+    <p>We preserve rare heritage breeds while producing exceptional quality pork, eggs, rabbit, and more—all raised on pasture in Concord, Vermont.</p>
 </section>
+
+<div class="intro-band">
+    <p>Our commitment to heritage breeds means raising animals the way they were meant to live—outdoors, with space to forage, root, and express natural behaviors. The result is healthier animals and better-tasting food.</p>
+</div>
 
 <div class="animal-card">
     <div class="animal-card-image" style="background-image: url('/images/gloucestershire-old-spot-pigs.jpeg');"></div>
     <div class="animal-card-content">
         <span class="animal-card-label">Heritage Pigs</span>
         <h2>Gloucestershire Old Spot Pigs</h2>
-        <p>The oldest pedigreed spotted pig in the world. Once popular on small family farms, earning them the nickname "orchard pig." Known for excellent foraging, attentive mothers, gentle temperaments, and richly marbled meat with unmatched flavor—the favorite of British Royalty.</p>
-        <p>Our Vermont GOS pigs are pasture-raised for heritage pork with depth of flavor you can taste.</p>
-        <p>We sell feeder piglets, registered breeding stock, and pork by the half, whole, or individual cuts.</p>
+        <p>The oldest pedigreed spotted pig in the world, once popular on small family farms earning them the nickname "orchard pig." Known for excellent foraging, attentive mothers, gentle temperaments, and richly marbled meat with unmatched flavor.</p>
+        <p>We sell feeder piglets, registered breeding stock, and pork by the half, whole, or individual cuts—plus artisan charcuterie.</p>
         <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-learn">Learn More</a>
     </div>
 </div>
@@ -136,33 +205,33 @@ nav_section: animals
 <div class="animal-divider"></div>
 
 <div class="animal-card reverse">
-    <div class="animal-card-image" style="background-image: url('/images/chantecler1.jpeg');"></div>
-    <div class="animal-card-content">
-        <span class="animal-card-label">Heritage Poultry</span>
-        <h2>Speckled Sussex Chickens</h2>
-        <p>A heritage breed known for beautiful plumage and excellent dual-purpose characteristics. These friendly birds are exceptional foragers and adapt well to free-range environments.</p>
-        <p>Our chickens produce delicious, nutrient-rich eggs and tender meat, raised without antibiotics or hormones in a natural and humane way.</p>
-        <a href="/animals/speckled-sussex-chickens.html" class="btn-learn">Learn More</a>
-    </div>
-</div>
-
-<div class="animal-divider"></div>
-
-<div class="animal-card">
-    <div class="animal-card-image" style="background-image: url('/images/rabbits1.jpeg');"></div>
+    <div class="animal-card-image" style="background-image: url('/images/champagne-d-argent-rabbit1.png');"></div>
     <div class="animal-card-content">
         <span class="animal-card-label">Heritage Rabbits</span>
         <h2>Champagne D'Argent Rabbits</h2>
-        <p>One of the oldest rabbit breeds, originating in France. Known for their striking silver coat that develops with age, these rabbits are prized for both their beautiful appearance and excellent meat quality.</p>
-        <p>Our rabbits are raised in spacious, clean environments with plenty of enrichment. We breed for both show quality and meat production.</p>
+        <p>One of the oldest rabbit breeds, originating in France over 400 years ago. Known for their striking silver coat that develops from jet black as they mature, these rabbits are prized for both their beauty and excellent meat quality.</p>
+        <p>We sell breeding stock—junior does, junior bucks, and proven breeders—with full pedigrees.</p>
         <a href="/animals/champagne-d-argent-rabbits.html" class="btn-learn">Learn More</a>
     </div>
 </div>
 
 <div class="animal-divider"></div>
 
+<div class="animal-card">
+    <div class="animal-card-image" style="background-image: url('/images/chantecler1.jpeg');"></div>
+    <div class="animal-card-content">
+        <span class="animal-card-label">Heritage Poultry</span>
+        <h2>Speckled Sussex Chickens</h2>
+        <p>A heritage breed known for beautiful plumage and excellent dual-purpose characteristics. These friendly birds are exceptional foragers and adapt well to free-range environments.</p>
+        <p>Our chickens produce delicious, nutrient-rich eggs and tender meat, raised without antibiotics or hormones in a natural setting.</p>
+        <a href="/animals/speckled-sussex-chickens.html" class="btn-learn">Learn More</a>
+    </div>
+</div>
+
+<div class="animal-divider"></div>
+
 <div class="animal-card reverse">
-    <div class="animal-card-image" style="background-image: url('/images/geese1.jpeg');"></div>
+    <div class="animal-card-image" style="background-image: url('/images/geese.png');"></div>
     <div class="animal-card-content">
         <span class="animal-card-label">Heritage Waterfowl</span>
         <h2>Toulouse Geese</h2>
@@ -171,3 +240,9 @@ nav_section: animals
         <a href="/animals/toulouse-geese.html" class="btn-learn">Learn More</a>
     </div>
 </div>
+
+<section class="cta-section">
+    <h2>Interested in Our Animals?</h2>
+    <p>Whether you're looking for breeding stock, meat, or just want to learn more, we'd love to hear from you.</p>
+    <a href="/find-us.html" class="btn-cta">Get in Touch</a>
+</section>
