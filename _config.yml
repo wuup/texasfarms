@@ -16,6 +16,9 @@ google_analytics: "G-RTSGC9G3QR"
 # Build settings
 markdown: kramdown
 
+# Permalink structure for blog posts (cleaner URLs for SEO)
+permalink: /blog/:title.html
+
 # Exclude from build
 exclude:
   - README.md

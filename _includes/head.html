@@ -38,40 +38,88 @@
 <meta name="robots" content="noindex, nofollow">
 {% endif %}
 
-<!-- Structured Data -->
+<!-- Structured Data - LocalBusiness + Farm -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Farm",
+  "@type": ["LocalBusiness", "Farm"],
   "name": "{{ site.title }}",
   "url": "{{ site.url }}",
   "description": "{% if page.description %}{{ page.description | escape }}{% else %}{{ site.description | escape }}{% endif %}",
   "image": "{{ site.url }}/images/texass-farms-home.jpg",
   "logo": "{{ site.url }}/images/logo2.png",
   "telephone": "+1-802-284-8776",
-  "email": "info@texasfarmsvermont.com",
+  "email": "heather@texasfarmsvermont.com",
+  "priceRange": "$$",
   "address": {
     "@type": "PostalAddress",
-    "addressLocality": "Texas",
+    "streetAddress": "Texas",
+    "addressLocality": "Concord",
     "addressRegion": "VT",
     "postalCode": "05824",
     "addressCountry": "US"
   },
-  "areaServed": "Vermont",
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "44.4397",
+    "longitude": "-71.8542"
+  },
+  "areaServed": [
+    {"@type": "City", "name": "Concord", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "City", "name": "St. Johnsbury", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "City", "name": "Lyndonville", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "City", "name": "Littleton", "containedInPlace": {"@type": "State", "name": "New Hampshire"}},
+    {"@type": "City", "name": "Lancaster", "containedInPlace": {"@type": "State", "name": "New Hampshire"}},
+    {"@type": "City", "name": "Newport", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "City", "name": "Montpelier", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "City", "name": "Barre", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "City", "name": "Hardwick", "containedInPlace": {"@type": "State", "name": "Vermont"}},
+    {"@type": "AdministrativeArea", "name": "Northeast Kingdom, Vermont"}
+  ],
   "sameAs": [
     "{{ site.facebook }}",
     "{{ site.twitter }}",
     "{{ site.instagram }}"
   ],
-  "makesOffer": [
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "Product",
-        "name": "Gloucestershire Old Spot (GOS) pork"
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Farm Products",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Heritage Pork",
+          "description": "Pasture-raised Gloucestershire Old Spot pork - whole, half, and individual cuts"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Artisan Charcuterie",
+          "description": "House-made charcuterie from heritage pork"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Champagne D'Argent Rabbits",
+          "description": "Pedigreed breeding stock - junior does, junior bucks, and proven breeders"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "GOS Breeding Stock",
+          "description": "Registered Gloucestershire Old Spot piglets and breeding stock"
+        }
       }
-    }
-  ]
+    ]
+  },
+  "keywords": "heritage pork Vermont, GOS pigs, Gloucestershire Old Spot, pasture raised pork, Northeast Kingdom farm, Concord Vermont farm, Champagne D'Argent rabbits, local meat Vermont"
 }
 </script>
 
