@@ -1,26 +1,36 @@
 ---
 layout: default
 title: Farm Story
+description: Follow the journey of Texas Farms Vermont from dream to reality in the Northeast Kingdom of Vermont.
 nav_section: our-farm
 ---
 <style>
 .story-hero {
-    background: var(--forest);
-    padding: 4rem 0;
+    background: linear-gradient(rgba(30, 48, 33, 0.85), rgba(30, 48, 33, 0.9)), url('/images/texass-farms-home.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 0;
     text-align: center;
     color: var(--cream);
 }
 
-.story-hero h1 {
+.hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     color: #f7f4ed;
     margin-bottom: 1rem;
+    line-height: 1.15;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: #d4a574;
 }
 
 .story-hero p {
     color: #e8e4db;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     max-width: 600px;
     margin: 0 auto;
 }
@@ -233,7 +243,7 @@ nav_section: our-farm
 </style>
 
 <section class="story-hero">
-    <h1>Our Texas Farms Story</h1>
+    <h1 class="hero-title">Our Story<br><span class="title-accent">From Dream to Reality</span></h1>
     <p>A tale of determination, growth, and sustainable farming in the Green Mountains</p>
 </section>
 

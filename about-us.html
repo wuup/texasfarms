@@ -6,22 +6,31 @@ nav_section: our-farm
 ---
 <style>
 .about-hero {
-    background: var(--forest);
-    padding: 4rem 0;
+    background: linear-gradient(rgba(30, 48, 33, 0.85), rgba(30, 48, 33, 0.9)), url('/images/hamlyn-family.jpeg');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 0;
     text-align: center;
     color: var(--cream);
 }
 
-.about-hero h1 {
+.hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     color: #f7f4ed;
     margin-bottom: 1rem;
+    line-height: 1.15;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: #d4a574;
 }
 
 .about-hero p {
     color: #e8e4db;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     max-width: 600px;
     margin: 0 auto;
 }
@@ -77,11 +86,49 @@ nav_section: our-farm
     color: var(--copper);
     text-decoration: none;
 }
+
+.cta-section {
+    background: var(--cream);
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.cta-section p {
+    color: var(--text-light);
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+.btn-cta {
+    display: inline-block;
+    background: var(--forest);
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease;
+}
+
+.btn-cta:hover {
+    background: var(--forest-mid);
+    color: white;
+    text-decoration: none;
+}
 </style>
 
 <section class="about-hero">
-    <h1>About Us</h1>
-    <p>The Hamlyn family's journey from dream to reality</p>
+    <h1 class="hero-title">Meet the Family<br><span class="title-accent">Behind the Farm</span></h1>
+    <p>The Hamlyn family's journey from dream to reality in the Northeast Kingdom</p>
 </section>
 
 <section class="about-content">
@@ -101,4 +148,10 @@ nav_section: our-farm
 
         <a href="/farm-story.html" class="read-more-link">Read more about our story <i class="fas fa-arrow-right"></i></a>
     </div>
+</section>
+
+<section class="cta-section">
+    <h2>Want to Visit?</h2>
+    <p>We welcome visitors by appointment. Come see the farm, meet the animals, and learn about heritage breeds.</p>
+    <a href="/find-us.html" class="btn-cta">Get in Touch</a>
 </section>

@@ -1,26 +1,36 @@
 ---
 layout: default
 title: Frequently Asked Questions
+description: Common questions about Texas Farms Vermont, our heritage animals, products, and visiting the farm.
 nav_section: our-farm
 ---
 <style>
 .faq-hero {
-    background: var(--forest);
-    padding: 4rem 0;
+    background: linear-gradient(rgba(30, 48, 33, 0.85), rgba(30, 48, 33, 0.9)), url('/images/cover.jpeg');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 0;
     text-align: center;
     color: var(--cream);
 }
 
-.faq-hero h1 {
+.hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     color: #f7f4ed;
     margin-bottom: 1rem;
+    line-height: 1.15;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: #d4a574;
 }
 
 .faq-hero p {
     color: #e8e4db;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
 }
 
 .faq-content {
@@ -70,6 +80,15 @@ nav_section: our-farm
     line-height: 1.7;
 }
 
+.faq-answer a {
+    color: var(--copper);
+    text-decoration: none;
+}
+
+.faq-answer a:hover {
+    text-decoration: underline;
+}
+
 .faq-cta {
     background: var(--cream);
     padding: 4rem 0;
@@ -80,7 +99,13 @@ nav_section: our-farm
     font-family: 'Cormorant Garamond', serif;
     font-size: 2rem;
     color: var(--forest);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.faq-cta p {
+    color: var(--text-light);
+    max-width: 450px;
+    margin: 0 auto 1.5rem;
 }
 
 .btn-contact {
@@ -104,8 +129,8 @@ nav_section: our-farm
 </style>
 
 <section class="faq-hero">
-    <h1>Frequently Asked Questions</h1>
-    <p>Everything you need to know about our farm</p>
+    <h1 class="hero-title">Common Questions<br><span class="title-accent">Answered</span></h1>
+    <p>Everything you need to know about our farm and products</p>
 </section>
 
 <section class="faq-content">
@@ -118,7 +143,7 @@ nav_section: our-farm
             </div>
             <div class="faq-item">
                 <div class="faq-question">Are you really called Texas Farms Vermont?</div>
-                <div class="faq-answer">Yes! We're located in the historic district of Texas, in Concord Vermont.</div>
+                <div class="faq-answer">Yes! We're located in the historic district of Texas, in Concord Vermont. The area got its name from a young man who vowed to leave for Texas during the gold rush—but ended up staying. The name stuck.</div>
             </div>
         </div>
 
@@ -126,11 +151,11 @@ nav_section: our-farm
             <h2 class="faq-category-title">Visiting the Farm</h2>
             <div class="faq-item">
                 <div class="faq-question">Can I visit the farm?</div>
-                <div class="faq-answer">Yes, by appointment only. Contact us to schedule a visit.</div>
+                <div class="faq-answer">Yes! We welcome visitors by appointment. <a href="/find-us.html">Contact us</a> to schedule a visit and meet the animals.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question">Do you offer educational programs?</div>
-                <div class="faq-answer">Yes, we offer various educational programs including school tours, farming workshops, and seasonal events. Contact us for more information.</div>
+                <div class="faq-answer">Yes, we offer various educational opportunities including farm tours and workshops. Contact us for more information about current offerings.</div>
             </div>
         </div>
 
@@ -138,11 +163,15 @@ nav_section: our-farm
             <h2 class="faq-category-title">Our Products</h2>
             <div class="faq-item">
                 <div class="faq-question">Where can I buy your products?</div>
-                <div class="faq-answer">Our products are available through our online Farm Shop and select local farmers markets.</div>
+                <div class="faq-answer">Our products are available through our <a href="https://texasfarmsvermont.square.site" target="_blank">online Farm Shop</a>, at select local farmers markets, and through our wholesale partners in Vermont and New Hampshire.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question">Are your products organic?</div>
-                <div class="faq-answer">While we're not certified organic, we follow sustainable and natural farming practices. We avoid synthetic pesticides and fertilizers, focusing instead on regenerative agriculture techniques.</div>
+                <div class="faq-answer">While we're not certified organic, we follow sustainable and natural farming practices. We avoid synthetic pesticides and fertilizers, focusing instead on regenerative agriculture techniques that build soil health.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Do you sell breeding stock?</div>
+                <div class="faq-answer">Yes! We sell registered Gloucestershire Old Spot piglets and pedigreed Champagne D'Argent rabbits. Check our <a href="/our-animals.html">animals page</a> for current availability.</div>
             </div>
         </div>
 
@@ -150,11 +179,11 @@ nav_section: our-farm
             <h2 class="faq-category-title">Animals & Livestock</h2>
             <div class="faq-item">
                 <div class="faq-question">Why do you raise heritage breeds?</div>
-                <div class="faq-answer">Heritage breeds offer unique qualities in terms of meat quality, adaptability, and genetic diversity. We're committed to preserving these traditional breeds while providing exceptional products.</div>
+                <div class="faq-answer">Heritage breeds offer superior meat quality, better adaptability to pasture-based systems, and important genetic diversity. By raising rare breeds like Gloucestershire Old Spots, we're helping preserve genetics that might otherwise be lost.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question">How do you ensure animal welfare?</div>
-                <div class="faq-answer">Our animals are raised with the highest standards of care, including access to pasture, appropriate shelter, and regular veterinary care. We believe happy animals produce better products.</div>
+                <div class="faq-question">How do you raise your animals?</div>
+                <div class="faq-answer">All our animals are pasture-raised with access to outdoors, fresh air, and room to express natural behaviors. We never use antibiotics or hormones, and we believe happy animals produce better food.</div>
             </div>
         </div>
 
@@ -162,17 +191,18 @@ nav_section: our-farm
             <h2 class="faq-category-title">Sustainability</h2>
             <div class="faq-item">
                 <div class="faq-question">What sustainable practices do you use?</div>
-                <div class="faq-answer">We employ various sustainable practices including solar power, rotational grazing, composting, and natural pest management. Our goal is to be good stewards of the land.</div>
+                <div class="faq-answer">We're an off-grid farm powered by solar energy. We practice no-till farming, rotational grazing, and composting. Our goal is to work with nature, building soil health while producing exceptional food.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question">How do you handle waste management?</div>
-                <div class="faq-answer">We have a comprehensive waste management system that includes composting, recycling, and using animal waste as natural fertilizer. We strive to create a closed-loop system.</div>
+                <div class="faq-question">What does "regenerative farming" mean?</div>
+                <div class="faq-answer">Regenerative agriculture focuses on rebuilding soil health, increasing biodiversity, and capturing carbon. Rather than depleting the land, we aim to leave it better than we found it for future generations.</div>
             </div>
         </div>
     </div>
 </section>
 
 <section class="faq-cta">
-    <h2>Still have questions?</h2>
+    <h2>Still Have Questions?</h2>
+    <p>We're happy to help. Reach out and we'll get back to you as soon as we can.</p>
     <a href="/find-us.html" class="btn-contact">Contact Us</a>
 </section>

@@ -6,22 +6,31 @@ nav_section: our-farm
 ---
 <style>
 .find-hero {
-    background: var(--forest);
-    padding: 4rem 0;
+    background: linear-gradient(rgba(30, 48, 33, 0.85), rgba(30, 48, 33, 0.9)), url('/images/concord-texas-vermont.png');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 0;
     text-align: center;
     color: var(--cream);
 }
 
-.find-hero h1 {
+.hero-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     color: #f7f4ed;
     margin-bottom: 1rem;
+    line-height: 1.15;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: #d4a574;
 }
 
 .find-hero p {
     color: #e8e4db;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
 }
 
 .contact-section {
@@ -122,6 +131,11 @@ nav_section: our-farm
     font-family: 'Cormorant Garamond', serif;
     font-size: 2rem;
     color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+.form-container > p {
+    color: var(--text-light);
     margin-bottom: 2rem;
 }
 
@@ -139,15 +153,15 @@ nav_section: our-farm
 </style>
 
 <section class="find-hero">
-    <h1>Find Us</h1>
-    <p>Visit our self-serve farmstand in Texas, Vermont</p>
+    <h1 class="hero-title">Find Us<br><span class="title-accent">in Texas, Vermont</span></h1>
+    <p>Visit our farm in Concord's historic Texas district</p>
 </section>
 
 <section class="contact-section">
     <div class="contact-grid">
         <div class="contact-item">
             <h3>Email</h3>
-            <a href="mailto:info@texasfarmsvermont.com">info@texasfarmsvermont.com</a>
+            <a href="mailto:heather@texasfarmsvermont.com">heather@texasfarmsvermont.com</a>
         </div>
         <div class="contact-item">
             <h3>Phone</h3>
@@ -173,7 +187,8 @@ nav_section: our-farm
 
 <section class="form-section">
     <div class="form-container">
-        <h2>Contact Form</h2>
+        <h2>Send Us a Message</h2>
+        <p>Questions about our products, scheduling a visit, or just want to say hello? We'd love to hear from you.</p>
         <div class="form-wrapper">
             <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSepooklj4h3DNHroiFw24-FKAG_qpftkQV9VImJ4SEvXJzhPw/viewform?embedded=true">Loading...</iframe>
         </div>
