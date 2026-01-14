@@ -1,0 +1,535 @@
+---
+layout: default
+title: Heritage Pork Charcuterie
+description: Artisan charcuterie and cured meats from Gloucestershire Old Spot pigs. Vermont-made bacon, sausage, and specialty cuts from Texas Farms.
+---
+<style>
+:root {
+    --forest: #1a2e1a;
+    --forest-light: #2d4a2d;
+    --cream: #f7f4ed;
+    --cream-dark: #ebe6db;
+    --copper: #b87333;
+    --copper-light: #d4915c;
+    --text: #1a1a1a;
+    --text-light: #555;
+}
+
+.charc-page {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+}
+
+/* Hero */
+.charc-hero {
+    min-height: 70vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--forest);
+}
+
+.charc-hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    color: var(--cream);
+}
+
+.hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.1;
+    margin: 0 0 1.5rem 0;
+    color: #f7f4ed;
+}
+
+.hero-title .accent {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--copper-light);
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    max-width: 420px;
+    margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+}
+
+.charc-hero-image {
+    background: url('/images/gos-pork-charcuterie1.png') center/cover;
+}
+
+@media (max-width: 900px) {
+    .charc-hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .charc-hero-image {
+        height: 50vh;
+        order: -1;
+    }
+    .charc-hero-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Feature Banner */
+.feature-banner {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.feature-list span {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #f0ede6;
+    font-weight: 500;
+}
+
+/* Products Section */
+.products-section {
+    padding: 5rem 0;
+    background: white;
+}
+
+.products-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.products-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.products-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.product-card {
+    text-align: center;
+}
+
+.product-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    margin-bottom: 1.25rem;
+}
+
+.product-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.product-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+@media (max-width: 800px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+}
+
+/* Why Section */
+.why-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--cream-dark);
+}
+
+.why-image {
+    background: url('/images/gos-pork-charcuterie2.png') center/cover;
+    min-height: 450px;
+}
+
+.why-content {
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.why-content .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.why-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.why-content p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.why-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+}
+
+.why-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.why-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 900px) {
+    .why-section {
+        grid-template-columns: 1fr;
+    }
+    .why-image {
+        height: 300px;
+        min-height: auto;
+    }
+    .why-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Offerings */
+.offerings-section {
+    padding: 5rem 0;
+    background: white;
+}
+
+.offerings-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.offerings-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0;
+}
+
+.offerings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.offering-item {
+    background: var(--cream);
+    padding: 2rem;
+    border-left: 3px solid var(--copper);
+}
+
+.offering-item h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.offering-item p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .offerings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* CTA Section */
+.cta-section {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 5rem 2rem;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: #f7f4ed;
+}
+
+.cta-section p {
+    font-size: 1.1rem;
+    color: #e8e4db;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-cta {
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cta:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-cta-outline {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cta-outline:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+}
+</style>
+
+<div class="charc-page">
+
+<!-- Hero -->
+<section class="charc-hero">
+    <div class="charc-hero-content">
+        <span class="hero-label">Artisan Cured Meats</span>
+        <h1 class="hero-title">Heritage Pork<span class="accent">Charcuterie</span></h1>
+        <p class="hero-subtitle">Small-batch bacon, sausage, and cured meats from our pasture-raised Gloucestershire Old Spot pigs. Crafted in Vermont.</p>
+        <div class="hero-cta">
+            <a href="{{ site.shop_url }}" class="btn-primary">Shop Now</a>
+            <a href="/animals/gloucestershire-old-spot-pigs.html" class="btn-outline">About Our Pigs</a>
+        </div>
+    </div>
+    <div class="charc-hero-image"></div>
+</section>
+
+<!-- Feature Banner -->
+<div class="feature-banner">
+    <div class="feature-list">
+        <span>Heritage Breed</span>
+        <span>Small Batch</span>
+        <span>No Nitrates</span>
+        <span>Vermont Made</span>
+    </div>
+</div>
+
+<!-- Products Gallery -->
+<section class="products-section">
+    <div class="products-header">
+        <span class="label">Our Selection</span>
+        <h2>Crafted with Care</h2>
+    </div>
+    <div class="products-grid">
+        <div class="product-card">
+            <img src="/images/gos-pork-charcuterie1.png" alt="Heritage pork charcuterie board with cured meats">
+            <h3>Charcuterie Boards</h3>
+            <p>A curated selection of our cured meats, perfect for entertaining or a special night in.</p>
+        </div>
+        <div class="product-card">
+            <img src="/images/gos-pork-charcuterie2.png" alt="Artisan bacon and cured pork from Vermont">
+            <h3>Bacon & Cured Cuts</h3>
+            <p>Dry-cured bacon and specialty cuts with rich flavor from heritage pork fat.</p>
+        </div>
+        <div class="product-card">
+            <img src="/images/gos-pork-charcuterie3.png" alt="Vermont artisan sausage and salumi">
+            <h3>Sausage & Salumi</h3>
+            <p>Fresh and cured sausages made with traditional recipes and quality spices.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Why Heritage -->
+<section class="why-section">
+    <div class="why-image"></div>
+    <div class="why-content">
+        <span class="label">The Difference</span>
+        <h2>Why Heritage Pork Makes Better Charcuterie</h2>
+        <p>Gloucestershire Old Spots are known for their exceptional fat quality and marbling—the key to great charcuterie. Our pigs roam on pasture, developing complex flavors that industrial pork simply can't match.</p>
+        <ul class="why-list">
+            <li>Higher fat content for silky, rich texture</li>
+            <li>Deep, complex flavor from pasture diet</li>
+            <li>Traditional breeds used by artisan curers for centuries</li>
+            <li>No antibiotics or hormones, ever</li>
+        </ul>
+    </div>
+</section>
+
+<!-- What We Offer -->
+<section class="offerings-section">
+    <div class="offerings-header">
+        <h2>What We Offer</h2>
+    </div>
+    <div class="offerings-grid">
+        <div class="offering-item">
+            <h3>Bacon</h3>
+            <p>Thick-cut, dry-cured bacon with the perfect balance of meat and fat. Smoked over local hardwood.</p>
+        </div>
+        <div class="offering-item">
+            <h3>Breakfast Sausage</h3>
+            <p>Classic breakfast links seasoned with sage and black pepper. A weekend morning essential.</p>
+        </div>
+        <div class="offering-item">
+            <h3>Italian Sausage</h3>
+            <p>Sweet or hot, made with fennel and red pepper. Perfect for pasta, pizza, or the grill.</p>
+        </div>
+        <div class="offering-item">
+            <h3>Specialty Cuts</h3>
+            <p>Rotating selection of cured specialties. Ask us what's currently available.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <h2>Ready to Taste the Difference?</h2>
+    <p>Order online for local pickup in the Northeast Kingdom, or inquire about restaurant partnerships.</p>
+    <div class="cta-buttons">
+        <a href="{{ site.shop_url }}" class="btn-cta">Shop Charcuterie</a>
+        <a href="/for-restaurants.html" class="btn-cta-outline">Restaurant Inquiries</a>
+    </div>
+</section>
+
+</div>
