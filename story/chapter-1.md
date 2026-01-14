@@ -7,6 +7,7 @@ total_chapters: 3
 subtitle: "In which we brave Labor Day traffic, discover mold, and sleep with the wildlife"
 image: /images/destruction.jpeg
 audio: /audiobook/chapter1.mp3
+permalink: /story/chapter-1.html
 prev_chapter:
   url: /story/introduction.html
   title: "Introduction"

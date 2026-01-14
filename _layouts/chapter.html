@@ -4,6 +4,22 @@
     {% include head.html %}
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+    /* Sticky footer using wrapper div (more reliable than body flex) */
+    .page-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .page-wrapper > .book-container {
+        flex: 1 0 auto;
+    }
+
+    .page-wrapper > footer {
+        flex-shrink: 0;
+        width: 100%;
+    }
+
     /* Reading mode - cleaner header */
     .reading-mode-header {
         background: var(--forest);
@@ -56,7 +72,6 @@
     /* Book container */
     .book-container {
         background: #f5f3eb;
-        min-height: calc(100vh - 200px);
         padding: 2rem 1rem 4rem;
     }
 
@@ -226,28 +241,34 @@
         margin-top: 0.25rem;
     }
 
-    /* Chapter content */
-    .chapter-content {
-        font-family: 'Lora', serif;
-        font-size: 1.1rem;
-        line-height: 1.9;
-        color: #333;
+    /* Chapter content - force paragraph styles */
+    .book-page .chapter-content {
+        font-family: 'Lora', serif !important;
+        font-size: 1.1rem !important;
+        line-height: 1.9 !important;
+        color: #333 !important;
     }
 
-    .chapter-content p {
-        margin-bottom: 1.5em;
-        text-align: justify;
-        text-indent: 1.5em;
-        hyphens: auto;
-        -webkit-hyphens: auto;
+    .book-page .chapter-content p,
+    .chapter-content > p,
+    article.book-page .chapter-content p {
+        display: block !important;
+        margin: 0 0 1.5em 0 !important;
+        padding: 0 !important;
+        text-align: justify !important;
+        text-indent: 1.5em !important;
+        hyphens: auto !important;
+        -webkit-hyphens: auto !important;
+        font-family: 'Lora', serif !important;
+        font-size: 1.1rem !important;
+        line-height: 1.9 !important;
+        color: #333 !important;
     }
 
-    .chapter-content p:first-of-type {
-        text-indent: 0;
-    }
-
-    .chapter-content p + p {
-        margin-top: 0;
+    .book-page .chapter-content p:first-of-type,
+    .chapter-content > p:first-of-type,
+    article.book-page .chapter-content p:first-of-type {
+        text-indent: 0 !important;
     }
 
     /* Drop cap */
@@ -494,13 +515,13 @@
         }
 
         .chapter-content p {
-            text-align: justify;
-            text-indent: 1.25em;
-            margin-bottom: 1.25em;
+            text-align: justify !important;
+            text-indent: 1.25em !important;
+            margin-bottom: 1.25em !important;
         }
 
         .chapter-content p:first-of-type {
-            text-indent: 0;
+            text-indent: 0 !important;
         }
 
         .chapter-content p:first-of-type::first-letter {
@@ -561,6 +582,7 @@
     </style>
 </head>
 <body>
+<div class="page-wrapper">
     <!-- Minimal reading header -->
     <div class="reading-mode-header">
         <div class="reading-header-inner">
@@ -694,6 +716,7 @@
     </div>
 
     {% include footer.html %}
+</div><!-- end page-wrapper -->
     {% include scripts.html %}
 
     {% if page.audio %}

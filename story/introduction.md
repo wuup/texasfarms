@@ -7,6 +7,7 @@ total_chapters: 3
 subtitle: "In which we discover a wooded plot and contemplate a life-changing decision"
 image: /images/farming.jpeg
 audio: /audiobook/introduction.mp3
+permalink: /story/introduction.html
 next_chapter:
   url: /story/chapter-1.html
   title: "The First Weekend"
