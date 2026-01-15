@@ -78,6 +78,52 @@ Texas Farms is a real off-grid, regenerative farm located in Concord, Vermont (i
 
 ---
 
+## The Game MUST Be Fun
+
+This is not a spreadsheet simulator. The game needs to be **engaging, rewarding, and fun to play**. Always ask: "Would a player enjoy this?"
+
+### Things To Do (Always Have Activities)
+Players should never feel bored or stuck waiting. Ensure there's always something meaningful to do:
+- **Daily tasks** - Feeding, checking animals, collecting eggs
+- **Short-term goals** - Save up for a new animal, prepare for market day
+- **Long-term goals** - Breed the perfect pig, survive year one, unlock all recipes
+- **Surprises** - Random events, visitors, weather, opportunities
+- **Exploration** - Discover new areas, unlock buildings, find secrets
+
+### World to Explore
+The farm should feel like a place, not just a menu:
+- **Spatial layout** - Buildings, pastures, paths to walk
+- **Expansion** - Start small, unlock new areas over time
+- **Hidden content** - Easter eggs, secrets, rare events
+- **Neighbors/NPCs** - Other farmers, buyers, visitors (even if simple)
+- **Landmarks** - The barn, the farmhouse, the market, the woods
+
+### Gamification & Rewards
+Keep players motivated with constant positive feedback:
+- **Achievements/Awards** - "First Sale!", "Survived Winter", "Master Breeder"
+- **Unlockables** - New animals, buildings, recipes, cosmetics
+- **Milestones** - Year 1 complete, 100 animals raised, $10,000 earned
+- **Daily rewards** - Streak bonuses, daily challenges
+- **Progress visualization** - Stats, graphs, farm journal
+- **Leaderboards** - Personal bests, challenge scores
+
+### Core Game Feel
+- **Satisfying feedback** - Sounds, animations, celebrations when things go well
+- **Clear progression** - Player should feel they're growing and improving
+- **Meaningful choices** - Decisions should matter (breed this pig or sell it?)
+- **Risk/reward** - Bigger gambles should have bigger payoffs
+- **No dead ends** - Always a path forward, even after setbacks
+
+### Fun Checklist (Ask These Questions)
+Before completing any feature, ask:
+1. Is this fun, or just functional?
+2. Does the player have something to look forward to?
+3. Is there a reward or payoff?
+4. Would I want to keep playing after this?
+5. Is there variety, or is it repetitive?
+
+---
+
 ## Technical Architecture
 
 ### Constraints (MUST FOLLOW)
@@ -299,23 +345,53 @@ As the game grows:
 
 ## Development Process
 
+### Task Management (CRITICAL)
+
+**You MUST maintain your own task list.** Use the TodoWrite tool to:
+- Break down each phase into specific tasks
+- Track what you're currently working on
+- Mark tasks complete as you finish them
+- Add new tasks as you discover them
+
+Example task breakdown for Phase 1:
+```
+[ ] Set up game state architecture
+[ ] Implement action/dispatch system
+[ ] Create save/load to localStorage
+[ ] Build basic CSS/emoji renderer
+[ ] Add day/time advancement system
+[ ] Create GOS Pig entity (buy, feed, sell)
+[ ] Implement simple economy
+[ ] Build HUD (money, day, season)
+[ ] Create debug panel
+[ ] Write 3 unit tests
+[ ] Write 3 playtest scenarios
+[ ] Add mobile touch support
+```
+
+**Never work without a task list.** It keeps you focused and shows progress.
+
 ### Your Iteration Loop
 
-1. **Read ROADMAP.md** - What's the next feature?
-2. **Write tests first** - Define what success looks like
-3. **Implement feature** - Build it
-4. **Run tests** - Verify it works
-5. **Run playtests** - Verify it's balanced
-6. **Analyze results** - Is it fun? Balanced? Broken?
-7. **Adjust** - Fix issues found in playtesting
-8. **Update CHANGELOG.md** - Document what changed
-9. **Update ROADMAP.md** - Mark complete, note next steps
-10. **Commit with clear message** - Push progress
-11. **Repeat**
+1. **Check task list** - What's the current task?
+2. **Read ROADMAP.md** - Understand the bigger picture
+3. **Write tests first** - Define what success looks like
+4. **Implement feature** - Build it
+5. **Run tests** - Verify it works
+6. **Run playtests** - Verify it's balanced AND fun
+7. **Ask the Fun Checklist** - Is this enjoyable?
+8. **Adjust** - Fix issues found in playtesting
+9. **Mark task complete** - Update your task list
+10. **Update CHANGELOG.md** - Document what changed
+11. **Update ROADMAP.md** - Mark complete, note next steps
+12. **Commit AND PUSH** - Push progress immediately
+13. **Repeat**
 
-### Commit Frequently
+### Commit and Push Frequently (REQUIRED)
 
-After each meaningful change:
+**Push after every meaningful change.** Don't accumulate commits locally.
+
+After each feature, bug fix, or improvement:
 ```bash
 git add -A
 git commit -m "feat(game): Add pig breeding with genetics system
@@ -326,6 +402,19 @@ git commit -m "feat(game): Add pig breeding with genetics system
 - Playtest: breeding_genetics passes"
 git push
 ```
+
+**Why push immediately?**
+- Progress is saved even if session ends
+- Others can see what you've built
+- Creates clear history of development
+- Never lose work
+
+**Commit message prefixes:**
+- `feat(game):` - New features
+- `fix(game):` - Bug fixes
+- `refactor(game):` - Code improvements
+- `test(game):` - Test additions
+- `docs(game):` - Documentation updates
 
 ### When Stuck
 
