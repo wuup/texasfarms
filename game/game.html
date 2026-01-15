@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v1.9.0
-// Animal achievements and improved HUD!
+// TEXAS FARMS - THE GAME v2.0.0
+// Artisan goods crafting system!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -397,12 +397,22 @@ const ITEMS = {
     // Craftables
     SPRINKLER: { id: 'sprinkler', name: 'Sprinkler', emoji: '💧', type: 'placeable', desc: 'Auto-waters 8 tiles around it' },
     SCARECROW: { id: 'scarecrow', name: 'Scarecrow', emoji: '🎃', type: 'placeable', desc: 'Protects crops from crows' },
+    // Artisan goods (crafted from animal products)
+    PILLOW: { id: 'pillow', name: 'Goose Pillow', emoji: '🛏️', type: 'artisan', sellPrice: 150 },
+    WOOL_BLANKET: { id: 'wool_blanket', name: 'Wool Blanket', emoji: '🧣', type: 'artisan', sellPrice: 200 },
+    TRUFFLE_OIL: { id: 'truffle_oil', name: 'Truffle Oil', emoji: '🫒', type: 'artisan', sellPrice: 600 },
+    MAYONNAISE: { id: 'mayonnaise', name: 'Mayonnaise', emoji: '🥫', type: 'artisan', sellPrice: 100 },
 };
 
 // Crafting recipes
 const RECIPES = {
     sprinkler: { result: ITEMS.SPRINKLER, ingredients: { stone: 5, wood: 3 } },
     scarecrow: { result: ITEMS.SCARECROW, ingredients: { wood: 10, stone: 2 } },
+    // Artisan goods - turn animal products into valuable items
+    pillow: { result: ITEMS.PILLOW, ingredients: { feather: 5 } },
+    wool_blanket: { result: ITEMS.WOOL_BLANKET, ingredients: { wool: 4 } },
+    truffle_oil: { result: ITEMS.TRUFFLE_OIL, ingredients: { truffle: 1 } },
+    mayonnaise: { result: ITEMS.MAYONNAISE, ingredients: { egg: 3 } },
 };
 
 // Tool upgrade tiers
@@ -1324,6 +1334,7 @@ const Game = {
         { id: 'wool_collector', name: 'Wool Gatherer', desc: 'Collect 10 wool', emoji: '🧶' },
         { id: 'truffle_finder', name: 'Truffle Hunter', desc: 'Find a truffle', emoji: '🍄' },
         { id: 'animal_rancher', name: 'Animal Rancher', desc: 'Own 10 animals', emoji: '🏡' },
+        { id: 'artisan', name: 'Artisan', desc: 'Craft an artisan good', emoji: '🏺' },
     ],
     // Lifetime stats for achievements
     lifetimeStats: {
@@ -1851,16 +1862,21 @@ const Game = {
     showCraftingDialog() {
         let html = '<strong>🔨 Crafting</strong><br><br>';
 
-        // Count resources in inventory
+        // Count resources and products in inventory
         const resources = {};
         this.inventory.forEach(slot => {
-            if (slot && slot.item.type === 'resource') {
+            if (slot && (slot.item.type === 'resource' || slot.item.type === 'product')) {
                 resources[slot.item.id] = (resources[slot.item.id] || 0) + slot.count;
             }
         });
 
-        html += `<b>Your resources:</b> `;
-        html += `🪨 ${resources.stone || 0} Stone, 🪵 ${resources.wood || 0} Wood<br><br>`;
+        html += `<b>Materials:</b> `;
+        html += `🪨${resources.stone || 0} 🪵${resources.wood || 0}`;
+        if (resources.egg) html += ` 🥚${resources.egg}`;
+        if (resources.feather) html += ` 🪶${resources.feather}`;
+        if (resources.wool) html += ` 🧶${resources.wool}`;
+        if (resources.truffle) html += ` 🍄${resources.truffle}`;
+        html += `<br><br>`;
         html += `<b>Recipes:</b><br>`;
 
         let options = '';
@@ -1889,10 +1905,10 @@ const Game = {
         const recipe = RECIPES[recipeKey];
         if (!recipe) return;
 
-        // Check if we have ingredients
+        // Check if we have ingredients (resources + products)
         const resources = {};
         this.inventory.forEach(slot => {
-            if (slot && slot.item.type === 'resource') {
+            if (slot && (slot.item.type === 'resource' || slot.item.type === 'product')) {
                 resources[slot.item.id] = (resources[slot.item.id] || 0) + slot.count;
             }
         });
@@ -1929,8 +1945,11 @@ const Game = {
         Audio.play('harvest');
         this.showToast(`Crafted ${recipe.result.emoji} ${recipe.result.name}!`);
 
-        // Crafting achievement
+        // Crafting achievements
         this.unlockAchievement('first_craft');
+        if (recipe.result.type === 'artisan') {
+            this.unlockAchievement('artisan');
+        }
 
         this.showCraftingDialog(); // Refresh
     },
@@ -3382,7 +3401,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.9.0',
+            version: '2.0.0',
             money: this.money,
             day: this.day,
             season: this.season,

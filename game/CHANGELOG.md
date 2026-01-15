@@ -4,6 +4,26 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [2.0.0] - 2026-01-15
+
+### Added
+- **Artisan Goods Crafting System** 🏺
+  - Turn animal products into valuable artisan goods!
+  - Goose Pillow (🛏️): 5 feathers → $150
+  - Wool Blanket (🧣): 4 wool → $200
+  - Truffle Oil (🫒): 1 truffle → $600
+  - Mayonnaise (🥫): 3 eggs → $100
+
+- **New Achievement**
+  - Artisan: Craft an artisan good 🏺
+
+### Changed
+- Crafting menu now shows animal products as materials
+- Total achievements: 28
+- Version bumped to 2.0.0 🎉
+
+---
+
 ## [1.9.0] - 2026-01-15
 
 ### Added
