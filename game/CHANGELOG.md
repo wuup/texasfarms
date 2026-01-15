@@ -4,6 +4,19 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [2.2.0] - 2026-01-15
+
+### Added
+- **Premium Mayo Recipe** ✨🥫
+  - Craft Premium Mayo from 2 goose eggs
+  - Sells for $250 (vs $100 for regular mayo)
+  - Great way to use those valuable goose eggs!
+
+### Changed
+- Version bumped to 2.2.0
+
+---
+
 ## [2.1.0] - 2026-01-15
 
 ### Added

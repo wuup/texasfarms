@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v2.1.0
-// Goose eggs and more!
+// TEXAS FARMS - THE GAME v2.2.0
+// Premium Mayo and refinements
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -403,6 +403,7 @@ const ITEMS = {
     WOOL_BLANKET: { id: 'wool_blanket', name: 'Wool Blanket', emoji: '🧣', type: 'artisan', sellPrice: 200 },
     TRUFFLE_OIL: { id: 'truffle_oil', name: 'Truffle Oil', emoji: '🫒', type: 'artisan', sellPrice: 600 },
     MAYONNAISE: { id: 'mayonnaise', name: 'Mayonnaise', emoji: '🥫', type: 'artisan', sellPrice: 100 },
+    PREMIUM_MAYO: { id: 'premium_mayo', name: 'Premium Mayo', emoji: '✨🥫', type: 'artisan', sellPrice: 250, desc: 'Made from rich goose eggs' },
 };
 
 // Crafting recipes
@@ -414,6 +415,7 @@ const RECIPES = {
     wool_blanket: { result: ITEMS.WOOL_BLANKET, ingredients: { wool: 4 } },
     truffle_oil: { result: ITEMS.TRUFFLE_OIL, ingredients: { truffle: 1 } },
     mayonnaise: { result: ITEMS.MAYONNAISE, ingredients: { egg: 3 } },
+    premium_mayo: { result: ITEMS.PREMIUM_MAYO, ingredients: { goose_egg: 2 } },
 };
 
 // Tool upgrade tiers
@@ -3418,7 +3420,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '2.1.0',
+            version: '2.2.0',
             money: this.money,
             day: this.day,
             season: this.season,
