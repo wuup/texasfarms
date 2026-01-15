@@ -627,6 +627,17 @@ body {
     box-shadow: 0 0 0 2px var(--warning);
 }
 
+.animal-card.pregnant {
+    background: linear-gradient(135deg, #fff5f8 0%, #ffe4ec 100%);
+    box-shadow: 0 0 0 2px #d94a8c;
+    animation: pulse-pregnant 2s ease-in-out infinite;
+}
+
+@keyframes pulse-pregnant {
+    0%, 100% { box-shadow: 0 0 0 2px #d94a8c; }
+    50% { box-shadow: 0 0 8px 2px #d94a8c; }
+}
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
@@ -1299,7 +1310,7 @@ body {
 
 const DEFAULT_STATE = {
     meta: {
-        version: "0.2.0",
+        version: "0.3.0",
         created: null,
         lastSaved: null,
         totalPlayTime: 0
@@ -1359,7 +1370,17 @@ const CONFIG = {
     },
 
     // Random event chances (per day)
-    EVENT_CHANCE: 0.08  // 8% chance of event per day
+    EVENT_CHANCE: 0.08,  // 8% chance of event per day
+
+    // Breeding settings
+    BREEDING_MIN_AGE: 180,          // Days until sexually mature
+    BREEDING_MIN_HAPPINESS: 60,     // Minimum happiness to breed
+    PREGNANCY_DURATION: 114,        // 114 days (~3.8 months) for pigs
+    BREEDING_COOLDOWN: 60,          // Days between breeding
+    LITTER_SIZE_MIN: 6,             // Minimum piglets
+    LITTER_SIZE_MAX: 12,            // Maximum piglets
+    BREEDING_STOCK_PREMIUM: 1.5,    // 50% premium for breeding stock
+    MUTATION_RATE: 0.1              // How much genetics can vary in offspring
 };
 
 // Random events that can occur
@@ -1608,7 +1629,13 @@ const ACHIEVEMENTS = [
     { id: 'ten_pigs_sold', name: 'Experienced Farmer', desc: 'Sell 10 pigs total', icon: '🌟', check: s => s.stats.pigsSold >= 10 },
     { id: 'year_one', name: 'Year One Complete', desc: 'Complete your first full year', icon: '📅', check: s => s.farm.year >= 2 },
     { id: 'heritage_breeder', name: 'Heritage Breeder', desc: 'Raise 20 pigs total', icon: '🏆', check: s => s.stats.totalAnimalsRaised >= 20 },
-    { id: 'wealthy_farmer', name: 'Wealthy Farmer', desc: 'Earn $10,000 total', icon: '👑', check: s => s.stats.totalMoneyEarned >= 10000 }
+    { id: 'wealthy_farmer', name: 'Wealthy Farmer', desc: 'Earn $10,000 total', icon: '👑', check: s => s.stats.totalMoneyEarned >= 10000 },
+    // Breeding achievements
+    { id: 'first_breed', name: 'Matchmaker', desc: 'Breed your first pair of pigs', icon: '💕', check: s => s.animals.some(a => a.pregnant) },
+    { id: 'first_litter', name: 'Proud Parent', desc: 'Have piglets born on your farm', icon: '🐷', check: s => s.animals.some(a => (a.lineage?.generation || 0) > 0) },
+    { id: 'geneticist', name: 'Geneticist', desc: 'Breed a pig with 85%+ avg genetics', icon: '🧬', check: s => s.animals.some(a => ((a.genetics.marbling + a.genetics.growthRate + (a.genetics.litterSize || 0.5)) / 3) > 0.85) },
+    { id: 'dynasty', name: 'Pig Dynasty', desc: 'Have a 3rd generation pig', icon: '👑', check: s => s.animals.some(a => (a.lineage?.generation || 0) >= 3) },
+    { id: 'big_litter', name: 'Full House', desc: 'Own 10+ pigs at once', icon: '🏠', check: s => s.animals.length >= 10 }
 ];
 
 // ==========================================
@@ -1624,6 +1651,13 @@ const TUTORIAL_HINTS = [
     { id: 'mature_pig', condition: s => s.animals.some(a => a.age >= CONFIG.PIG_MATURITY_DAYS), message: "You have a mature pig! Click on it to see its value and sell it.", priority: true },
     { id: 'winter_prep', condition: s => s.farm.season === 'fall' && s.farm.day > 15, message: "Winter is coming! Feed costs will increase. Make sure you have savings.", delay: 2000 },
     { id: 'good_genetics', condition: s => s.animals.some(a => a.genetics.marbling > 0.8), message: "Nice! That pig has excellent marbling genetics - it'll sell for a premium!", delay: 1000 },
+    // Breeding hints
+    { id: 'breeding_ready', condition: s => {
+        const males = s.animals.filter(a => a.sex === 'male' && a.age >= CONFIG.BREEDING_MIN_AGE);
+        const females = s.animals.filter(a => a.sex === 'female' && a.age >= CONFIG.BREEDING_MIN_AGE);
+        return males.length > 0 && females.length > 0 && !s.animals.some(a => a.pregnant);
+    }, message: "You have mature pigs of both sexes! Click on one to start breeding and create offspring with combined genetics.", delay: 2000 },
+    { id: 'pregnant_pig', condition: s => s.animals.some(a => a.pregnant && a.pregnantDays < 10), message: "A pig is pregnant! Keep her happy and fed. Piglets arrive in about 114 days.", delay: 1000 },
 ];
 
 const Tutorial = {
@@ -1744,25 +1778,99 @@ const Achievements = {
 // ANIMAL FACTORY
 // ==========================================
 
-function createPig(name = null) {
-    const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie',
-                   'Truffle', 'Maple', 'Ginger', 'Clover', 'Acorn', 'Hazel', 'Bruno', 'Penny'];
+function createPig(name = null, geneticsOverride = null, lineage = null) {
+    const maleNames = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Chester', 'Bruno', 'Duke', 'Max'];
+    const femaleNames = ['Petunia', 'Spot', 'Rosie', 'Truffle', 'Maple', 'Ginger', 'Clover', 'Penny'];
+
+    const sex = Math.random() < 0.5 ? 'male' : 'female';
+    const names = sex === 'male' ? maleNames : femaleNames;
+
     return {
         id: generateId(),
         type: 'gos_pig',
         name: name || names[Math.floor(Math.random() * names.length)],
+        sex: sex,
         age: 0,
         weight: 50, // Starting weight in lbs (8-week old piglet)
         health: 100,
         happiness: 80,
         fed: true,
         daysSinceFed: 0,
-        genetics: {
+        genetics: geneticsOverride || {
             marbling: 0.5 + Math.random() * 0.4,    // 50-90% quality
             growthRate: 0.6 + Math.random() * 0.4,  // 60-100% growth speed
-            size: 0.5 + Math.random() * 0.3         // 50-80% final size potential
+            size: 0.5 + Math.random() * 0.3,        // 50-80% final size potential
+            litterSize: 0.5 + Math.random() * 0.5   // 50-100% litter size potential
+        },
+        // Breeding state
+        pregnant: false,
+        pregnantDays: 0,
+        pregnantWith: null,  // ID of father
+        breedingCooldown: 0,
+        // Lineage tracking
+        lineage: lineage || {
+            mother: null,
+            father: null,
+            generation: 0
         }
     };
+}
+
+// Create offspring pig with inherited genetics
+function createOffspring(mother, father) {
+    const mutate = (val) => {
+        const mutation = (Math.random() - 0.5) * 2 * CONFIG.MUTATION_RATE;
+        return Math.max(0.3, Math.min(1.0, val + mutation));
+    };
+
+    const inheritedGenetics = {
+        marbling: mutate((mother.genetics.marbling + father.genetics.marbling) / 2),
+        growthRate: mutate((mother.genetics.growthRate + father.genetics.growthRate) / 2),
+        size: mutate((mother.genetics.size + father.genetics.size) / 2),
+        litterSize: mutate((mother.genetics.litterSize + father.genetics.litterSize) / 2)
+    };
+
+    const lineage = {
+        mother: mother.id,
+        father: father.id,
+        generation: Math.max(mother.lineage?.generation || 0, father.lineage?.generation || 0) + 1
+    };
+
+    return createPig(null, inheritedGenetics, lineage);
+}
+
+// Check if a pig can breed
+function canBreed(pig) {
+    return pig.age >= CONFIG.BREEDING_MIN_AGE &&
+           pig.happiness >= CONFIG.BREEDING_MIN_HAPPINESS &&
+           pig.health >= 50 &&
+           !pig.pregnant &&
+           pig.breedingCooldown === 0;
+}
+
+// Get breeding-eligible pigs
+function getBreedingPairs(animals) {
+    const males = animals.filter(a => a.sex === 'male' && canBreed(a));
+    const females = animals.filter(a => a.sex === 'female' && canBreed(a));
+    return { males, females };
+}
+
+// Calculate litter size based on genetics
+function calculateLitterSize(mother, father) {
+    const avgLitterGene = (mother.genetics.litterSize + father.genetics.litterSize) / 2;
+    const range = CONFIG.LITTER_SIZE_MAX - CONFIG.LITTER_SIZE_MIN;
+    const baseLitter = CONFIG.LITTER_SIZE_MIN + Math.round(range * avgLitterGene);
+    // Add some randomness
+    const variance = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+    return Math.max(CONFIG.LITTER_SIZE_MIN, Math.min(CONFIG.LITTER_SIZE_MAX, baseLitter + variance));
+}
+
+// Calculate breeding stock value (premium for good genetics)
+function calculateBreedingStockPrice(pig) {
+    const basePrice = calculateSellPrice(pig, 'spring', 1); // Use spring as neutral
+    const avgGenetics = (pig.genetics.marbling + pig.genetics.growthRate + pig.genetics.size + pig.genetics.litterSize) / 4;
+    const geneticBonus = 1 + (avgGenetics - 0.5); // 0.5-1.5x based on genetics
+    return Math.round(basePrice * CONFIG.BREEDING_STOCK_PREMIUM * geneticBonus);
 }
 
 // ==========================================
@@ -1944,6 +2052,46 @@ function reduce(state, action) {
                 Toast.warning(`${hungryPigs.length} pig${hungryPigs.length > 1 ? 's are' : ' is'} getting hungry!`);
             }
 
+            // Process pregnancies and breeding cooldowns
+            const newBorns = [];
+            newState.animals.forEach(animal => {
+                // Decrement breeding cooldown
+                if (animal.breedingCooldown > 0) {
+                    animal.breedingCooldown--;
+                }
+
+                // Process pregnancy
+                if (animal.pregnant) {
+                    animal.pregnantDays++;
+
+                    // Birth!
+                    if (animal.pregnantDays >= CONFIG.PREGNANCY_DURATION) {
+                        const father = newState.animals.find(a => a.id === animal.pregnantWith);
+                        if (father) {
+                            const litterSize = calculateLitterSize(animal, father);
+                            for (let i = 0; i < litterSize; i++) {
+                                const piglet = createOffspring(animal, father);
+                                newBorns.push(piglet);
+                            }
+                            Toast.achievement(`${animal.name} gave birth to ${litterSize} piglets!`);
+                            Sound.play('achievement');
+                            Debug.log(`${animal.name} birthed ${litterSize} piglets`, 'action');
+                        }
+                        // Reset pregnancy state
+                        animal.pregnant = false;
+                        animal.pregnantDays = 0;
+                        animal.pregnantWith = null;
+                        animal.breedingCooldown = CONFIG.BREEDING_COOLDOWN;
+                    }
+                }
+            });
+
+            // Add newborns to farm
+            newBorns.forEach(piglet => {
+                newState.animals.push(piglet);
+                newState.stats.totalAnimalsRaised++;
+            });
+
             // Random events
             const event = triggerRandomEvent(newState);
             if (event) {
@@ -1972,6 +2120,79 @@ function reduce(state, action) {
 
         case 'KILL_ALL': {
             newState.animals = [];
+            return newState;
+        }
+
+        case 'BREED': {
+            const mother = newState.animals.find(a => a.id === action.motherId);
+            const father = newState.animals.find(a => a.id === action.fatherId);
+
+            if (!mother || !father) {
+                Toast.error("Selected animals not found!");
+                return state;
+            }
+
+            if (mother.sex !== 'female' || father.sex !== 'male') {
+                Toast.error("Need one female and one male pig to breed!");
+                return state;
+            }
+
+            if (!canBreed(mother)) {
+                let reason = '';
+                if (mother.age < CONFIG.BREEDING_MIN_AGE) reason = 'not mature';
+                else if (mother.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
+                else if (mother.pregnant) reason = 'already pregnant';
+                else if (mother.breedingCooldown > 0) reason = `needs ${mother.breedingCooldown} days rest`;
+                Toast.warning(`${mother.name} can't breed (${reason})`);
+                return state;
+            }
+
+            if (!canBreed(father)) {
+                let reason = '';
+                if (father.age < CONFIG.BREEDING_MIN_AGE) reason = 'not mature';
+                else if (father.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
+                else if (father.breedingCooldown > 0) reason = `needs ${father.breedingCooldown} days rest`;
+                Toast.warning(`${father.name} can't breed (${reason})`);
+                return state;
+            }
+
+            // Initiate breeding
+            mother.pregnant = true;
+            mother.pregnantDays = 0;
+            mother.pregnantWith = father.id;
+            father.breedingCooldown = CONFIG.BREEDING_COOLDOWN;
+
+            Toast.success(`${mother.name} and ${father.name} are breeding! Piglets in ~${CONFIG.PREGNANCY_DURATION} days.`);
+            Sound.play('achievement');
+            Debug.log(`Breeding: ${mother.name} x ${father.name}`, 'action');
+            return newState;
+        }
+
+        case 'SELL_BREEDING_STOCK': {
+            const idx = newState.animals.findIndex(a => a.id === action.id);
+            if (idx === -1) return state;
+
+            const pig = newState.animals[idx];
+
+            if (pig.pregnant) {
+                Toast.warning("Can't sell a pregnant pig as breeding stock!");
+                return state;
+            }
+
+            if (pig.age < CONFIG.BREEDING_MIN_AGE) {
+                Toast.warning("Pig must be mature to sell as breeding stock!");
+                return state;
+            }
+
+            const price = calculateBreedingStockPrice(pig);
+            newState.animals.splice(idx, 1);
+            newState.farm.money += price;
+            newState.stats.totalMoneyEarned += price;
+            newState.stats.pigsSold++;
+
+            Toast.success(`Sold ${pig.name} as breeding stock for ${formatMoney(price)}!`);
+            Sound.play('sell');
+            Debug.log(`Sold breeding stock ${pig.name} for ${formatMoney(price)}`, 'action');
             return newState;
         }
 
@@ -2134,22 +2355,34 @@ const Game = {
                 const isHungry = animal.daysSinceFed > 1;
                 const stageInfo = getPigStageInfo(animal.age);
                 const weight = calculatePigWeight(animal);
+                const sexIcon = animal.sex === 'male' ? '♂' : '♀';
+                const sexColor = animal.sex === 'male' ? '#4a90d9' : '#d94a8c';
 
                 // Build class list
                 let cardClasses = 'animal-card';
                 if (animal.isNew) cardClasses += ' new';
                 if (isMature) cardClasses += ' mature';
                 if (isHungry) cardClasses += ' hungry';
+                if (animal.pregnant) cardClasses += ' pregnant';
                 card.className = cardClasses;
 
                 card.onclick = () => this.showAnimalModal(animal);
 
-                const status = isMature ? `✅ ${weight} lbs` : `${stageInfo.label} · ${weight} lbs`;
-                const emoji = animal.fed ? stageInfo.emoji : (isHungry ? stageInfo.emoji + '😫' : stageInfo.emoji + '💤');
+                // Status line - show pregnancy or regular status
+                let status;
+                if (animal.pregnant) {
+                    const daysLeft = CONFIG.PREGNANCY_DURATION - animal.pregnantDays;
+                    status = `🤰 ${daysLeft} days`;
+                } else {
+                    status = isMature ? `✅ ${weight} lbs` : `${stageInfo.label} · ${weight} lbs`;
+                }
+
+                let emoji = animal.fed ? stageInfo.emoji : (isHungry ? stageInfo.emoji + '😫' : stageInfo.emoji + '💤');
+                if (animal.pregnant) emoji = '🤰🐷';
 
                 card.innerHTML = `
                     <div class="animal-emoji">${emoji}</div>
-                    <div class="animal-name">${animal.name}</div>
+                    <div class="animal-name">${animal.name} <span style="color: ${sexColor}; font-size: 0.9rem;">${sexIcon}</span></div>
                     <div class="animal-status">${status}</div>
                     <div class="animal-health-bar">
                         <div class="animal-health-fill" style="width: ${animal.health}%; background: ${animal.health > 50 ? 'var(--success)' : animal.health > 25 ? 'var(--warning)' : 'var(--danger)'}"></div>
@@ -2162,16 +2395,44 @@ const Game = {
 
     showAnimalModal(animal) {
         const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+        const canBreedNow = canBreed(animal);
         const stageInfo = getPigStageInfo(animal.age);
         const weight = calculatePigWeight(animal);
         const marketBonus = this.state.marketBonus || 1;
         const sellPrice = calculateSellPrice(animal, this.state.farm.season, marketBonus);
+        const breedingStockPrice = isMature && !animal.pregnant ? calculateBreedingStockPrice(animal) : 0;
         const seasonMod = CONFIG.SEASON_MODIFIERS[this.state.farm.season];
+        const sexIcon = animal.sex === 'male' ? '♂' : '♀';
+        const sexColor = animal.sex === 'male' ? '#4a90d9' : '#d94a8c';
+        const sexLabel = animal.sex === 'male' ? 'Boar' : 'Sow';
+
+        // Get lineage info
+        const mother = animal.lineage?.mother ? this.state.animals.find(a => a.id === animal.lineage.mother) : null;
+        const father = animal.lineage?.father ? this.state.animals.find(a => a.id === animal.lineage.father) : null;
+        const generation = animal.lineage?.generation || 0;
+
+        // Get potential breeding partners
+        const { males, females } = getBreedingPairs(this.state.animals);
+        const breedingPartners = animal.sex === 'male' ? females : males;
+        const eligiblePartners = breedingPartners.filter(p => p.id !== animal.id);
 
         const modal = document.getElementById('modal-content');
         modal.innerHTML = `
-            <h2>${stageInfo.emoji} ${animal.name}</h2>
-            <p style="color: var(--copper); font-weight: 600; margin-bottom: 1rem;">${stageInfo.label} · ${animal.age} days old</p>
+            <h2>${stageInfo.emoji} ${animal.name} <span style="color: ${sexColor}; font-size: 1rem;">${sexIcon} ${sexLabel}</span></h2>
+            <p style="color: var(--copper); font-weight: 600; margin-bottom: 1rem;">
+                ${stageInfo.label} · ${animal.age} days old
+                ${generation > 0 ? ` · Gen ${generation}` : ''}
+            </p>
+
+            ${animal.pregnant ? `
+                <div style="background: #fef3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem;">
+                    <p style="font-weight: 600; color: #856404;">🤰 Pregnant!</p>
+                    <p style="font-size: 0.9rem; color: #856404;">
+                        ${CONFIG.PREGNANCY_DURATION - animal.pregnantDays} days until birth
+                        (Day ${animal.pregnantDays}/${CONFIG.PREGNANCY_DURATION})
+                    </p>
+                </div>
+            ` : ''}
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
                 <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
@@ -2184,34 +2445,61 @@ const Game = {
                 </div>
             </div>
 
-            <p><strong>Happiness:</strong> ${animal.happiness}%</p>
+            <p><strong>Happiness:</strong> ${animal.happiness}% ${animal.happiness >= CONFIG.BREEDING_MIN_HAPPINESS ? '😊' : '😔'}</p>
             <p><strong>Fed today:</strong> ${animal.fed ? '✅ Yes' : '❌ No'}</p>
+            ${animal.breedingCooldown > 0 ? `<p><strong>Breeding cooldown:</strong> ${animal.breedingCooldown} days</p>` : ''}
 
             <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
 
             <p><strong>Genetics (GOS Heritage):</strong></p>
-            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
-                <li>Marbling: ${Math.round(animal.genetics.marbling * 100)}% ${animal.genetics.marbling > 0.7 ? '⭐' : ''}</li>
-                <li>Growth Rate: ${Math.round(animal.genetics.growthRate * 100)}%</li>
-                <li>Size Potential: ${Math.round(animal.genetics.size * 100)}%</li>
-            </ul>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; margin-left: 1rem; margin-bottom: 1rem; font-size: 0.9rem;">
+                <div>Marbling: <span style="font-weight: 600; color: ${animal.genetics.marbling > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.marbling * 100)}%</span></div>
+                <div>Growth: <span style="font-weight: 600; color: ${animal.genetics.growthRate > 0.8 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.growthRate * 100)}%</span></div>
+                <div>Size: <span style="font-weight: 600;">${Math.round(animal.genetics.size * 100)}%</span></div>
+                <div>Litter: <span style="font-weight: 600; color: ${(animal.genetics.litterSize || 0.5) > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round((animal.genetics.litterSize || 0.5) * 100)}%</span></div>
+            </div>
+
+            ${generation > 0 ? `
+                <p style="font-size: 0.85rem; color: var(--text-light);">
+                    <strong>Lineage:</strong>
+                    ${mother ? `Mother: ${mother.name}` : 'Mother: (sold)'}
+                    ${father ? ` · Father: ${father.name}` : ' · Father: (sold)'}
+                </p>
+            ` : ''}
 
             <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
 
-            <p><strong>Market Value:</strong></p>
-            <p style="font-size: 0.9rem; color: var(--text-light);">
-                ${weight} lbs × $${CONFIG.PIG_SELL_PRICE_PER_LB}/lb × ${Math.round(seasonMod.marketPrice * 100)}% (${this.state.farm.season})
-                ${marketBonus > 1 ? ` × ${Math.round(marketBonus * 100)}% (bonus!)` : ''}
-            </p>
-            <p style="font-size: 1.25rem; font-weight: bold; color: var(--forest); margin-top: 0.5rem;">
-                ${formatMoney(sellPrice)} ${isMature ? '✅' : '⏳'}
-            </p>
+            ${isMature && canBreedNow && eligiblePartners.length > 0 ? `
+                <p><strong>🐷 Breeding:</strong></p>
+                <div style="margin-bottom: 1rem;">
+                    <select id="breed-partner" style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ddd; margin-top: 0.25rem;">
+                        <option value="">Select a partner...</option>
+                        ${eligiblePartners.map(p => `
+                            <option value="${p.id}">${p.name} (${Math.round(((p.genetics.marbling + p.genetics.growthRate + (p.genetics.litterSize || 0.5)) / 3) * 100)}% avg genetics)</option>
+                        `).join('')}
+                    </select>
+                    <button class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;" onclick="Game.breedWith('${animal.id}', '${animal.sex}')">Breed</button>
+                </div>
+            ` : ''}
+
+            <p><strong>Market Value:</strong> ${formatMoney(sellPrice)} ${isMature ? '✅' : '⏳'}</p>
             ${!isMature ? `<p style="font-size: 0.8rem; color: var(--warning);">Wait ${CONFIG.PIG_MATURITY_DAYS - animal.age} more days for full value</p>` : ''}
 
-            <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+            ${breedingStockPrice > sellPrice ? `
+                <p style="font-size: 0.9rem; color: var(--success); margin-top: 0.5rem;">
+                    <strong>Breeding Stock Value:</strong> ${formatMoney(breedingStockPrice)} (+${Math.round((breedingStockPrice/sellPrice - 1) * 100)}% premium!)
+                </p>
+            ` : ''}
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;">
                 <button class="btn btn-primary" onclick="Game.dispatch({type: 'SELL_PIG', id: '${animal.id}'}); Game.closeModal();">
-                    Sell for ${formatMoney(sellPrice)}
+                    Sell ${formatMoney(sellPrice)}
                 </button>
+                ${breedingStockPrice > 0 ? `
+                    <button class="btn btn-secondary" onclick="Game.dispatch({type: 'SELL_BREEDING_STOCK', id: '${animal.id}'}); Game.closeModal();">
+                        Sell Breeding ${formatMoney(breedingStockPrice)}
+                    </button>
+                ` : ''}
                 <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
             </div>
         `;
@@ -2220,6 +2508,20 @@ const Game = {
 
     closeModal() {
         document.getElementById('modal-overlay').classList.remove('open');
+    },
+
+    breedWith(animalId, animalSex) {
+        const partnerId = document.getElementById('breed-partner').value;
+        if (!partnerId) {
+            Toast.warning('Select a breeding partner first!');
+            return;
+        }
+
+        const motherId = animalSex === 'female' ? animalId : partnerId;
+        const fatherId = animalSex === 'male' ? animalId : partnerId;
+
+        this.dispatch({ type: 'BREED', motherId, fatherId });
+        this.closeModal();
     },
 
     showBuildingInfo(building) {

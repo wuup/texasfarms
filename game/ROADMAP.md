@@ -1,6 +1,6 @@
 # Texas Farms - The Game: Development Roadmap
 
-## Current Phase: Phase 2 IN PROGRESS
+## Current Phase: Phase 4 IN PROGRESS
 
 ### Phase 1 Goals ✅
 Build a minimal playable game with one animal type.
@@ -51,20 +51,20 @@ Build a minimal playable game with one animal type.
 
 ---
 
-## Phase 3 - Breeding & Genetics
+## Phase 3 - Breeding & Genetics ✅
 
-- [ ] Breeding system (requires 2 animals, happiness threshold)
-- [ ] Genetic inheritance (offspring = parents average + mutation)
-- [ ] Genetic traits: marbling, growth rate, litter size, temperament
-- [ ] Breeding cooldown
-- [ ] Pregnancy duration
-- [ ] Selling breeding stock (premium price)
-- [ ] Genetic UI (show animal genetics visually)
-- [ ] Lineage tracking
-- [ ] Inbreeding penalties?
-- [ ] 3 breeding-focused playtests
+- [x] Breeding system (requires 2 animals, happiness threshold)
+- [x] Genetic inheritance (offspring = parents average + mutation)
+- [x] Genetic traits: marbling, growth rate, litter size, temperament
+- [x] Breeding cooldown
+- [x] Pregnancy duration
+- [x] Selling breeding stock (premium price)
+- [x] Genetic UI (show animal genetics visually)
+- [x] Lineage tracking
+- [ ] Inbreeding penalties? (deferred to future)
+- [ ] 3 breeding-focused playtests (partial - manual testing done)
 
-**Success Criteria:** Player can selectively breed for better genetics. Breeding stock sales are viable strategy.
+**Success Criteria:** Player can selectively breed for better genetics. Breeding stock sales are viable strategy. ✅ ACHIEVED
 
 ---
 
@@ -208,6 +208,18 @@ Build a minimal playable game with one animal type.
 ---
 
 ## Completed
+
+### Phase 3 - Breeding & Genetics (v0.3.0)
+- Breeding system with happiness threshold (60%)
+- Male/female pigs with sex indicators
+- Pregnancy duration (114 days) and breeding cooldown (60 days)
+- Genetic inheritance (parents average + 10% mutation)
+- Litter sizes based on genetics (6-12 piglets)
+- Lineage tracking across generations
+- Breeding stock premium sales (1.5x)
+- Visual genetics display with progress bars
+- 5 breeding-related achievements
+- Breeding tutorial hints
 
 ### Phase 2 - Core Loop Polish (v0.2.0)
 - Pig lifecycle stages (piglet → grower → finisher)

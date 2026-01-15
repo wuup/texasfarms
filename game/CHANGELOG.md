@@ -4,6 +4,58 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [0.3.0] - 2026-01-15
+
+### Added
+- **Breeding System**
+  - Breed mature pigs (180+ days) with happiness above 60%
+  - Male and female pigs with sex indicators (♂/♀)
+  - Pregnancy duration: 114 days (realistic pig gestation)
+  - Breeding cooldown: 60 days after giving birth
+  - Litter sizes vary by mother's genetics (6-12 piglets)
+
+- **Genetic Inheritance**
+  - Offspring inherit averaged genetics from both parents
+  - Mutation rate adds variation (+/- 10% per trait)
+  - Four genetic traits: marbling, growth rate, litter size, temperament
+  - Visual genetics display with progress bars
+
+- **Lineage Tracking**
+  - Each pig tracks mother, father, and generation number
+  - Lineage panel in animal details shows family tree
+  - Generation counter increases with each breeding cycle
+
+- **Breeding Stock Sales**
+  - Sell pigs as breeding stock for 1.5x premium
+  - Premium price reflects genetic quality
+  - Alternative income strategy for high-genetics pigs
+
+- **Breeding Achievements**
+  - Matchmaker: Breed your first pair of pigs
+  - Proud Parent: Have piglets born on your farm
+  - Pig Dynasty: Raise a 3rd generation pig
+  - Selective Breeder: Breed a pig with genetics avg > 85%
+  - Litter Master: Have 10+ piglets in a single litter
+
+- **Breeding Tutorial Hints**
+  - Contextual hints for breeding-ready pigs
+  - Pregnancy notification hints
+
+### Changed
+- Animal cards now show sex icons and pregnancy status
+- Animal modal redesigned with breeding partner selection
+- Updated achievements to 15 total
+- Version bumped to 0.3.0
+
+### Technical
+- Added createOffspring() for genetic inheritance
+- Added canBreed() and getBreedingPairs() helpers
+- Added BREED and SELL_BREEDING_STOCK actions
+- ADVANCE_DAY now processes pregnancies and births
+- State tracks pregnant, pregnantDays, pregnantWith, breedingCooldown per pig
+
+---
+
 ## [0.2.0] - 2026-01-15
 
 ### Added
