@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v1.8.0
-// Added Toulouse Geese!
+// TEXAS FARMS - THE GAME v1.9.0
+// Animal achievements and improved HUD!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -1317,12 +1317,23 @@ const Game = {
         { id: 'lumberjack', name: 'Lumberjack', desc: 'Gather 50 wood total', emoji: '🪵' },
         // Foraging
         { id: 'forager', name: 'Forager', desc: 'Forage 10 items', emoji: '🫐' },
+        // Animal achievements
+        { id: 'full_menagerie', name: 'Full Menagerie', desc: 'Own all 4 animal types', emoji: '🐾' },
+        { id: 'egg_collector', name: 'Egg Collector', desc: 'Collect 10 eggs', emoji: '🥚' },
+        { id: 'feather_collector', name: 'Feather Collector', desc: 'Collect 10 feathers', emoji: '🪶' },
+        { id: 'wool_collector', name: 'Wool Gatherer', desc: 'Collect 10 wool', emoji: '🧶' },
+        { id: 'truffle_finder', name: 'Truffle Hunter', desc: 'Find a truffle', emoji: '🍄' },
+        { id: 'animal_rancher', name: 'Animal Rancher', desc: 'Own 10 animals', emoji: '🏡' },
     ],
     // Lifetime stats for achievements
     lifetimeStats: {
         stoneGathered: 0,
         woodGathered: 0,
-        itemsForaged: 0
+        itemsForaged: 0,
+        eggsCollected: 0,
+        feathersCollected: 0,
+        woolCollected: 0,
+        trufflesFound: 0
     },
     npcsTalkedTo: [],
 
@@ -3243,6 +3254,22 @@ const Game = {
             this.addToInventory(product, 1);
             Audio.play('harvest');
             this.showToast(`Collected ${product.emoji} ${product.name} from ${animal.name}!`);
+
+            // Track lifetime stats and check achievements
+            if (product.id === 'egg') {
+                this.lifetimeStats.eggsCollected++;
+                if (this.lifetimeStats.eggsCollected >= 10) this.unlockAchievement('egg_collector');
+            } else if (product.id === 'feather') {
+                this.lifetimeStats.feathersCollected++;
+                if (this.lifetimeStats.feathersCollected >= 10) this.unlockAchievement('feather_collector');
+            } else if (product.id === 'wool') {
+                this.lifetimeStats.woolCollected++;
+                if (this.lifetimeStats.woolCollected >= 10) this.unlockAchievement('wool_collector');
+            } else if (product.id === 'truffle') {
+                this.lifetimeStats.trufflesFound++;
+                this.unlockAchievement('truffle_finder');
+            }
+
             this.showAnimalDialog(animal); // Refresh dialog
         }
     },
@@ -3293,6 +3320,14 @@ const Game = {
 
         this.showToast(`Welcome ${animal.name} to the farm!`);
         this.unlockAchievement('first_animal');
+
+        // Check animal count achievement
+        if (this.animals.length >= 10) this.unlockAchievement('animal_rancher');
+
+        // Check for full menagerie (all 4 animal types)
+        const animalTypes = new Set(this.animals.map(a => a.type));
+        if (animalTypes.size >= 4) this.unlockAchievement('full_menagerie');
+
         this.closeDialog();
     },
 
@@ -3347,7 +3382,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.8.0',
+            version: '1.9.0',
             money: this.money,
             day: this.day,
             season: this.season,
@@ -3480,9 +3515,17 @@ const Game = {
                 this.toolUpgrades = save.toolUpgrades;
             }
 
-            // Restore lifetime stats
+            // Restore lifetime stats (merge with defaults for backwards compatibility)
             if (save.lifetimeStats) {
-                this.lifetimeStats = save.lifetimeStats;
+                this.lifetimeStats = {
+                    stoneGathered: save.lifetimeStats.stoneGathered || 0,
+                    woodGathered: save.lifetimeStats.woodGathered || 0,
+                    itemsForaged: save.lifetimeStats.itemsForaged || 0,
+                    eggsCollected: save.lifetimeStats.eggsCollected || 0,
+                    feathersCollected: save.lifetimeStats.feathersCollected || 0,
+                    woolCollected: save.lifetimeStats.woolCollected || 0,
+                    trufflesFound: save.lifetimeStats.trufflesFound || 0
+                };
             }
 
             // Create NPCs
@@ -3563,7 +3606,22 @@ const Game = {
     updateHUD() {
         document.getElementById('money-display').textContent = `$${this.money}`;
         document.getElementById('time-display').textContent = `Day ${this.day}, ${this.season} Y${this.year}`;
-        document.getElementById('animal-count').textContent = `${this.animals.length} animals`;
+
+        // Show animal count with breakdown
+        const animalCounts = {
+            chicken: this.animals.filter(a => a.type === 'chicken').length,
+            goose: this.animals.filter(a => a.type === 'goose').length,
+            rabbit: this.animals.filter(a => a.type === 'rabbit').length,
+            pig: this.animals.filter(a => a.type === 'pig').length
+        };
+        const animalDisplay = [];
+        if (animalCounts.chicken) animalDisplay.push(`${animalCounts.chicken}🐔`);
+        if (animalCounts.goose) animalDisplay.push(`${animalCounts.goose}🦢`);
+        if (animalCounts.rabbit) animalDisplay.push(`${animalCounts.rabbit}🐰`);
+        if (animalCounts.pig) animalDisplay.push(`${animalCounts.pig}🐖`);
+        document.getElementById('animal-count').textContent = animalDisplay.length > 0
+            ? animalDisplay.join(' ')
+            : '0 animals';
 
         // Weather icon
         const weatherIcons = {

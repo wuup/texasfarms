@@ -4,6 +4,29 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.9.0] - 2026-01-15
+
+### Added
+- **6 New Animal Achievements** (27 total!)
+  - Full Menagerie: Own all 4 animal types 🐾
+  - Egg Collector: Collect 10 eggs 🥚
+  - Feather Collector: Collect 10 feathers 🪶
+  - Wool Gatherer: Collect 10 wool 🧶
+  - Truffle Hunter: Find a truffle 🍄
+  - Animal Rancher: Own 10 animals 🏡
+
+- **Product Collection Tracking**
+  - Track eggs, feathers, wool, truffles collected
+  - Stats persist between sessions
+
+### Changed
+- **Improved HUD Animal Display**
+  - Shows animal breakdown with emojis (e.g. "2🐔 1🦢 1🐖")
+  - Much clearer at a glance than "4 animals"
+- Version bumped to 1.9.0
+
+---
+
 ## [1.8.0] - 2026-01-15
 
 ### Added
