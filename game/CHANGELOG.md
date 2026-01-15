@@ -4,6 +4,51 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [0.4.0] - 2026-01-15
+
+### Added
+- **Champagne D'Argent Rabbits**
+  - New animal type with unique gameplay
+  - Buy rabbits for $50 each
+  - Market ready at 90 days (faster than pigs!)
+  - Valued at $8/lb (higher price per pound, smaller animals)
+  - Rabbit genetics: Fur Quality, Growth Rate, Size, Litter Size
+
+- **Rabbit Breeding**
+  - Faster breeding cycle than pigs
+  - 31-day pregnancy (vs 114 days for pigs)
+  - 14-day breeding cooldown
+  - Litter sizes: 4-10 kits
+
+- **Rabbit Pelts**
+  - Adult rabbits (120+ days) produce valuable pelts
+  - Pelt price based on fur quality genetics
+  - Extra income when selling mature rabbits
+
+- **Rabbit Hutch Building**
+  - Click the hutch to see rabbit statistics
+  - Track pregnant does, total weight, health
+
+- **Auto-Play Feature**
+  - Click "Auto" button to auto-feed and advance days
+  - Reduces tedious clicking for 180-day pig cycles
+  - Pulsing green button shows when active
+  - Click again to stop
+
+### Changed
+- Feed costs now calculated per animal type
+- Building counts show pigs and rabbits separately
+- Animal modal adapts to show rabbit-specific info
+- Version bumped to 0.4.0
+
+### Technical
+- Added createRabbit() and rabbit factory functions
+- Added rabbit-specific reducer actions (BUY_RABBIT, SELL_RABBIT, BREED_RABBIT)
+- ADVANCE_DAY now processes both pigs and rabbits
+- FEED_ALL handles mixed animal populations
+
+---
+
 ## [0.3.0] - 2026-01-15
 
 ### Added

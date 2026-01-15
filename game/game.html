@@ -269,6 +269,17 @@ body {
     background: var(--copper-light);
 }
 
+.action-btn.active {
+    background: var(--success);
+    color: white;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
 .action-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -1151,10 +1162,10 @@ body {
                             <div class="building-icon">🌾</div>
                             <div class="building-name">Feed Storage</div>
                         </div>
-                        <div class="building" style="opacity: 0.5; cursor: not-allowed;">
+                        <div class="building" onclick="Game.showBuildingInfo('hutch')">
                             <div class="building-icon">🐰</div>
                             <div class="building-name">Rabbit Hutch</div>
-                            <span style="position: absolute; bottom: 5px; right: 8px; font-size: 0.6rem; color: #aaa;">Coming Soon</span>
+                            <span class="building-count" id="hutch-count">0</span>
                         </div>
                         <div class="building" style="opacity: 0.5; cursor: not-allowed;">
                             <div class="building-icon">🐔</div>
@@ -1203,11 +1214,17 @@ body {
                 <button class="action-btn" onclick="Game.dispatch({type: 'BUY_PIG'})">
                     🐷 Buy Pig ($200)
                 </button>
+                <button class="action-btn" onclick="Game.dispatch({type: 'BUY_RABBIT'})">
+                    🐰 Buy Rabbit ($50)
+                </button>
                 <button class="action-btn" onclick="Game.dispatch({type: 'FEED_ALL'})">
-                    🌾 Feed All ($5/pig)
+                    🌾 Feed All
                 </button>
                 <button class="action-btn" onclick="Game.dispatch({type: 'ADVANCE_DAY'})">
                     ⏭️ Next Day
+                </button>
+                <button class="action-btn" onclick="Game.toggleAutoPlay()" id="autoplay-btn">
+                    ▶️ Auto
                 </button>
                 <button class="action-btn" onclick="Game.save()">
                     💾 Save
@@ -1310,7 +1327,7 @@ body {
 
 const DEFAULT_STATE = {
     meta: {
-        version: "0.3.0",
+        version: "0.4.0",
         created: null,
         lastSaved: null,
         totalPlayTime: 0
@@ -1344,12 +1361,15 @@ const DEFAULT_STATE = {
 // ==========================================
 
 const CONFIG = {
+    // General settings
+    DAYS_PER_SEASON: 30,
+    SEASONS: ['spring', 'summer', 'fall', 'winter'],
+
+    // === PIG SETTINGS ===
     PIG_PRICE: 200,
     FEED_COST_PER_PIG: 5,
     PIG_SELL_PRICE_PER_LB: 3,  // $3 per pound
     PIG_MATURITY_DAYS: 180,
-    DAYS_PER_SEASON: 30,
-    SEASONS: ['spring', 'summer', 'fall', 'winter'],
 
     // Pig lifecycle stages
     PIG_STAGES: {
@@ -1360,6 +1380,42 @@ const CONFIG = {
 
     // Weight gain per day (base, modified by genetics)
     WEIGHT_GAIN_BASE: 1.5, // lbs per day
+
+    // Pig breeding
+    PIG_BREEDING_MIN_AGE: 180,
+    PIG_PREGNANCY_DURATION: 114,     // 114 days for pigs
+    PIG_BREEDING_COOLDOWN: 60,
+    PIG_LITTER_SIZE_MIN: 6,
+    PIG_LITTER_SIZE_MAX: 12,
+
+    // === RABBIT SETTINGS ===
+    RABBIT_PRICE: 50,
+    FEED_COST_PER_RABBIT: 1,
+    RABBIT_SELL_PRICE_PER_LB: 8,    // $8 per pound (higher price, smaller animal)
+    RABBIT_MATURITY_DAYS: 90,        // 3 months to market weight
+
+    // Rabbit lifecycle stages
+    RABBIT_STAGES: {
+        kit: { maxAge: 30, emoji: '🐰', minWeight: 0.5, label: 'Kit' },
+        junior: { maxAge: 60, emoji: '🐇', minWeight: 3, label: 'Junior' },
+        adult: { maxAge: 90, emoji: '🐇', minWeight: 8, label: 'Adult' }
+    },
+
+    // Rabbit weight
+    RABBIT_WEIGHT_GAIN_BASE: 0.15,  // lbs per day
+    RABBIT_START_WEIGHT: 0.5,       // lbs (newborn kit)
+    RABBIT_MAX_WEIGHT: 12,          // lbs (Champagne D'Argent are 9-12 lbs)
+
+    // Rabbit breeding (much faster than pigs!)
+    RABBIT_BREEDING_MIN_AGE: 150,    // 5 months (females mature)
+    RABBIT_PREGNANCY_DURATION: 31,   // 31 days (4.5 weeks)
+    RABBIT_BREEDING_COOLDOWN: 14,    // Can rebreed after 2 weeks
+    RABBIT_LITTER_SIZE_MIN: 4,
+    RABBIT_LITTER_SIZE_MAX: 10,
+
+    // Rabbit pelt
+    RABBIT_PELT_PRICE: 15,          // Per pelt
+    RABBIT_PELT_MIN_AGE: 120,       // Only adults have quality pelts
 
     // Season modifiers
     SEASON_MODIFIERS: {
@@ -1372,13 +1428,13 @@ const CONFIG = {
     // Random event chances (per day)
     EVENT_CHANCE: 0.08,  // 8% chance of event per day
 
-    // Breeding settings
-    BREEDING_MIN_AGE: 180,          // Days until sexually mature
+    // General breeding settings (legacy - for backward compatibility)
+    BREEDING_MIN_AGE: 180,          // Default for pigs
     BREEDING_MIN_HAPPINESS: 60,     // Minimum happiness to breed
-    PREGNANCY_DURATION: 114,        // 114 days (~3.8 months) for pigs
-    BREEDING_COOLDOWN: 60,          // Days between breeding
-    LITTER_SIZE_MIN: 6,             // Minimum piglets
-    LITTER_SIZE_MAX: 12,            // Maximum piglets
+    PREGNANCY_DURATION: 114,        // Default for pigs
+    BREEDING_COOLDOWN: 60,          // Default for pigs
+    LITTER_SIZE_MIN: 6,             // Default for pigs
+    LITTER_SIZE_MAX: 12,            // Default for pigs
     BREEDING_STOCK_PREMIUM: 1.5,    // 50% premium for breeding stock
     MUTATION_RATE: 0.1              // How much genetics can vary in offspring
 };
@@ -1874,6 +1930,132 @@ function calculateBreedingStockPrice(pig) {
 }
 
 // ==========================================
+// RABBIT FACTORY
+// ==========================================
+
+function createRabbit(name = null, geneticsOverride = null, lineage = null) {
+    const maleNames = ['Thumper', 'Peter', 'Bugs', 'Clover', 'Hazel', 'Bramble', 'Thistle', 'Copper'];
+    const femaleNames = ['Flopsy', 'Mopsy', 'Cotton', 'Velvet', 'Silver', 'Pearl', 'Luna', 'Willow'];
+
+    const sex = Math.random() < 0.5 ? 'male' : 'female';
+    const names = sex === 'male' ? maleNames : femaleNames;
+
+    return {
+        id: generateId(),
+        type: 'champagne_rabbit',
+        name: name || names[Math.floor(Math.random() * names.length)],
+        sex: sex,
+        age: 0,
+        weight: CONFIG.RABBIT_START_WEIGHT,
+        health: 100,
+        happiness: 80,
+        fed: true,
+        daysSinceFed: 0,
+        genetics: geneticsOverride || {
+            furQuality: 0.5 + Math.random() * 0.4,    // 50-90% pelt quality
+            growthRate: 0.6 + Math.random() * 0.4,    // 60-100% growth speed
+            size: 0.5 + Math.random() * 0.3,          // 50-80% final size potential
+            litterSize: 0.5 + Math.random() * 0.5     // 50-100% litter size potential
+        },
+        // Breeding state
+        pregnant: false,
+        pregnantDays: 0,
+        pregnantWith: null,
+        breedingCooldown: 0,
+        // Lineage tracking
+        lineage: lineage || {
+            mother: null,
+            father: null,
+            generation: 0
+        }
+    };
+}
+
+// Create offspring rabbit with inherited genetics
+function createRabbitOffspring(mother, father) {
+    const mutate = (val) => {
+        const mutation = (Math.random() - 0.5) * 2 * CONFIG.MUTATION_RATE;
+        return Math.max(0.3, Math.min(1.0, val + mutation));
+    };
+
+    const inheritedGenetics = {
+        furQuality: mutate((mother.genetics.furQuality + father.genetics.furQuality) / 2),
+        growthRate: mutate((mother.genetics.growthRate + father.genetics.growthRate) / 2),
+        size: mutate((mother.genetics.size + father.genetics.size) / 2),
+        litterSize: mutate((mother.genetics.litterSize + father.genetics.litterSize) / 2)
+    };
+
+    const lineage = {
+        mother: mother.id,
+        father: father.id,
+        generation: Math.max(mother.lineage?.generation || 0, father.lineage?.generation || 0) + 1
+    };
+
+    return createRabbit(null, inheritedGenetics, lineage);
+}
+
+function getRabbitStage(age) {
+    if (age <= CONFIG.RABBIT_STAGES.kit.maxAge) return 'kit';
+    if (age <= CONFIG.RABBIT_STAGES.junior.maxAge) return 'junior';
+    return 'adult';
+}
+
+function getRabbitStageInfo(age) {
+    const stage = getRabbitStage(age);
+    return CONFIG.RABBIT_STAGES[stage];
+}
+
+function calculateRabbitWeight(rabbit) {
+    const baseWeight = CONFIG.RABBIT_START_WEIGHT;
+    const dailyGain = CONFIG.RABBIT_WEIGHT_GAIN_BASE * rabbit.genetics.growthRate * (rabbit.happiness / 100);
+    const weight = baseWeight + (rabbit.age * dailyGain);
+    return Math.min(CONFIG.RABBIT_MAX_WEIGHT, Math.round(weight * 10) / 10);
+}
+
+function calculateRabbitSellPrice(rabbit, season, marketBonus = 1) {
+    const weight = calculateRabbitWeight(rabbit);
+    const seasonMod = CONFIG.SEASON_MODIFIERS[season].marketPrice;
+    const qualityBonus = 1 + (rabbit.genetics.furQuality * 0.2); // Up to 20% bonus for fur
+    return Math.round(weight * CONFIG.RABBIT_SELL_PRICE_PER_LB * seasonMod * qualityBonus * marketBonus);
+}
+
+function calculateRabbitPeltPrice(rabbit) {
+    if (rabbit.age < CONFIG.RABBIT_PELT_MIN_AGE) return 0;
+    const qualityBonus = 1 + (rabbit.genetics.furQuality * 0.5); // Up to 50% bonus for fur quality
+    return Math.round(CONFIG.RABBIT_PELT_PRICE * qualityBonus);
+}
+
+function canRabbitBreed(rabbit) {
+    return rabbit.age >= CONFIG.RABBIT_BREEDING_MIN_AGE &&
+           rabbit.happiness >= CONFIG.BREEDING_MIN_HAPPINESS &&
+           rabbit.health >= 50 &&
+           !rabbit.pregnant &&
+           rabbit.breedingCooldown === 0;
+}
+
+function getBreedingRabbits(animals) {
+    const rabbits = animals.filter(a => a.type === 'champagne_rabbit');
+    const males = rabbits.filter(r => r.sex === 'male' && canRabbitBreed(r));
+    const females = rabbits.filter(r => r.sex === 'female' && canRabbitBreed(r));
+    return { males, females };
+}
+
+function calculateRabbitLitterSize(mother, father) {
+    const avgLitterGene = (mother.genetics.litterSize + father.genetics.litterSize) / 2;
+    const range = CONFIG.RABBIT_LITTER_SIZE_MAX - CONFIG.RABBIT_LITTER_SIZE_MIN;
+    const baseLitter = CONFIG.RABBIT_LITTER_SIZE_MIN + Math.round(range * avgLitterGene);
+    const variance = Math.floor(Math.random() * 3) - 1;
+    return Math.max(CONFIG.RABBIT_LITTER_SIZE_MIN, Math.min(CONFIG.RABBIT_LITTER_SIZE_MAX, baseLitter + variance));
+}
+
+function calculateRabbitBreedingStockPrice(rabbit) {
+    const basePrice = calculateRabbitSellPrice(rabbit, 'spring', 1);
+    const avgGenetics = (rabbit.genetics.furQuality + rabbit.genetics.growthRate + rabbit.genetics.size + rabbit.genetics.litterSize) / 4;
+    const geneticBonus = 1 + (avgGenetics - 0.5);
+    return Math.round(basePrice * CONFIG.BREEDING_STOCK_PREMIUM * geneticBonus);
+}
+
+// ==========================================
 // REDUCERS (State Mutations)
 // ==========================================
 
@@ -1923,40 +2105,40 @@ function reduce(state, action) {
 
         case 'FEED_ALL': {
             const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
+            const rabbitCount = newState.animals.filter(a => a.type === 'champagne_rabbit').length;
+            const totalAnimals = pigCount + rabbitCount;
             const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
             const discount = newState.feedDiscount || 1;
-            const baseCost = pigCount * CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost;
-            const cost = Math.round(baseCost * discount);
+            const pigCost = pigCount * CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost;
+            const rabbitCost = rabbitCount * CONFIG.FEED_COST_PER_RABBIT * seasonMod.feedCost;
+            const cost = Math.round((pigCost + rabbitCost) * discount);
 
-            if (pigCount === 0) {
-                Toast.show("No pigs to feed!", 'info', '🌾');
+            if (totalAnimals === 0) {
+                Toast.show("No animals to feed!", 'info', '🌾');
                 return state;
             }
 
             if (newState.farm.money < cost) {
-                Toast.warning(`Need ${formatMoney(cost)} to feed all pigs!`);
+                Toast.warning(`Need ${formatMoney(cost)} to feed all animals!`);
                 Sound.play('error');
-                Debug.log('Cannot afford to feed all pigs!', 'warning');
+                Debug.log('Cannot afford to feed all animals!', 'warning');
                 return state;
             }
 
             newState.farm.money -= cost;
             newState.stats.totalMoneySpent += cost;
             newState.animals.forEach(a => {
-                if (a.type === 'gos_pig') {
-                    a.fed = true;
-                    a.daysSinceFed = 0;
-                    a.happiness = Math.min(100, a.happiness + 5);
-                }
+                a.fed = true;
+                a.daysSinceFed = 0;
+                a.happiness = Math.min(100, a.happiness + 5);
             });
 
-            let feedMsg = `Fed ${pigCount} pig${pigCount > 1 ? 's' : ''} (${formatMoney(cost)})`;
+            let feedMsg = `Fed ${totalAnimals} animal${totalAnimals > 1 ? 's' : ''} (${formatMoney(cost)})`;
             if (discount < 1) feedMsg += ' - Sale!';
-            if (seasonMod.feedCost > 1) feedMsg = `Fed ${pigCount} pig${pigCount > 1 ? 's' : ''} (${formatMoney(cost)}) - ${newState.farm.season} prices`;
 
             Toast.show(feedMsg, 'success', '🌾');
             Sound.play('feed');
-            Debug.log(`Fed ${pigCount} pigs for ${formatMoney(cost)}`, 'action');
+            Debug.log(`Fed ${totalAnimals} animals for ${formatMoney(cost)}`, 'action');
             return newState;
         }
 
@@ -1989,33 +2171,59 @@ function reduce(state, action) {
             const deathList = [];
             const stageChanges = [];
 
-            // Age and process animals
+            // Age and process all animals
             newState.animals.forEach(animal => {
-                const prevStage = getPigStage(animal.age);
                 animal.age++;
                 animal.isNew = false;
                 animal.fed = false;
                 animal.daysSinceFed++;
 
-                // Weight gain (only if fed recently)
-                if (animal.daysSinceFed <= 1) {
-                    const dailyGain = CONFIG.WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
-                    animal.weight = Math.round(animal.weight + dailyGain);
+                if (animal.type === 'gos_pig') {
+                    // === PIG PROCESSING ===
+                    const prevStage = getPigStage(animal.age - 1);
+
+                    // Weight gain (only if fed recently)
+                    if (animal.daysSinceFed <= 1) {
+                        const dailyGain = CONFIG.WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
+                        animal.weight = Math.round(animal.weight + dailyGain);
+                    }
+
+                    // Check for stage transition
+                    const newStage = getPigStage(animal.age);
+                    if (newStage !== prevStage) {
+                        const stageInfo = getPigStageInfo(animal.age);
+                        stageChanges.push({ name: animal.name, stage: stageInfo.label, type: 'pig' });
+                    }
+
+                    // Check for maturity milestone
+                    if (animal.age === CONFIG.PIG_MATURITY_DAYS) {
+                        Toast.success(`${animal.name} is market ready! (${animal.weight} lbs)`);
+                    }
+                } else if (animal.type === 'champagne_rabbit') {
+                    // === RABBIT PROCESSING ===
+                    const prevStage = getRabbitStage(animal.age - 1);
+
+                    // Weight gain (only if fed recently)
+                    if (animal.daysSinceFed <= 1) {
+                        const dailyGain = CONFIG.RABBIT_WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
+                        const newWeight = animal.weight + dailyGain;
+                        animal.weight = Math.min(CONFIG.RABBIT_MAX_WEIGHT, Math.round(newWeight * 10) / 10);
+                    }
+
+                    // Check for stage transition
+                    const newStage = getRabbitStage(animal.age);
+                    if (newStage !== prevStage) {
+                        const stageInfo = getRabbitStageInfo(animal.age);
+                        stageChanges.push({ name: animal.name, stage: stageInfo.label, type: 'rabbit' });
+                    }
+
+                    // Check for maturity milestone
+                    if (animal.age === CONFIG.RABBIT_MATURITY_DAYS) {
+                        Toast.success(`${animal.name} is market ready! (${animal.weight} lbs)`);
+                    }
                 }
 
-                // Check for stage transition
-                const newStage = getPigStage(animal.age);
-                if (newStage !== prevStage) {
-                    const stageInfo = getPigStageInfo(animal.age);
-                    stageChanges.push({ name: animal.name, stage: stageInfo.label });
-                }
-
-                // Check for maturity milestone
-                if (animal.age === CONFIG.PIG_MATURITY_DAYS) {
-                    Toast.success(`${animal.name} is market ready! (${animal.weight} lbs)`);
-                }
-
-                // Hunger effects
+                // Hunger effects (all animals)
                 if (animal.daysSinceFed > 1) {
                     animal.health -= 5;
                     animal.happiness -= 10;
@@ -2028,13 +2236,14 @@ function reduce(state, action) {
                 }
             });
 
-            // Notify about stage changes
-            if (stageChanges.length > 0 && stageChanges.length <= 2) {
+            // Notify about stage changes (limit notifications)
+            if (stageChanges.length > 0 && stageChanges.length <= 3) {
                 stageChanges.forEach(sc => {
-                    Toast.show(`${sc.name} is now a ${sc.stage}!`, 'info', '📈');
+                    const icon = sc.type === 'rabbit' ? '🐰' : '📈';
+                    Toast.show(`${sc.name} is now a ${sc.stage}!`, 'info', icon);
                 });
-            } else if (stageChanges.length > 2) {
-                Toast.show(`${stageChanges.length} pigs grew to a new stage!`, 'info', '📈');
+            } else if (stageChanges.length > 3) {
+                Toast.show(`${stageChanges.length} animals grew to a new stage!`, 'info', '📈');
             }
 
             // Notify about deaths
@@ -2046,10 +2255,10 @@ function reduce(state, action) {
             // Remove dead animals
             newState.animals = newState.animals.filter(a => a.health > 0);
 
-            // Check for hungry pigs warning
-            const hungryPigs = newState.animals.filter(a => a.daysSinceFed > 0 && a.health < 80);
-            if (hungryPigs.length > 0 && newState.farm.day % 3 === 0) {
-                Toast.warning(`${hungryPigs.length} pig${hungryPigs.length > 1 ? 's are' : ' is'} getting hungry!`);
+            // Check for hungry animals warning
+            const hungryAnimals = newState.animals.filter(a => a.daysSinceFed > 0 && a.health < 80);
+            if (hungryAnimals.length > 0 && newState.farm.day % 3 === 0) {
+                Toast.warning(`${hungryAnimals.length} animal${hungryAnimals.length > 1 ? 's are' : ' is'} getting hungry!`);
             }
 
             // Process pregnancies and breeding cooldowns
@@ -2064,31 +2273,52 @@ function reduce(state, action) {
                 if (animal.pregnant) {
                     animal.pregnantDays++;
 
+                    // Determine pregnancy duration based on animal type
+                    const isPig = animal.type === 'gos_pig';
+                    const isRabbit = animal.type === 'champagne_rabbit';
+                    const pregnancyDuration = isPig ? CONFIG.PIG_PREGNANCY_DURATION :
+                                              isRabbit ? CONFIG.RABBIT_PREGNANCY_DURATION :
+                                              CONFIG.PREGNANCY_DURATION;
+
                     // Birth!
-                    if (animal.pregnantDays >= CONFIG.PREGNANCY_DURATION) {
+                    if (animal.pregnantDays >= pregnancyDuration) {
                         const father = newState.animals.find(a => a.id === animal.pregnantWith);
-                        if (father) {
-                            const litterSize = calculateLitterSize(animal, father);
-                            for (let i = 0; i < litterSize; i++) {
-                                const piglet = createOffspring(animal, father);
-                                newBorns.push(piglet);
+                        if (father || true) { // Allow birth even if father was sold
+                            if (isPig) {
+                                const fatherForCalc = father || { genetics: animal.genetics };
+                                const litterSize = calculateLitterSize(animal, fatherForCalc);
+                                for (let i = 0; i < litterSize; i++) {
+                                    const piglet = createOffspring(animal, fatherForCalc);
+                                    newBorns.push(piglet);
+                                }
+                                Toast.achievement(`${animal.name} gave birth to ${litterSize} piglets!`);
+                                Sound.play('achievement');
+                                Debug.log(`${animal.name} birthed ${litterSize} piglets`, 'action');
+                                animal.breedingCooldown = CONFIG.PIG_BREEDING_COOLDOWN;
+                            } else if (isRabbit) {
+                                const fatherForCalc = father || { genetics: animal.genetics };
+                                const litterSize = calculateRabbitLitterSize(animal, fatherForCalc);
+                                for (let i = 0; i < litterSize; i++) {
+                                    const kit = createRabbitOffspring(animal, fatherForCalc);
+                                    newBorns.push(kit);
+                                }
+                                Toast.achievement(`${animal.name} gave birth to ${litterSize} kits!`);
+                                Sound.play('achievement');
+                                Debug.log(`${animal.name} birthed ${litterSize} rabbit kits`, 'action');
+                                animal.breedingCooldown = CONFIG.RABBIT_BREEDING_COOLDOWN;
                             }
-                            Toast.achievement(`${animal.name} gave birth to ${litterSize} piglets!`);
-                            Sound.play('achievement');
-                            Debug.log(`${animal.name} birthed ${litterSize} piglets`, 'action');
                         }
                         // Reset pregnancy state
                         animal.pregnant = false;
                         animal.pregnantDays = 0;
                         animal.pregnantWith = null;
-                        animal.breedingCooldown = CONFIG.BREEDING_COOLDOWN;
                     }
                 }
             });
 
             // Add newborns to farm
-            newBorns.forEach(piglet => {
-                newState.animals.push(piglet);
+            newBorns.forEach(baby => {
+                newState.animals.push(baby);
                 newState.stats.totalAnimalsRaised++;
             });
 
@@ -2196,6 +2426,125 @@ function reduce(state, action) {
             return newState;
         }
 
+        // ==========================================
+        // RABBIT ACTIONS
+        // ==========================================
+
+        case 'BUY_RABBIT': {
+            if (newState.farm.money < CONFIG.RABBIT_PRICE) {
+                Toast.warning("Can't afford a rabbit! Need $50");
+                Sound.play('error');
+                Debug.log('Cannot afford rabbit!', 'warning');
+                return state;
+            }
+            const rabbit = createRabbit();
+            rabbit.isNew = true;
+            newState.animals.push(rabbit);
+            newState.farm.money -= CONFIG.RABBIT_PRICE;
+            newState.stats.totalMoneySpent += CONFIG.RABBIT_PRICE;
+            newState.stats.totalAnimalsRaised++;
+            Toast.show(`Welcome ${rabbit.name} the Champagne D'Argent to the farm!`, 'success', '🐰');
+            Sound.play('buy');
+            Debug.log(`Bought rabbit: ${rabbit.name}`, 'action');
+            return newState;
+        }
+
+        case 'SELL_RABBIT': {
+            const idx = newState.animals.findIndex(a => a.id === action.id);
+            if (idx === -1) return state;
+
+            const rabbit = newState.animals[idx];
+            const marketBonus = newState.marketBonus || 1;
+            const price = calculateRabbitSellPrice(rabbit, newState.farm.season, marketBonus);
+            const peltPrice = calculateRabbitPeltPrice(rabbit);
+            const totalPrice = price + peltPrice;
+
+            newState.animals.splice(idx, 1);
+            newState.farm.money += totalPrice;
+            newState.stats.totalMoneyEarned += totalPrice;
+            newState.stats.rabbitsSold = (newState.stats.rabbitsSold || 0) + 1;
+
+            const weight = calculateRabbitWeight(rabbit);
+            let msg = `Sold ${rabbit.name} (${weight} lbs) for ${formatMoney(price)}`;
+            if (peltPrice > 0) msg += ` + ${formatMoney(peltPrice)} pelt`;
+            Toast.success(msg + '!');
+            Sound.play('sell');
+            Debug.log(`Sold ${rabbit.name} for ${formatMoney(totalPrice)}`, 'action');
+            return newState;
+        }
+
+        case 'BREED_RABBIT': {
+            const mother = newState.animals.find(a => a.id === action.motherId);
+            const father = newState.animals.find(a => a.id === action.fatherId);
+
+            if (!mother || !father) {
+                Toast.error("Selected rabbits not found!");
+                return state;
+            }
+
+            if (mother.sex !== 'female' || father.sex !== 'male') {
+                Toast.error("Need one doe and one buck to breed!");
+                return state;
+            }
+
+            if (!canRabbitBreed(mother)) {
+                let reason = '';
+                if (mother.age < CONFIG.RABBIT_BREEDING_MIN_AGE) reason = 'not mature';
+                else if (mother.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
+                else if (mother.pregnant) reason = 'already pregnant';
+                else if (mother.breedingCooldown > 0) reason = `needs ${mother.breedingCooldown} days rest`;
+                Toast.warning(`${mother.name} can't breed (${reason})`);
+                return state;
+            }
+
+            if (!canRabbitBreed(father)) {
+                let reason = '';
+                if (father.age < CONFIG.RABBIT_BREEDING_MIN_AGE) reason = 'not mature';
+                else if (father.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
+                else if (father.breedingCooldown > 0) reason = `needs ${father.breedingCooldown} days rest`;
+                Toast.warning(`${father.name} can't breed (${reason})`);
+                return state;
+            }
+
+            mother.pregnant = true;
+            mother.pregnantDays = 0;
+            mother.pregnantWith = father.id;
+            father.breedingCooldown = CONFIG.RABBIT_BREEDING_COOLDOWN;
+
+            Toast.success(`${mother.name} and ${father.name} are breeding! Kits in ~${CONFIG.RABBIT_PREGNANCY_DURATION} days.`);
+            Sound.play('achievement');
+            Debug.log(`Breeding rabbits: ${mother.name} x ${father.name}`, 'action');
+            return newState;
+        }
+
+        case 'SELL_RABBIT_BREEDING_STOCK': {
+            const idx = newState.animals.findIndex(a => a.id === action.id);
+            if (idx === -1) return state;
+
+            const rabbit = newState.animals[idx];
+
+            if (rabbit.pregnant) {
+                Toast.warning("Can't sell a pregnant rabbit as breeding stock!");
+                return state;
+            }
+
+            if (rabbit.age < CONFIG.RABBIT_BREEDING_MIN_AGE) {
+                Toast.warning("Rabbit must be mature to sell as breeding stock!");
+                return state;
+            }
+
+            const price = calculateRabbitBreedingStockPrice(rabbit);
+            newState.animals.splice(idx, 1);
+            newState.farm.money += price;
+            newState.stats.totalMoneyEarned += price;
+            newState.stats.rabbitsSold = (newState.stats.rabbitsSold || 0) + 1;
+
+            Toast.success(`Sold ${rabbit.name} as breeding stock for ${formatMoney(price)}!`);
+            Sound.play('sell');
+            Debug.log(`Sold rabbit breeding stock ${rabbit.name} for ${formatMoney(price)}`, 'action');
+            return newState;
+        }
+
         default:
             return state;
     }
@@ -2207,6 +2556,8 @@ function reduce(state, action) {
 
 const Game = {
     state: null,
+    autoPlayInterval: null,
+    autoPlaySpeed: 500, // ms between ticks
 
     init() {
         // Initialize subsystems
@@ -2218,6 +2569,30 @@ const Game = {
         const saved = localStorage.getItem('texasfarms_save');
         if (saved) {
             document.getElementById('continue-btn').style.display = 'block';
+        }
+    },
+
+    toggleAutoPlay() {
+        if (this.autoPlayInterval) {
+            // Stop auto-play
+            clearInterval(this.autoPlayInterval);
+            this.autoPlayInterval = null;
+            document.getElementById('autoplay-btn').innerHTML = '▶️ Auto';
+            document.getElementById('autoplay-btn').classList.remove('active');
+            Toast.show('Auto-play stopped', 'info', '⏹️');
+        } else {
+            // Start auto-play (feed + advance day)
+            this.autoPlayInterval = setInterval(() => {
+                if (!this.state || this.state.animals.length === 0) {
+                    this.toggleAutoPlay(); // Stop if no animals
+                    return;
+                }
+                this.dispatch({ type: 'FEED_ALL' });
+                this.dispatch({ type: 'ADVANCE_DAY' });
+            }, this.autoPlaySpeed);
+            document.getElementById('autoplay-btn').innerHTML = '⏸️ Stop';
+            document.getElementById('autoplay-btn').classList.add('active');
+            Toast.show('Auto-play started (Feed + Advance)', 'info', '▶️');
         }
     },
 
@@ -2304,7 +2679,10 @@ const Game = {
         document.getElementById('hud-animals').textContent = this.state.animals.length;
 
         // Update building counts
-        document.getElementById('barn-count').textContent = this.state.animals.length;
+        const pigCount = this.state.animals.filter(a => a.type === 'gos_pig').length;
+        const rabbitCount = this.state.animals.filter(a => a.type === 'champagne_rabbit').length;
+        document.getElementById('barn-count').textContent = pigCount;
+        document.getElementById('hutch-count').textContent = rabbitCount;
 
         // Update season info panel
         document.getElementById('info-season').textContent = season.charAt(0).toUpperCase() + season.slice(1) + ' ' + seasonIcons[season];
@@ -2347,14 +2725,28 @@ const Game = {
         grid.innerHTML = '';
 
         if (this.state.animals.length === 0) {
-            grid.innerHTML = '<p style="color: #888; font-style: italic;">No animals yet. Buy your first pig!</p>';
+            grid.innerHTML = '<p style="color: #888; font-style: italic;">No animals yet. Buy a pig or rabbit to get started!</p>';
         } else {
             this.state.animals.forEach(animal => {
                 const card = document.createElement('div');
-                const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+                const isPig = animal.type === 'gos_pig';
+                const isRabbit = animal.type === 'champagne_rabbit';
+
+                // Get type-specific data
+                let isMature, stageInfo, weight, pregnancyDuration;
+                if (isPig) {
+                    isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+                    stageInfo = getPigStageInfo(animal.age);
+                    weight = calculatePigWeight(animal);
+                    pregnancyDuration = CONFIG.PIG_PREGNANCY_DURATION;
+                } else if (isRabbit) {
+                    isMature = animal.age >= CONFIG.RABBIT_MATURITY_DAYS;
+                    stageInfo = getRabbitStageInfo(animal.age);
+                    weight = calculateRabbitWeight(animal);
+                    pregnancyDuration = CONFIG.RABBIT_PREGNANCY_DURATION;
+                }
+
                 const isHungry = animal.daysSinceFed > 1;
-                const stageInfo = getPigStageInfo(animal.age);
-                const weight = calculatePigWeight(animal);
                 const sexIcon = animal.sex === 'male' ? '♂' : '♀';
                 const sexColor = animal.sex === 'male' ? '#4a90d9' : '#d94a8c';
 
@@ -2371,14 +2763,16 @@ const Game = {
                 // Status line - show pregnancy or regular status
                 let status;
                 if (animal.pregnant) {
-                    const daysLeft = CONFIG.PREGNANCY_DURATION - animal.pregnantDays;
+                    const daysLeft = pregnancyDuration - animal.pregnantDays;
                     status = `🤰 ${daysLeft} days`;
                 } else {
                     status = isMature ? `✅ ${weight} lbs` : `${stageInfo.label} · ${weight} lbs`;
                 }
 
                 let emoji = animal.fed ? stageInfo.emoji : (isHungry ? stageInfo.emoji + '😫' : stageInfo.emoji + '💤');
-                if (animal.pregnant) emoji = '🤰🐷';
+                if (animal.pregnant) {
+                    emoji = isPig ? '🤰🐷' : '🤰🐰';
+                }
 
                 card.innerHTML = `
                     <div class="animal-emoji">${emoji}</div>
@@ -2394,27 +2788,75 @@ const Game = {
     },
 
     showAnimalModal(animal) {
-        const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
-        const canBreedNow = canBreed(animal);
-        const stageInfo = getPigStageInfo(animal.age);
-        const weight = calculatePigWeight(animal);
+        const isPig = animal.type === 'gos_pig';
+        const isRabbit = animal.type === 'champagne_rabbit';
         const marketBonus = this.state.marketBonus || 1;
-        const sellPrice = calculateSellPrice(animal, this.state.farm.season, marketBonus);
-        const breedingStockPrice = isMature && !animal.pregnant ? calculateBreedingStockPrice(animal) : 0;
-        const seasonMod = CONFIG.SEASON_MODIFIERS[this.state.farm.season];
+
+        // Type-specific values
+        let isMature, canBreedNow, stageInfo, weight, sellPrice, breedingStockPrice, maturityDays, pregnancyDuration, breedingMinAge;
+        let breedingPartners, sexLabel, breedLabel, geneticLabel, sellAction, breedingSellAction, breedAction;
+
+        if (isPig) {
+            isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+            canBreedNow = canBreed(animal);
+            stageInfo = getPigStageInfo(animal.age);
+            weight = calculatePigWeight(animal);
+            sellPrice = calculateSellPrice(animal, this.state.farm.season, marketBonus);
+            breedingStockPrice = isMature && !animal.pregnant ? calculateBreedingStockPrice(animal) : 0;
+            maturityDays = CONFIG.PIG_MATURITY_DAYS;
+            pregnancyDuration = CONFIG.PIG_PREGNANCY_DURATION;
+            breedingMinAge = CONFIG.PIG_BREEDING_MIN_AGE;
+            const { males, females } = getBreedingPairs(this.state.animals);
+            breedingPartners = (animal.sex === 'male' ? females : males).filter(p => p.id !== animal.id && p.type === 'gos_pig');
+            sexLabel = animal.sex === 'male' ? 'Boar' : 'Sow';
+            breedLabel = '🐷 Breeding';
+            geneticLabel = 'GOS Heritage';
+            sellAction = 'SELL_PIG';
+            breedingSellAction = 'SELL_BREEDING_STOCK';
+            breedAction = 'BREED';
+        } else if (isRabbit) {
+            isMature = animal.age >= CONFIG.RABBIT_MATURITY_DAYS;
+            canBreedNow = canRabbitBreed(animal);
+            stageInfo = getRabbitStageInfo(animal.age);
+            weight = calculateRabbitWeight(animal);
+            sellPrice = calculateRabbitSellPrice(animal, this.state.farm.season, marketBonus);
+            breedingStockPrice = isMature && !animal.pregnant ? calculateRabbitBreedingStockPrice(animal) : 0;
+            maturityDays = CONFIG.RABBIT_MATURITY_DAYS;
+            pregnancyDuration = CONFIG.RABBIT_PREGNANCY_DURATION;
+            breedingMinAge = CONFIG.RABBIT_BREEDING_MIN_AGE;
+            const { males, females } = getBreedingRabbits(this.state.animals);
+            breedingPartners = (animal.sex === 'male' ? females : males).filter(p => p.id !== animal.id);
+            sexLabel = animal.sex === 'male' ? 'Buck' : 'Doe';
+            breedLabel = '🐰 Breeding';
+            geneticLabel = "Champagne D'Argent";
+            sellAction = 'SELL_RABBIT';
+            breedingSellAction = 'SELL_RABBIT_BREEDING_STOCK';
+            breedAction = 'BREED_RABBIT';
+        }
+
         const sexIcon = animal.sex === 'male' ? '♂' : '♀';
         const sexColor = animal.sex === 'male' ? '#4a90d9' : '#d94a8c';
-        const sexLabel = animal.sex === 'male' ? 'Boar' : 'Sow';
 
         // Get lineage info
         const mother = animal.lineage?.mother ? this.state.animals.find(a => a.id === animal.lineage.mother) : null;
         const father = animal.lineage?.father ? this.state.animals.find(a => a.id === animal.lineage.father) : null;
         const generation = animal.lineage?.generation || 0;
 
-        // Get potential breeding partners
-        const { males, females } = getBreedingPairs(this.state.animals);
-        const breedingPartners = animal.sex === 'male' ? females : males;
-        const eligiblePartners = breedingPartners.filter(p => p.id !== animal.id);
+        // Genetics display (different for pigs vs rabbits)
+        const geneticsHTML = isPig ? `
+            <div>Marbling: <span style="font-weight: 600; color: ${animal.genetics.marbling > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.marbling * 100)}%</span></div>
+            <div>Growth: <span style="font-weight: 600; color: ${animal.genetics.growthRate > 0.8 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.growthRate * 100)}%</span></div>
+            <div>Size: <span style="font-weight: 600;">${Math.round(animal.genetics.size * 100)}%</span></div>
+            <div>Litter: <span style="font-weight: 600; color: ${(animal.genetics.litterSize || 0.5) > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round((animal.genetics.litterSize || 0.5) * 100)}%</span></div>
+        ` : `
+            <div>Fur Quality: <span style="font-weight: 600; color: ${animal.genetics.furQuality > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.furQuality * 100)}%</span></div>
+            <div>Growth: <span style="font-weight: 600; color: ${animal.genetics.growthRate > 0.8 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.growthRate * 100)}%</span></div>
+            <div>Size: <span style="font-weight: 600;">${Math.round(animal.genetics.size * 100)}%</span></div>
+            <div>Litter: <span style="font-weight: 600; color: ${(animal.genetics.litterSize || 0.5) > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round((animal.genetics.litterSize || 0.5) * 100)}%</span></div>
+        `;
+
+        // Pelt price for rabbits
+        const peltPrice = isRabbit ? calculateRabbitPeltPrice(animal) : 0;
 
         const modal = document.getElementById('modal-content');
         modal.innerHTML = `
@@ -2428,8 +2870,8 @@ const Game = {
                 <div style="background: #fef3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem;">
                     <p style="font-weight: 600; color: #856404;">🤰 Pregnant!</p>
                     <p style="font-size: 0.9rem; color: #856404;">
-                        ${CONFIG.PREGNANCY_DURATION - animal.pregnantDays} days until birth
-                        (Day ${animal.pregnantDays}/${CONFIG.PREGNANCY_DURATION})
+                        ${pregnancyDuration - animal.pregnantDays} days until birth
+                        (Day ${animal.pregnantDays}/${pregnancyDuration})
                     </p>
                 </div>
             ` : ''}
@@ -2448,15 +2890,13 @@ const Game = {
             <p><strong>Happiness:</strong> ${animal.happiness}% ${animal.happiness >= CONFIG.BREEDING_MIN_HAPPINESS ? '😊' : '😔'}</p>
             <p><strong>Fed today:</strong> ${animal.fed ? '✅ Yes' : '❌ No'}</p>
             ${animal.breedingCooldown > 0 ? `<p><strong>Breeding cooldown:</strong> ${animal.breedingCooldown} days</p>` : ''}
+            ${peltPrice > 0 ? `<p><strong>Pelt Value:</strong> ${formatMoney(peltPrice)}</p>` : ''}
 
             <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
 
-            <p><strong>Genetics (GOS Heritage):</strong></p>
+            <p><strong>Genetics (${geneticLabel}):</strong></p>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; margin-left: 1rem; margin-bottom: 1rem; font-size: 0.9rem;">
-                <div>Marbling: <span style="font-weight: 600; color: ${animal.genetics.marbling > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.marbling * 100)}%</span></div>
-                <div>Growth: <span style="font-weight: 600; color: ${animal.genetics.growthRate > 0.8 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.growthRate * 100)}%</span></div>
-                <div>Size: <span style="font-weight: 600;">${Math.round(animal.genetics.size * 100)}%</span></div>
-                <div>Litter: <span style="font-weight: 600; color: ${(animal.genetics.litterSize || 0.5) > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round((animal.genetics.litterSize || 0.5) * 100)}%</span></div>
+                ${geneticsHTML}
             </div>
 
             ${generation > 0 ? `
@@ -2469,21 +2909,24 @@ const Game = {
 
             <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
 
-            ${isMature && canBreedNow && eligiblePartners.length > 0 ? `
-                <p><strong>🐷 Breeding:</strong></p>
+            ${animal.age >= breedingMinAge && canBreedNow && breedingPartners.length > 0 ? `
+                <p><strong>${breedLabel}:</strong></p>
                 <div style="margin-bottom: 1rem;">
                     <select id="breed-partner" style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ddd; margin-top: 0.25rem;">
                         <option value="">Select a partner...</option>
-                        ${eligiblePartners.map(p => `
-                            <option value="${p.id}">${p.name} (${Math.round(((p.genetics.marbling + p.genetics.growthRate + (p.genetics.litterSize || 0.5)) / 3) * 100)}% avg genetics)</option>
-                        `).join('')}
+                        ${breedingPartners.map(p => {
+                            const avgGen = isPig
+                                ? ((p.genetics.marbling + p.genetics.growthRate + (p.genetics.litterSize || 0.5)) / 3)
+                                : ((p.genetics.furQuality + p.genetics.growthRate + (p.genetics.litterSize || 0.5)) / 3);
+                            return `<option value="${p.id}">${p.name} (${Math.round(avgGen * 100)}% avg genetics)</option>`;
+                        }).join('')}
                     </select>
-                    <button class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;" onclick="Game.breedWith('${animal.id}', '${animal.sex}')">Breed</button>
+                    <button class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;" onclick="Game.breedWith('${animal.id}', '${animal.sex}', '${animal.type}')">Breed</button>
                 </div>
             ` : ''}
 
-            <p><strong>Market Value:</strong> ${formatMoney(sellPrice)} ${isMature ? '✅' : '⏳'}</p>
-            ${!isMature ? `<p style="font-size: 0.8rem; color: var(--warning);">Wait ${CONFIG.PIG_MATURITY_DAYS - animal.age} more days for full value</p>` : ''}
+            <p><strong>Market Value:</strong> ${formatMoney(sellPrice + peltPrice)} ${isMature ? '✅' : '⏳'}</p>
+            ${!isMature ? `<p style="font-size: 0.8rem; color: var(--warning);">Wait ${maturityDays - animal.age} more days for full value</p>` : ''}
 
             ${breedingStockPrice > sellPrice ? `
                 <p style="font-size: 0.9rem; color: var(--success); margin-top: 0.5rem;">
@@ -2492,11 +2935,11 @@ const Game = {
             ` : ''}
 
             <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;">
-                <button class="btn btn-primary" onclick="Game.dispatch({type: 'SELL_PIG', id: '${animal.id}'}); Game.closeModal();">
-                    Sell ${formatMoney(sellPrice)}
+                <button class="btn btn-primary" onclick="Game.dispatch({type: '${sellAction}', id: '${animal.id}'}); Game.closeModal();">
+                    Sell ${formatMoney(sellPrice + peltPrice)}
                 </button>
                 ${breedingStockPrice > 0 ? `
-                    <button class="btn btn-secondary" onclick="Game.dispatch({type: 'SELL_BREEDING_STOCK', id: '${animal.id}'}); Game.closeModal();">
+                    <button class="btn btn-secondary" onclick="Game.dispatch({type: '${breedingSellAction}', id: '${animal.id}'}); Game.closeModal();">
                         Sell Breeding ${formatMoney(breedingStockPrice)}
                     </button>
                 ` : ''}
@@ -2510,7 +2953,7 @@ const Game = {
         document.getElementById('modal-overlay').classList.remove('open');
     },
 
-    breedWith(animalId, animalSex) {
+    breedWith(animalId, animalSex, animalType = 'gos_pig') {
         const partnerId = document.getElementById('breed-partner').value;
         if (!partnerId) {
             Toast.warning('Select a breeding partner first!');
@@ -2520,7 +2963,8 @@ const Game = {
         const motherId = animalSex === 'female' ? animalId : partnerId;
         const fatherId = animalSex === 'male' ? animalId : partnerId;
 
-        this.dispatch({ type: 'BREED', motherId, fatherId });
+        const action = animalType === 'champagne_rabbit' ? 'BREED_RABBIT' : 'BREED';
+        this.dispatch({ type: action, motherId, fatherId });
         this.closeModal();
     },
 
@@ -2568,29 +3012,76 @@ const Game = {
                 </div>
             `;
         } else if (building === 'feed') {
-            const feedCost = Math.round(CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost * (this.state.feedDiscount || 1));
-            const pigCount = this.state.animals.length;
-            const dailyCost = feedCost * pigCount;
+            const pigCount = this.state.animals.filter(a => a.type === 'gos_pig').length;
+            const rabbitCount = this.state.animals.filter(a => a.type === 'champagne_rabbit').length;
+            const feedCostPig = Math.round(CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost * (this.state.feedDiscount || 1));
+            const feedCostRabbit = Math.round(CONFIG.FEED_COST_PER_RABBIT * seasonMod.feedCost * (this.state.feedDiscount || 1));
+            const dailyCost = (feedCostPig * pigCount) + (feedCostRabbit * rabbitCount);
 
             modal.innerHTML = `
                 <h2>🌾 Feed Storage</h2>
-                <p style="color: var(--text-light); margin-bottom: 1rem;">Premium feed for your heritage pigs</p>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Premium feed for your heritage animals</p>
 
                 <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <p><strong>Current Feed Cost:</strong> ${formatMoney(feedCost)}/pig/day</p>
-                    <p><strong>Daily Total:</strong> ${formatMoney(dailyCost)} for ${pigCount} pigs</p>
+                    <p><strong>Pig Feed:</strong> ${formatMoney(feedCostPig)}/pig/day</p>
+                    <p><strong>Rabbit Feed:</strong> ${formatMoney(feedCostRabbit)}/rabbit/day</p>
+                    <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
+                    <p><strong>Daily Total:</strong> ${formatMoney(dailyCost)} (${pigCount} pigs + ${rabbitCount} rabbits)</p>
                     <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light);">
                         ${seasonMod.feedCost > 1 ? '⚠️ Winter prices are higher!' : seasonMod.feedCost < 1 ? '✅ Summer feed is cheaper!' : 'Normal seasonal pricing'}
                     </p>
                 </div>
 
-                <h3 style="font-size: 0.9rem; color: var(--forest); margin-bottom: 0.5rem;">Seasonal Feed Costs</h3>
-                <ul style="font-size: 0.85rem; margin-left: 1rem; color: var(--text-light);">
-                    <li>🌸 Spring: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.spring.feedCost)}/pig</li>
-                    <li>☀️ Summer: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.summer.feedCost)}/pig</li>
-                    <li>🍂 Fall: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.fall.feedCost)}/pig</li>
-                    <li>❄️ Winter: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.winter.feedCost)}/pig</li>
-                </ul>
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
+                </div>
+            `;
+        } else if (building === 'hutch') {
+            const rabbits = this.state.animals.filter(a => a.type === 'champagne_rabbit');
+            const rabbitCount = rabbits.length;
+            const totalWeight = rabbits.reduce((sum, r) => sum + calculateRabbitWeight(r), 0);
+            const matureRabbits = rabbits.filter(r => r.age >= CONFIG.RABBIT_MATURITY_DAYS).length;
+            const avgHealth = rabbitCount > 0 ? Math.round(rabbits.reduce((sum, r) => sum + r.health, 0) / rabbitCount) : 0;
+            const pregnantDoes = rabbits.filter(r => r.pregnant).length;
+
+            modal.innerHTML = `
+                <h2>🐰 Rabbit Hutch</h2>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Home to your Champagne D'Argent rabbits</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${rabbitCount}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Total Rabbits</div>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${matureRabbits}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Market Ready</div>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${totalWeight.toFixed(1)}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Total lbs</div>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: ${avgHealth > 70 ? 'var(--success)' : 'var(--warning)'}">${avgHealth}%</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Avg Health</div>
+                    </div>
+                </div>
+
+                ${pregnantDoes > 0 ? `<p style="color: var(--success); font-weight: 600;">🤰 ${pregnantDoes} doe${pregnantDoes > 1 ? 's' : ''} pregnant!</p>` : ''}
+
+                <p style="font-size: 0.85rem; color: var(--text-light);">
+                    Champagne D'Argent rabbits are prized for their silvery fur and excellent meat quality.
+                    They reach market weight at 90 days and can breed at 150 days.
+                </p>
+
+                <div style="margin-top: 1rem; padding: 0.75rem; background: #e8f4e8; border-radius: 6px;">
+                    <p style="font-size: 0.85rem; color: var(--forest);">
+                        <strong>🐰 Rabbit Tips:</strong><br>
+                        • Faster breeding than pigs (31-day pregnancy)<br>
+                        • Valuable pelts from adults (120+ days)<br>
+                        • Lower feed cost, quicker returns
+                    </p>
+                </div>
 
                 <div style="margin-top: 1.5rem;">
                     <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
