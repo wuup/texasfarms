@@ -714,6 +714,186 @@ body {
 }
 
 /* ========================================
+   FARM LAYOUT
+   ======================================== */
+
+.farm-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
+}
+
+.farm-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.building {
+    background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.building:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.building::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background: linear-gradient(180deg, #A52A2A 0%, #8B0000 100%);
+    border-radius: 8px 8px 0 0;
+}
+
+.building-icon {
+    font-size: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.building-name {
+    color: var(--cream);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.building-count {
+    background: var(--copper);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    position: absolute;
+    top: 20px;
+    right: 8px;
+}
+
+.farm-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Pasture Area */
+.pasture {
+    background: linear-gradient(180deg, #90EE90 0%, #228B22 100%);
+    border-radius: 12px;
+    padding: 1rem;
+    min-height: 180px;
+    position: relative;
+    border: 3px solid #654321;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+}
+
+.pasture::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px, 35px 35px;
+    background-position: 0 0, 10px 10px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.pasture-title {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: #654321;
+    color: var(--cream);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.pasture-fence {
+    position: absolute;
+    inset: -4px;
+    border: 4px dashed #654321;
+    border-radius: 16px;
+    pointer-events: none;
+}
+
+/* Weather decoration */
+.weather-decoration {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    opacity: 0.7;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Season decorations in pasture */
+.pasture.spring { background: linear-gradient(180deg, #98FB98 0%, #3CB371 100%); }
+.pasture.summer { background: linear-gradient(180deg, #9ACD32 0%, #6B8E23 100%); }
+.pasture.fall { background: linear-gradient(180deg, #DAA520 0%, #8B4513 100%); }
+.pasture.winter { background: linear-gradient(180deg, #E0E0E0 0%, #A8A8A8 100%); }
+
+/* Info Panel */
+.farm-info {
+    background: white;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-label {
+    font-size: 0.65rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--forest);
+}
+
+.info-value.bonus {
+    color: var(--success);
+}
+
+.info-value.penalty {
+    color: var(--danger);
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 
@@ -729,6 +909,58 @@ body {
 
     .hud-stat {
         gap: 0.25rem;
+    }
+
+    /* Farm layout goes single column on mobile */
+    .farm-layout {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .farm-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .building {
+        min-width: 80px;
+        padding: 0.5rem;
+    }
+
+    .building-icon {
+        font-size: 1.5rem;
+        margin-top: 0.25rem;
+    }
+
+    .building-name {
+        font-size: 0.65rem;
+    }
+
+    .building-count {
+        top: 15px;
+        right: 4px;
+        font-size: 0.6rem;
+        padding: 0.1rem 0.35rem;
+    }
+
+    .pasture {
+        min-height: 150px;
+        padding: 0.75rem;
+    }
+
+    .farm-info {
+        padding: 0.5rem 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .info-label {
+        font-size: 0.6rem;
+    }
+
+    .info-value {
+        font-size: 0.8rem;
     }
 
     .animal-card {
@@ -896,10 +1128,61 @@ body {
 
             <!-- Farm View -->
             <div id="farm-view">
-                <div id="animals-area">
-                    <div class="animals-title">Your Animals</div>
-                    <div class="animals-grid" id="animals-grid">
-                        <!-- Animals render here -->
+                <div class="farm-layout">
+                    <!-- Farm Sidebar with Buildings -->
+                    <div class="farm-sidebar">
+                        <div class="building" onclick="Game.showBuildingInfo('barn')">
+                            <div class="building-icon">🏠</div>
+                            <div class="building-name">Pig Barn</div>
+                            <span class="building-count" id="barn-count">0</span>
+                        </div>
+                        <div class="building" onclick="Game.showBuildingInfo('feed')">
+                            <div class="building-icon">🌾</div>
+                            <div class="building-name">Feed Storage</div>
+                        </div>
+                        <div class="building" style="opacity: 0.5; cursor: not-allowed;">
+                            <div class="building-icon">🐰</div>
+                            <div class="building-name">Rabbit Hutch</div>
+                            <span style="position: absolute; bottom: 5px; right: 8px; font-size: 0.6rem; color: #aaa;">Coming Soon</span>
+                        </div>
+                        <div class="building" style="opacity: 0.5; cursor: not-allowed;">
+                            <div class="building-icon">🐔</div>
+                            <div class="building-name">Chicken Coop</div>
+                            <span style="position: absolute; bottom: 5px; right: 8px; font-size: 0.6rem; color: #aaa;">Coming Soon</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Farm Area -->
+                    <div class="farm-main">
+                        <!-- Season Info Panel -->
+                        <div class="farm-info" id="farm-info">
+                            <div class="info-item">
+                                <span class="info-label">Season</span>
+                                <span class="info-value" id="info-season">Spring</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Feed Cost</span>
+                                <span class="info-value" id="info-feed-cost">$5/pig</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Market Price</span>
+                                <span class="info-value" id="info-market">100%</span>
+                            </div>
+                            <div class="info-item" id="bonus-display" style="display: none;">
+                                <span class="info-label">Active Bonus</span>
+                                <span class="info-value bonus" id="info-bonus">+20%</span>
+                            </div>
+                        </div>
+
+                        <!-- Pasture Area -->
+                        <div class="pasture" id="pasture-area">
+                            <div class="pasture-title">Pig Pasture</div>
+                            <div class="pasture-fence"></div>
+                            <span class="weather-decoration" id="weather-icon">🌸</span>
+                            <div class="animals-grid" id="animals-grid">
+                                <!-- Animals render here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1016,7 +1299,7 @@ body {
 
 const DEFAULT_STATE = {
     meta: {
-        version: "0.1.0",
+        version: "0.2.0",
         created: null,
         lastSaved: null,
         totalPlayTime: 0
@@ -1034,7 +1317,15 @@ const DEFAULT_STATE = {
         totalMoneyEarned: 0,
         totalMoneySpent: 0,
         pigsSold: 0
-    }
+    },
+    // Active bonuses from events
+    marketBonus: 1,
+    marketBonusDays: 0,
+    feedDiscount: 1,
+    feedDiscountDays: 0,
+    // Tutorial state
+    tutorialStep: 0,
+    tutorialShown: {}
 };
 
 // ==========================================
@@ -1044,11 +1335,98 @@ const DEFAULT_STATE = {
 const CONFIG = {
     PIG_PRICE: 200,
     FEED_COST_PER_PIG: 5,
-    PIG_SELL_PRICE_BASE: 400,
+    PIG_SELL_PRICE_PER_LB: 3,  // $3 per pound
     PIG_MATURITY_DAYS: 180,
     DAYS_PER_SEASON: 30,
-    SEASONS: ['spring', 'summer', 'fall', 'winter']
+    SEASONS: ['spring', 'summer', 'fall', 'winter'],
+
+    // Pig lifecycle stages
+    PIG_STAGES: {
+        piglet: { maxAge: 60, emoji: '🐷', minWeight: 50, label: 'Piglet' },
+        grower: { maxAge: 120, emoji: '🐖', minWeight: 100, label: 'Grower' },
+        finisher: { maxAge: 180, emoji: '🐷', minWeight: 180, label: 'Finisher' }
+    },
+
+    // Weight gain per day (base, modified by genetics)
+    WEIGHT_GAIN_BASE: 1.5, // lbs per day
+
+    // Season modifiers
+    SEASON_MODIFIERS: {
+        spring: { growth: 1.1, feedCost: 1.0, marketPrice: 1.0 },
+        summer: { growth: 1.0, feedCost: 0.9, marketPrice: 0.95 },
+        fall: { growth: 1.05, feedCost: 1.1, marketPrice: 1.15 },
+        winter: { growth: 0.85, feedCost: 1.3, marketPrice: 1.1 }
+    },
+
+    // Random event chances (per day)
+    EVENT_CHANCE: 0.08  // 8% chance of event per day
 };
+
+// Random events that can occur
+const RANDOM_EVENTS = [
+    {
+        id: 'good_weather',
+        name: 'Perfect Weather',
+        message: 'Beautiful weather today! Your pigs are extra happy.',
+        effect: (state) => {
+            state.animals.forEach(a => { a.happiness = Math.min(100, a.happiness + 10); });
+            return state;
+        },
+        type: 'success'
+    },
+    {
+        id: 'market_boom',
+        name: 'Market Boom',
+        message: 'Pork prices are up! Great time to sell.',
+        effect: (state) => {
+            state.marketBonus = 1.2;
+            state.marketBonusDays = 3;
+            return state;
+        },
+        type: 'success'
+    },
+    {
+        id: 'visitor',
+        name: 'Farm Visitor',
+        message: 'A neighbor stopped by with a gift!',
+        effect: (state) => {
+            state.farm.money += 50;
+            return state;
+        },
+        type: 'success'
+    },
+    {
+        id: 'storm',
+        name: 'Storm Warning',
+        message: 'A storm rolled through. Pigs are stressed.',
+        effect: (state) => {
+            state.animals.forEach(a => { a.happiness = Math.max(0, a.happiness - 15); });
+            return state;
+        },
+        type: 'warning'
+    },
+    {
+        id: 'feed_discount',
+        name: 'Feed Sale',
+        message: 'The feed store has a sale! Feeding is cheaper today.',
+        effect: (state) => {
+            state.feedDiscount = 0.5;
+            state.feedDiscountDays = 2;
+            return state;
+        },
+        type: 'success'
+    },
+    {
+        id: 'vet_visit',
+        name: 'Vet Checkup',
+        message: 'The vet stopped by. Minor health boost for all animals.',
+        effect: (state) => {
+            state.animals.forEach(a => { a.health = Math.min(100, a.health + 5); });
+            return state;
+        },
+        type: 'success'
+    }
+];
 
 // ==========================================
 // UTILITY FUNCTIONS
@@ -1078,6 +1456,37 @@ function getNextSeason(season) {
 function getSeasonIcon(season) {
     const icons = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
     return icons[season] || '📅';
+}
+
+function getPigStage(age) {
+    if (age <= CONFIG.PIG_STAGES.piglet.maxAge) return 'piglet';
+    if (age <= CONFIG.PIG_STAGES.grower.maxAge) return 'grower';
+    return 'finisher';
+}
+
+function getPigStageInfo(age) {
+    const stage = getPigStage(age);
+    return CONFIG.PIG_STAGES[stage];
+}
+
+function calculatePigWeight(pig) {
+    // Base weight + daily gains modified by genetics and happiness
+    const baseWeight = 50; // Starting weight in lbs
+    const dailyGain = CONFIG.WEIGHT_GAIN_BASE * pig.genetics.growthRate * (pig.happiness / 100);
+    return Math.round(baseWeight + (pig.age * dailyGain));
+}
+
+function calculateSellPrice(pig, season, marketBonus = 1) {
+    const weight = calculatePigWeight(pig);
+    const seasonMod = CONFIG.SEASON_MODIFIERS[season].marketPrice;
+    const qualityBonus = 1 + (pig.genetics.marbling * 0.3); // Up to 30% bonus for marbling
+    return Math.round(weight * CONFIG.PIG_SELL_PRICE_PER_LB * seasonMod * qualityBonus * marketBonus);
+}
+
+function triggerRandomEvent(state) {
+    if (Math.random() > CONFIG.EVENT_CHANCE) return null;
+    const event = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)];
+    return event;
 }
 
 // ==========================================
@@ -1202,6 +1611,76 @@ const ACHIEVEMENTS = [
     { id: 'wealthy_farmer', name: 'Wealthy Farmer', desc: 'Earn $10,000 total', icon: '👑', check: s => s.stats.totalMoneyEarned >= 10000 }
 ];
 
+// ==========================================
+// TUTORIAL SYSTEM
+// ==========================================
+
+const TUTORIAL_HINTS = [
+    { id: 'welcome', condition: s => s.farm.day === 1 && s.animals.length === 0, message: "Welcome to Texas Farms! Start by buying your first Gloucestershire Old Spot pig.", delay: 1000 },
+    { id: 'first_pig', condition: s => s.animals.length === 1 && s.farm.day <= 2, message: "Great! Now feed your pig daily to keep it healthy and growing.", delay: 500 },
+    { id: 'advance_day', condition: s => s.animals.length > 0 && s.farm.day === 1, message: "Click 'Next Day' to advance time. Pigs need 180 days to reach market weight.", delay: 3000 },
+    { id: 'hunger_warning', condition: s => s.animals.some(a => a.daysSinceFed > 0 && a.health < 90), message: "Your pigs are hungry! Feed them regularly or they'll lose health.", priority: true },
+    { id: 'season_info', condition: s => s.farm.day === 1 && s.farm.season !== 'spring', message: `${s => s.farm.season.charAt(0).toUpperCase() + s.farm.season.slice(1)} is here! Feed costs and market prices change with seasons.`, delay: 1500 },
+    { id: 'mature_pig', condition: s => s.animals.some(a => a.age >= CONFIG.PIG_MATURITY_DAYS), message: "You have a mature pig! Click on it to see its value and sell it.", priority: true },
+    { id: 'winter_prep', condition: s => s.farm.season === 'fall' && s.farm.day > 15, message: "Winter is coming! Feed costs will increase. Make sure you have savings.", delay: 2000 },
+    { id: 'good_genetics', condition: s => s.animals.some(a => a.genetics.marbling > 0.8), message: "Nice! That pig has excellent marbling genetics - it'll sell for a premium!", delay: 1000 },
+];
+
+const Tutorial = {
+    shown: {},
+
+    init() {
+        const saved = localStorage.getItem('texasfarms_tutorial');
+        if (saved) {
+            this.shown = JSON.parse(saved);
+        }
+    },
+
+    check(state) {
+        if (!state) return;
+
+        for (const hint of TUTORIAL_HINTS) {
+            if (this.shown[hint.id]) continue;
+
+            try {
+                // Handle function-based messages
+                let conditionMet = false;
+                if (typeof hint.condition === 'function') {
+                    conditionMet = hint.condition(state);
+                }
+
+                if (conditionMet) {
+                    const delay = hint.delay || 0;
+                    setTimeout(() => {
+                        let message = hint.message;
+                        if (typeof message === 'function') {
+                            message = message(state);
+                        }
+                        Toast.show(message, 'info', '💡');
+                    }, delay);
+
+                    this.shown[hint.id] = true;
+                    this.save();
+
+                    // Only show one hint at a time unless priority
+                    if (!hint.priority) break;
+                }
+            } catch (e) {
+                // Skip hints that error
+            }
+        }
+    },
+
+    save() {
+        localStorage.setItem('texasfarms_tutorial', JSON.stringify(this.shown));
+    },
+
+    reset() {
+        this.shown = {};
+        localStorage.removeItem('texasfarms_tutorial');
+    }
+};
+
 const Achievements = {
     unlocked: new Set(),
 
@@ -1266,20 +1745,22 @@ const Achievements = {
 // ==========================================
 
 function createPig(name = null) {
-    const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie'];
+    const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie',
+                   'Truffle', 'Maple', 'Ginger', 'Clover', 'Acorn', 'Hazel', 'Bruno', 'Penny'];
     return {
         id: generateId(),
         type: 'gos_pig',
         name: name || names[Math.floor(Math.random() * names.length)],
         age: 0,
+        weight: 50, // Starting weight in lbs (8-week old piglet)
         health: 100,
         happiness: 80,
         fed: true,
         daysSinceFed: 0,
         genetics: {
-            marbling: 0.5 + Math.random() * 0.3,
-            growthRate: 0.5 + Math.random() * 0.3,
-            size: 0.5 + Math.random() * 0.3
+            marbling: 0.5 + Math.random() * 0.4,    // 50-90% quality
+            growthRate: 0.6 + Math.random() * 0.4,  // 60-100% growth speed
+            size: 0.5 + Math.random() * 0.3         // 50-80% final size potential
         }
     };
 }
@@ -1316,21 +1797,28 @@ function reduce(state, action) {
             if (idx === -1) return state;
 
             const pig = newState.animals[idx];
-            const price = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * pig.genetics.size * (pig.age / CONFIG.PIG_MATURITY_DAYS));
+            const marketBonus = newState.marketBonus || 1;
+            const price = calculateSellPrice(pig, newState.farm.season, marketBonus);
 
             newState.animals.splice(idx, 1);
             newState.farm.money += price;
             newState.stats.totalMoneyEarned += price;
             newState.stats.pigsSold++;
-            Toast.success(`Sold ${pig.name} for ${formatMoney(price)}!`);
+
+            // Show breakdown in toast
+            const weight = calculatePigWeight(pig);
+            Toast.success(`Sold ${pig.name} (${weight} lbs) for ${formatMoney(price)}!`);
             Sound.play('sell');
-            Debug.log(`Sold ${pig.name} for ${formatMoney(price)}`, 'action');
+            Debug.log(`Sold ${pig.name} for ${formatMoney(price)} (${weight} lbs)`, 'action');
             return newState;
         }
 
         case 'FEED_ALL': {
             const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
-            const cost = pigCount * CONFIG.FEED_COST_PER_PIG;
+            const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
+            const discount = newState.feedDiscount || 1;
+            const baseCost = pigCount * CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost;
+            const cost = Math.round(baseCost * discount);
 
             if (pigCount === 0) {
                 Toast.show("No pigs to feed!", 'info', '🌾');
@@ -1353,7 +1841,12 @@ function reduce(state, action) {
                     a.happiness = Math.min(100, a.happiness + 5);
                 }
             });
-            Toast.show(`Fed ${pigCount} pig${pigCount > 1 ? 's' : ''} (${formatMoney(cost)})`, 'success', '🌾');
+
+            let feedMsg = `Fed ${pigCount} pig${pigCount > 1 ? 's' : ''} (${formatMoney(cost)})`;
+            if (discount < 1) feedMsg += ' - Sale!';
+            if (seasonMod.feedCost > 1) feedMsg = `Fed ${pigCount} pig${pigCount > 1 ? 's' : ''} (${formatMoney(cost)}) - ${newState.farm.season} prices`;
+
+            Toast.show(feedMsg, 'success', '🌾');
             Sound.play('feed');
             Debug.log(`Fed ${pigCount} pigs for ${formatMoney(cost)}`, 'action');
             return newState;
@@ -1362,6 +1855,12 @@ function reduce(state, action) {
         case 'ADVANCE_DAY': {
             const prevSeason = newState.farm.season;
             newState.farm.day++;
+
+            // Decrement any active bonuses
+            if (newState.marketBonusDays > 0) newState.marketBonusDays--;
+            if (newState.marketBonusDays === 0) newState.marketBonus = 1;
+            if (newState.feedDiscountDays > 0) newState.feedDiscountDays--;
+            if (newState.feedDiscountDays === 0) newState.feedDiscount = 1;
 
             // Check season change
             if (newState.farm.day > CONFIG.DAYS_PER_SEASON) {
@@ -1375,19 +1874,37 @@ function reduce(state, action) {
                 Debug.log(`Season changed to ${newState.farm.season}`, 'action');
             }
 
-            // Track deaths for notification
+            // Get season modifiers
+            const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
+
+            // Track deaths and stage changes for notification
             const deathList = [];
+            const stageChanges = [];
 
             // Age and process animals
             newState.animals.forEach(animal => {
+                const prevStage = getPigStage(animal.age);
                 animal.age++;
-                animal.isNew = false; // Clear new flag
+                animal.isNew = false;
                 animal.fed = false;
                 animal.daysSinceFed++;
 
+                // Weight gain (only if fed recently)
+                if (animal.daysSinceFed <= 1) {
+                    const dailyGain = CONFIG.WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
+                    animal.weight = Math.round(animal.weight + dailyGain);
+                }
+
+                // Check for stage transition
+                const newStage = getPigStage(animal.age);
+                if (newStage !== prevStage) {
+                    const stageInfo = getPigStageInfo(animal.age);
+                    stageChanges.push({ name: animal.name, stage: stageInfo.label });
+                }
+
                 // Check for maturity milestone
                 if (animal.age === CONFIG.PIG_MATURITY_DAYS) {
-                    Toast.success(`${animal.name} is now ready to sell!`);
+                    Toast.success(`${animal.name} is market ready! (${animal.weight} lbs)`);
                 }
 
                 // Hunger effects
@@ -1403,6 +1920,15 @@ function reduce(state, action) {
                 }
             });
 
+            // Notify about stage changes
+            if (stageChanges.length > 0 && stageChanges.length <= 2) {
+                stageChanges.forEach(sc => {
+                    Toast.show(`${sc.name} is now a ${sc.stage}!`, 'info', '📈');
+                });
+            } else if (stageChanges.length > 2) {
+                Toast.show(`${stageChanges.length} pigs grew to a new stage!`, 'info', '📈');
+            }
+
             // Notify about deaths
             if (deathList.length > 0) {
                 Toast.error(`${deathList.join(', ')} died from neglect!`);
@@ -1416,6 +1942,14 @@ function reduce(state, action) {
             const hungryPigs = newState.animals.filter(a => a.daysSinceFed > 0 && a.health < 80);
             if (hungryPigs.length > 0 && newState.farm.day % 3 === 0) {
                 Toast.warning(`${hungryPigs.length} pig${hungryPigs.length > 1 ? 's are' : ' is'} getting hungry!`);
+            }
+
+            // Random events
+            const event = triggerRandomEvent(newState);
+            if (event) {
+                event.effect(newState);
+                Toast.show(event.message, event.type, '🎲');
+                Debug.log(`Event: ${event.name}`, 'action');
             }
 
             Sound.play('day');
@@ -1457,6 +1991,7 @@ const Game = {
         // Initialize subsystems
         Sound.init();
         Achievements.init();
+        Tutorial.init();
 
         // Check for saved game
         const saved = localStorage.getItem('texasfarms_save');
@@ -1472,6 +2007,8 @@ const Game = {
         this.render();
         Toast.show('Welcome to Texas Farms! Buy your first pig to get started.', 'info', '🏠');
         Debug.log('New game started', 'action');
+        // Check initial tutorials after a short delay
+        setTimeout(() => Tutorial.check(this.state), 1500);
     },
 
     loadGame() {
@@ -1510,8 +2047,9 @@ const Game = {
             this.showMoneyChange(moneyDiff);
         }
 
-        // Check achievements after every action
+        // Check achievements and tutorials after every action
         Achievements.check(this.state);
+        Tutorial.check(this.state);
 
         Debug.updateStateView();
     },
@@ -1534,16 +2072,54 @@ const Game = {
     render() {
         if (!this.state) return;
 
+        const season = this.state.farm.season;
+        const seasonMod = CONFIG.SEASON_MODIFIERS[season];
+        const seasonIcons = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
+
         // Update HUD
         document.getElementById('hud-money').textContent = formatMoney(this.state.farm.money);
         document.getElementById('hud-date').textContent =
-            `Day ${this.state.farm.day}, ${this.state.farm.season.charAt(0).toUpperCase() + this.state.farm.season.slice(1)} Y${this.state.farm.year}`;
+            `Day ${this.state.farm.day}, ${season.charAt(0).toUpperCase() + season.slice(1)} Y${this.state.farm.year}`;
         document.getElementById('hud-animals').textContent = this.state.animals.length;
 
-        // Apply season background
+        // Update building counts
+        document.getElementById('barn-count').textContent = this.state.animals.length;
+
+        // Update season info panel
+        document.getElementById('info-season').textContent = season.charAt(0).toUpperCase() + season.slice(1) + ' ' + seasonIcons[season];
+
+        const feedCost = Math.round(CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost * (this.state.feedDiscount || 1));
+        const feedEl = document.getElementById('info-feed-cost');
+        feedEl.textContent = `$${feedCost}/pig`;
+        feedEl.className = 'info-value' + (seasonMod.feedCost > 1 ? ' penalty' : (seasonMod.feedCost < 1 || this.state.feedDiscount < 1 ? ' bonus' : ''));
+
+        const marketEl = document.getElementById('info-market');
+        const marketPct = Math.round(seasonMod.marketPrice * (this.state.marketBonus || 1) * 100);
+        marketEl.textContent = `${marketPct}%`;
+        marketEl.className = 'info-value' + (marketPct > 100 ? ' bonus' : (marketPct < 100 ? ' penalty' : ''));
+
+        // Show active bonus if any
+        const bonusDisplay = document.getElementById('bonus-display');
+        if (this.state.marketBonusDays > 0 || this.state.feedDiscountDays > 0) {
+            bonusDisplay.style.display = 'flex';
+            const bonuses = [];
+            if (this.state.marketBonusDays > 0) bonuses.push(`Market +${Math.round((this.state.marketBonus - 1) * 100)}%`);
+            if (this.state.feedDiscountDays > 0) bonuses.push(`Feed -${Math.round((1 - this.state.feedDiscount) * 100)}%`);
+            document.getElementById('info-bonus').textContent = bonuses.join(', ');
+        } else {
+            bonusDisplay.style.display = 'none';
+        }
+
+        // Update weather icon
+        document.getElementById('weather-icon').textContent = seasonIcons[season];
+
+        // Apply season to pasture and farm view
         const farmView = document.getElementById('farm-view');
         farmView.className = '';
-        farmView.classList.add(this.state.farm.season);
+        farmView.classList.add(season);
+
+        const pasture = document.getElementById('pasture-area');
+        pasture.className = 'pasture ' + season;
 
         // Render animals
         const grid = document.getElementById('animals-grid');
@@ -1556,6 +2132,8 @@ const Game = {
                 const card = document.createElement('div');
                 const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
                 const isHungry = animal.daysSinceFed > 1;
+                const stageInfo = getPigStageInfo(animal.age);
+                const weight = calculatePigWeight(animal);
 
                 // Build class list
                 let cardClasses = 'animal-card';
@@ -1566,8 +2144,8 @@ const Game = {
 
                 card.onclick = () => this.showAnimalModal(animal);
 
-                const status = isMature ? '✅ Ready to sell' : `${animal.age}/${CONFIG.PIG_MATURITY_DAYS} days`;
-                const emoji = animal.fed ? '🐷' : (isHungry ? '🐷😫' : '🐷💤');
+                const status = isMature ? `✅ ${weight} lbs` : `${stageInfo.label} · ${weight} lbs`;
+                const emoji = animal.fed ? stageInfo.emoji : (isHungry ? stageInfo.emoji + '😫' : stageInfo.emoji + '💤');
 
                 card.innerHTML = `
                     <div class="animal-emoji">${emoji}</div>
@@ -1584,25 +2162,54 @@ const Game = {
 
     showAnimalModal(animal) {
         const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
-        const sellPrice = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * animal.genetics.size * (animal.age / CONFIG.PIG_MATURITY_DAYS));
+        const stageInfo = getPigStageInfo(animal.age);
+        const weight = calculatePigWeight(animal);
+        const marketBonus = this.state.marketBonus || 1;
+        const sellPrice = calculateSellPrice(animal, this.state.farm.season, marketBonus);
+        const seasonMod = CONFIG.SEASON_MODIFIERS[this.state.farm.season];
 
         const modal = document.getElementById('modal-content');
         modal.innerHTML = `
-            <h2>🐷 ${animal.name}</h2>
-            <p><strong>Age:</strong> ${animal.age} days</p>
-            <p><strong>Health:</strong> ${animal.health}%</p>
+            <h2>${stageInfo.emoji} ${animal.name}</h2>
+            <p style="color: var(--copper); font-weight: 600; margin-bottom: 1rem;">${stageInfo.label} · ${animal.age} days old</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${weight}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-light);">lbs</div>
+                </div>
+                <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: ${animal.health > 50 ? 'var(--success)' : 'var(--danger)'};">${animal.health}%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-light);">Health</div>
+                </div>
+            </div>
+
             <p><strong>Happiness:</strong> ${animal.happiness}%</p>
-            <p><strong>Fed today:</strong> ${animal.fed ? 'Yes' : 'No'}</p>
+            <p><strong>Fed today:</strong> ${animal.fed ? '✅ Yes' : '❌ No'}</p>
+
             <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
-            <p><strong>Genetics:</strong></p>
+
+            <p><strong>Genetics (GOS Heritage):</strong></p>
             <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
-                <li>Marbling: ${Math.round(animal.genetics.marbling * 100)}%</li>
+                <li>Marbling: ${Math.round(animal.genetics.marbling * 100)}% ${animal.genetics.marbling > 0.7 ? '⭐' : ''}</li>
                 <li>Growth Rate: ${Math.round(animal.genetics.growthRate * 100)}%</li>
-                <li>Size: ${Math.round(animal.genetics.size * 100)}%</li>
+                <li>Size Potential: ${Math.round(animal.genetics.size * 100)}%</li>
             </ul>
-            <p><strong>Sell Price:</strong> ${formatMoney(sellPrice)} ${isMature ? '✅' : '(not mature)'}</p>
+
+            <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
+
+            <p><strong>Market Value:</strong></p>
+            <p style="font-size: 0.9rem; color: var(--text-light);">
+                ${weight} lbs × $${CONFIG.PIG_SELL_PRICE_PER_LB}/lb × ${Math.round(seasonMod.marketPrice * 100)}% (${this.state.farm.season})
+                ${marketBonus > 1 ? ` × ${Math.round(marketBonus * 100)}% (bonus!)` : ''}
+            </p>
+            <p style="font-size: 1.25rem; font-weight: bold; color: var(--forest); margin-top: 0.5rem;">
+                ${formatMoney(sellPrice)} ${isMature ? '✅' : '⏳'}
+            </p>
+            ${!isMature ? `<p style="font-size: 0.8rem; color: var(--warning);">Wait ${CONFIG.PIG_MATURITY_DAYS - animal.age} more days for full value</p>` : ''}
+
             <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
-                <button class="btn btn-primary" onclick="Game.dispatch({type: 'SELL_PIG', id: '${animal.id}'}); Game.closeModal();" ${!isMature ? 'disabled' : ''}>
+                <button class="btn btn-primary" onclick="Game.dispatch({type: 'SELL_PIG', id: '${animal.id}'}); Game.closeModal();">
                     Sell for ${formatMoney(sellPrice)}
                 </button>
                 <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
@@ -1613,6 +2220,83 @@ const Game = {
 
     closeModal() {
         document.getElementById('modal-overlay').classList.remove('open');
+    },
+
+    showBuildingInfo(building) {
+        const modal = document.getElementById('modal-content');
+        const season = this.state.farm.season;
+        const seasonMod = CONFIG.SEASON_MODIFIERS[season];
+
+        if (building === 'barn') {
+            const pigCount = this.state.animals.length;
+            const totalWeight = this.state.animals.reduce((sum, p) => sum + calculatePigWeight(p), 0);
+            const maturePigs = this.state.animals.filter(p => p.age >= CONFIG.PIG_MATURITY_DAYS).length;
+            const avgHealth = pigCount > 0 ? Math.round(this.state.animals.reduce((sum, p) => sum + p.health, 0) / pigCount) : 0;
+
+            modal.innerHTML = `
+                <h2>🏠 Pig Barn</h2>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Home to your Gloucestershire Old Spot pigs</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${pigCount}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Total Pigs</div>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${maturePigs}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Market Ready</div>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${totalWeight}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Total lbs</div>
+                    </div>
+                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: ${avgHealth > 70 ? 'var(--success)' : 'var(--warning)'}">${avgHealth}%</div>
+                        <div style="font-size: 0.75rem; color: var(--text-light);">Avg Health</div>
+                    </div>
+                </div>
+
+                <p style="font-size: 0.85rem; color: var(--text-light);">
+                    GOS pigs are known for their excellent marbling and docile temperament.
+                    They reach market weight at 180 days.
+                </p>
+
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
+                </div>
+            `;
+        } else if (building === 'feed') {
+            const feedCost = Math.round(CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost * (this.state.feedDiscount || 1));
+            const pigCount = this.state.animals.length;
+            const dailyCost = feedCost * pigCount;
+
+            modal.innerHTML = `
+                <h2>🌾 Feed Storage</h2>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Premium feed for your heritage pigs</p>
+
+                <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p><strong>Current Feed Cost:</strong> ${formatMoney(feedCost)}/pig/day</p>
+                    <p><strong>Daily Total:</strong> ${formatMoney(dailyCost)} for ${pigCount} pigs</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light);">
+                        ${seasonMod.feedCost > 1 ? '⚠️ Winter prices are higher!' : seasonMod.feedCost < 1 ? '✅ Summer feed is cheaper!' : 'Normal seasonal pricing'}
+                    </p>
+                </div>
+
+                <h3 style="font-size: 0.9rem; color: var(--forest); margin-bottom: 0.5rem;">Seasonal Feed Costs</h3>
+                <ul style="font-size: 0.85rem; margin-left: 1rem; color: var(--text-light);">
+                    <li>🌸 Spring: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.spring.feedCost)}/pig</li>
+                    <li>☀️ Summer: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.summer.feedCost)}/pig</li>
+                    <li>🍂 Fall: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.fall.feedCost)}/pig</li>
+                    <li>❄️ Winter: $${Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.winter.feedCost)}/pig</li>
+                </ul>
+
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
+                </div>
+            `;
+        }
+
+        document.getElementById('modal-overlay').classList.add('open');
     }
 };
 

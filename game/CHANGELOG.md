@@ -4,6 +4,65 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [0.2.0] - 2026-01-15
+
+### Added
+- **Weight-Based Economy**
+  - Pigs now have weight that increases daily when fed
+  - Sell price calculated as weight x $3/lb x seasonal modifier x quality bonus
+  - Weight gain affected by genetics, happiness, and season
+
+- **Pig Lifecycle Stages**
+  - Piglet (0-60 days): Starting stage
+  - Grower (61-120 days): Mid-growth stage
+  - Finisher (121-180 days): Market-ready stage
+  - Visual indicators show stage with different emoji/labels
+
+- **Seasonal Effects**
+  - Spring: +10% growth rate, normal prices
+  - Summer: -10% feed cost, -5% market price
+  - Fall: +15% market price (best selling time!)
+  - Winter: +30% feed cost, -15% growth, +10% market price
+
+- **Random Events System**
+  - Perfect Weather: Happiness boost
+  - Market Boom: +20% prices for 3 days
+  - Farm Visitor: $50 gift
+  - Storm: Happiness penalty
+  - Feed Sale: 50% off feed for 2 days
+  - Vet Visit: Health boost
+
+- **Tutorial System**
+  - Contextual hints for new players
+  - Guides through first pig purchase, feeding, selling
+  - Season and market timing tips
+  - Hunger warnings
+
+- **Farm Visual Layout**
+  - Sidebar with building icons (Pig Barn, Feed Storage)
+  - Coming soon placeholders for Rabbit Hutch, Chicken Coop
+  - Pasture area with seasonal backgrounds
+  - Season info panel showing current modifiers
+  - Active bonus display for temporary events
+
+- **Building Info Modals**
+  - Click Pig Barn to see farm statistics
+  - Click Feed Storage to see seasonal feed costs
+
+### Changed
+- Sell prices now based on weight instead of flat rate
+- Feed costs vary by season
+- HUD now shows more detailed farm info
+- Animal cards show weight and lifecycle stage
+
+### Technical
+- Updated test runner to v0.2 with weight/season tests (28 tests)
+- Updated playtest runner to v0.2 with 8 scenarios
+- Added calculatePigWeight() and calculateSellPrice() helpers
+- State now tracks marketBonus and feedDiscount with timers
+
+---
+
 ## [0.1.0] - 2026-01-15
 
 ### Added

@@ -1,6 +1,6 @@
 # Texas Farms - The Game: Development Roadmap
 
-## Current Phase: Phase 1 COMPLETE - Ready for Phase 2
+## Current Phase: Phase 2 IN PROGRESS
 
 ### Phase 1 Goals ✅
 Build a minimal playable game with one animal type.
@@ -32,20 +32,22 @@ Build a minimal playable game with one animal type.
 
 ---
 
-## Phase 2 - Core Loop Polish
+## Phase 2 - Core Loop Polish ✅
 
-- [ ] Animal happiness and health systems
-- [ ] Pig lifecycle stages (piglet → grower → finisher)
-- [ ] Weight gain system (genetics affect growth rate)
-- [ ] Feeding mechanics (different feed types?)
-- [ ] Death/illness if neglected
-- [ ] Visual feedback for animal state
-- [ ] Sound effects (optional, CSS beep?)
-- [ ] Better farm visual layout
-- [ ] Tutorial/onboarding hints
-- [ ] 5 additional playtest scenarios
+- [x] Animal happiness and health systems
+- [x] Pig lifecycle stages (piglet → grower → finisher)
+- [x] Weight gain system (genetics affect growth rate)
+- [x] Feeding mechanics (seasonal cost modifiers)
+- [x] Death/illness if neglected
+- [x] Visual feedback for animal state
+- [x] Sound effects (Web Audio API)
+- [x] Better farm visual layout (buildings, pasture, info panel)
+- [x] Tutorial/onboarding hints
+- [x] 8 playtest scenarios (3 new: seasonal, weight-based)
+- [x] Random events system (6 events)
+- [x] Season modifiers (growth, feed cost, market price)
 
-**Success Criteria:** Meaningful decisions around animal care. Neglect has consequences. New player can learn without reading docs.
+**Success Criteria:** Meaningful decisions around animal care. Neglect has consequences. New player can learn without reading docs. ✅ ACHIEVED
 
 ---
 
@@ -206,6 +208,19 @@ Build a minimal playable game with one animal type.
 ---
 
 ## Completed
+
+### Phase 2 - Core Loop Polish (v0.2.0)
+- Pig lifecycle stages (piglet → grower → finisher)
+- Weight-based economy (weight x $3/lb x modifiers)
+- Season modifiers for growth, feed cost, market price
+- Random events system (6 events)
+- Tutorial hints for new players
+- Farm visual layout with buildings sidebar
+- Building info modals (Barn stats, Feed costs)
+- Pasture visualization with seasonal themes
+- Season info panel showing active modifiers
+- 28 unit tests across 7 test suites
+- 8 playtest scenarios including seasonal/weight tests
 
 ### Phase 1 - Foundation (v0.1.0)
 - Project structure and game.html entry point

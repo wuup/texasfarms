@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Texas Farms - Test Runner</title>
+    <title>Texas Farms - Test Runner v0.2</title>
     <style>
         :root {
             --forest: #1a2e1a;
@@ -200,8 +200,8 @@
     </style>
 </head>
 <body>
-    <h1>Texas Farms - Test Runner</h1>
-    <p class="subtitle">Unit tests for game mechanics</p>
+    <h1>Texas Farms - Test Runner v0.2</h1>
+    <p class="subtitle">Unit tests for weight-based economy</p>
 
     <div class="controls">
         <button onclick="TestRunner.runAll()">Run All Tests</button>
@@ -269,12 +269,10 @@ const TestRunner = {
                 failed: 0
             };
 
-            // Collect tests
             const tests = [];
             const it = (name, fn) => tests.push({ name, fn });
             suite.fn(it);
 
-            // Run each test
             for (const test of tests) {
                 const startTime = performance.now();
                 const testResult = { name: test.name, passed: false, error: null, time: 0 };
@@ -368,6 +366,16 @@ function expect(actual) {
                 throw new Error(`Expected ${actual} to be less than ${expected}`);
             }
         },
+        toBeGreaterThanOrEqual(expected) {
+            if (!(actual >= expected)) {
+                throw new Error(`Expected ${actual} to be >= ${expected}`);
+            }
+        },
+        toBeLessThanOrEqual(expected) {
+            if (!(actual <= expected)) {
+                throw new Error(`Expected ${actual} to be <= ${expected}`);
+            }
+        },
         toBeTruthy() {
             if (!actual) {
                 throw new Error(`Expected ${JSON.stringify(actual)} to be truthy`);
@@ -392,16 +400,31 @@ function expect(actual) {
 }
 
 // ==========================================
-// GAME CODE (copied from game.html for testing)
+// GAME CODE (v0.2.0 - Weight-based Economy)
 // ==========================================
 
 const CONFIG = {
     PIG_PRICE: 200,
     FEED_COST_PER_PIG: 5,
-    PIG_SELL_PRICE_BASE: 400,
+    PIG_SELL_PRICE_PER_LB: 3,
     PIG_MATURITY_DAYS: 180,
     DAYS_PER_SEASON: 30,
-    SEASONS: ['spring', 'summer', 'fall', 'winter']
+    SEASONS: ['spring', 'summer', 'fall', 'winter'],
+
+    PIG_STAGES: {
+        piglet: { maxAge: 60, minWeight: 50 },
+        grower: { maxAge: 120, minWeight: 100 },
+        finisher: { maxAge: 180, minWeight: 180 }
+    },
+
+    WEIGHT_GAIN_BASE: 1.5,
+
+    SEASON_MODIFIERS: {
+        spring: { growth: 1.1, feedCost: 1.0, marketPrice: 1.0 },
+        summer: { growth: 1.0, feedCost: 0.9, marketPrice: 0.95 },
+        fall: { growth: 1.05, feedCost: 1.1, marketPrice: 1.15 },
+        winter: { growth: 0.85, feedCost: 1.3, marketPrice: 1.1 }
+    }
 };
 
 function generateId() {
@@ -421,6 +444,25 @@ function getNextSeason(season) {
     return CONFIG.SEASONS[(idx + 1) % 4];
 }
 
+function getPigStage(age) {
+    if (age <= CONFIG.PIG_STAGES.piglet.maxAge) return 'piglet';
+    if (age <= CONFIG.PIG_STAGES.grower.maxAge) return 'grower';
+    return 'finisher';
+}
+
+function calculatePigWeight(pig) {
+    const baseWeight = 50;
+    const dailyGain = CONFIG.WEIGHT_GAIN_BASE * pig.genetics.growthRate * (pig.happiness / 100);
+    return Math.round(baseWeight + (pig.age * dailyGain));
+}
+
+function calculateSellPrice(pig, season, marketBonus = 1) {
+    const weight = calculatePigWeight(pig);
+    const seasonMod = CONFIG.SEASON_MODIFIERS[season].marketPrice;
+    const qualityBonus = 1 + (pig.genetics.marbling * 0.3);
+    return Math.round(weight * CONFIG.PIG_SELL_PRICE_PER_LB * seasonMod * qualityBonus * marketBonus);
+}
+
 function createPig(name = null) {
     const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie'];
     return {
@@ -428,23 +470,28 @@ function createPig(name = null) {
         type: 'gos_pig',
         name: name || names[Math.floor(Math.random() * names.length)],
         age: 0,
+        weight: 50,
         health: 100,
         happiness: 80,
         fed: true,
         daysSinceFed: 0,
         genetics: {
-            marbling: 0.5 + Math.random() * 0.3,
-            growthRate: 0.5 + Math.random() * 0.3,
+            marbling: 0.5 + Math.random() * 0.4,
+            growthRate: 0.6 + Math.random() * 0.4,
             size: 0.5 + Math.random() * 0.3
         }
     };
 }
 
 const DEFAULT_STATE = {
-    meta: { version: "0.1.0", created: null, lastSaved: null, totalPlayTime: 0 },
+    meta: { version: "0.2.0", created: null, lastSaved: null, totalPlayTime: 0 },
     farm: { name: "My Farm", money: 1000, day: 1, season: "spring", year: 1 },
     animals: [],
-    stats: { totalAnimalsRaised: 0, totalMoneyEarned: 0, totalMoneySpent: 0, pigsSold: 0 }
+    stats: { totalAnimalsRaised: 0, totalMoneyEarned: 0, totalMoneySpent: 0, pigsSold: 0 },
+    marketBonus: 1,
+    marketBonusDays: 0,
+    feedDiscount: 1,
+    feedDiscountDays: 0
 };
 
 function reduce(state, action) {
@@ -465,7 +512,8 @@ function reduce(state, action) {
             const idx = newState.animals.findIndex(a => a.id === action.id);
             if (idx === -1) return state;
             const pig = newState.animals[idx];
-            const price = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * pig.genetics.size * (pig.age / CONFIG.PIG_MATURITY_DAYS));
+            const marketBonus = newState.marketBonus || 1;
+            const price = calculateSellPrice(pig, newState.farm.season, marketBonus);
             newState.animals.splice(idx, 1);
             newState.farm.money += price;
             newState.stats.totalMoneyEarned += price;
@@ -475,7 +523,11 @@ function reduce(state, action) {
 
         case 'FEED_ALL': {
             const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
-            const cost = pigCount * CONFIG.FEED_COST_PER_PIG;
+            if (pigCount === 0) return state;
+            const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
+            const discount = newState.feedDiscount || 1;
+            const baseCost = pigCount * CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost;
+            const cost = Math.round(baseCost * discount);
             if (newState.farm.money < cost) return state;
             newState.farm.money -= cost;
             newState.stats.totalMoneySpent += cost;
@@ -491,6 +543,14 @@ function reduce(state, action) {
 
         case 'ADVANCE_DAY': {
             newState.farm.day++;
+
+            // Decrement bonuses
+            if (newState.marketBonusDays > 0) newState.marketBonusDays--;
+            if (newState.marketBonusDays === 0) newState.marketBonus = 1;
+            if (newState.feedDiscountDays > 0) newState.feedDiscountDays--;
+            if (newState.feedDiscountDays === 0) newState.feedDiscount = 1;
+
+            // Season change
             if (newState.farm.day > CONFIG.DAYS_PER_SEASON) {
                 newState.farm.day = 1;
                 newState.farm.season = getNextSeason(newState.farm.season);
@@ -498,15 +558,29 @@ function reduce(state, action) {
                     newState.farm.year++;
                 }
             }
+
+            const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
+
+            // Process animals
             newState.animals.forEach(animal => {
                 animal.age++;
                 animal.fed = false;
                 animal.daysSinceFed++;
+
+                // Weight gain (only if fed recently)
+                if (animal.daysSinceFed <= 1) {
+                    const dailyGain = CONFIG.WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
+                    animal.weight = Math.round(animal.weight + dailyGain);
+                }
+
+                // Hunger effects
                 if (animal.daysSinceFed > 1) {
                     animal.health -= 5;
                     animal.happiness -= 10;
                 }
             });
+
+            // Remove dead animals
             newState.animals = newState.animals.filter(a => a.health > 0);
             return newState;
         }
@@ -519,6 +593,7 @@ function reduce(state, action) {
         case 'SPAWN_PIG': {
             const pig = createPig();
             if (action.age) pig.age = action.age;
+            if (action.weight) pig.weight = action.weight;
             newState.animals.push(pig);
             newState.stats.totalAnimalsRaised++;
             return newState;
@@ -553,6 +628,12 @@ TestRunner.describe('Game State Basics', (it) => {
         expect(state.stats.totalMoneyEarned).toBe(0);
         expect(state.stats.pigsSold).toBe(0);
     });
+
+    it('should have bonus tracking fields', () => {
+        const state = deepClone(DEFAULT_STATE);
+        expect(state.marketBonus).toBe(1);
+        expect(state.feedDiscount).toBe(1);
+    });
 });
 
 TestRunner.describe('Pig Lifecycle', (it) => {
@@ -561,9 +642,10 @@ TestRunner.describe('Pig Lifecycle', (it) => {
         expect(pig.name).toBe('TestPig');
         expect(pig.age).toBe(0);
         expect(pig.health).toBe(100);
+        expect(pig.weight).toBe(50);
         expect(pig.type).toBe('gos_pig');
         expect(pig.genetics.marbling).toBeGreaterThan(0);
-        expect(pig.genetics.size).toBeGreaterThan(0);
+        expect(pig.genetics.growthRate).toBeGreaterThan(0);
     });
 
     it('should buy a pig for $200', () => {
@@ -590,26 +672,102 @@ TestRunner.describe('Pig Lifecycle', (it) => {
         expect(state.animals[0].age).toBe(initialAge + 1);
     });
 
-    it('should sell mature pig for profit', () => {
+    it('should correctly identify pig stages', () => {
+        expect(getPigStage(30)).toBe('piglet');
+        expect(getPigStage(60)).toBe('piglet');
+        expect(getPigStage(90)).toBe('grower');
+        expect(getPigStage(120)).toBe('grower');
+        expect(getPigStage(150)).toBe('finisher');
+        expect(getPigStage(180)).toBe('finisher');
+    });
+});
+
+TestRunner.describe('Weight System', (it) => {
+    it('should calculate pig weight based on age and genetics', () => {
+        const pig = createPig();
+        pig.age = 100;
+        pig.genetics.growthRate = 0.8;
+        pig.happiness = 100;
+        const weight = calculatePigWeight(pig);
+        // 50 + (100 * 1.5 * 0.8 * 1.0) = 50 + 120 = 170
+        expect(weight).toBe(170);
+    });
+
+    it('should gain weight when fed', () => {
         let state = deepClone(DEFAULT_STATE);
-        state = reduce(state, { type: 'SPAWN_PIG', age: CONFIG.PIG_MATURITY_DAYS });
-        const pigId = state.animals[0].id;
-        const moneyBefore = state.farm.money;
-        state = reduce(state, { type: 'SELL_PIG', id: pigId });
-        expect(state.farm.money).toBeGreaterThan(moneyBefore);
-        expect(state.animals).toHaveLength(0);
-        expect(state.stats.pigsSold).toBe(1);
+        state = reduce(state, { type: 'BUY_PIG' });
+        const initialWeight = state.animals[0].weight;
+        state = reduce(state, { type: 'FEED_ALL' });
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.animals[0].weight).toBeGreaterThan(initialWeight);
+    });
+
+    it('should not gain weight when starving', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        const initialWeight = state.animals[0].weight;
+        // Advance without feeding
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        // Second day unfed - no weight gain
+        expect(state.animals[0].weight).toBe(initialWeight);
+    });
+
+    it('should calculate sell price based on weight', () => {
+        const pig = createPig();
+        pig.age = 180;
+        pig.genetics.growthRate = 0.8;
+        pig.genetics.marbling = 0.7;
+        pig.happiness = 100;
+        const price = calculateSellPrice(pig, 'spring', 1);
+        // Weight = 50 + (180 * 1.5 * 0.8 * 1.0) = 266 lbs
+        // Price = 266 * 3 * 1.0 * 1.21 = ~965
+        expect(price).toBeGreaterThan(800);
+        expect(price).toBeLessThan(1200);
+    });
+});
+
+TestRunner.describe('Seasonal Effects', (it) => {
+    it('should have higher feed costs in winter', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state.farm.season = 'winter';
+        state = reduce(state, { type: 'BUY_PIG' });
+        const winterCost = CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.winter.feedCost;
+        const springCost = CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.spring.feedCost;
+        expect(winterCost).toBeGreaterThan(springCost);
+    });
+
+    it('should have lower feed costs in summer', () => {
+        const summerCost = CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.summer.feedCost;
+        const springCost = CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.spring.feedCost;
+        expect(summerCost).toBeLessThan(springCost);
+    });
+
+    it('should have higher market prices in fall', () => {
+        expect(CONFIG.SEASON_MODIFIERS.fall.marketPrice).toBeGreaterThan(1);
+        expect(CONFIG.SEASON_MODIFIERS.fall.marketPrice).toBe(1.15);
+    });
+
+    it('should have lower market prices in summer', () => {
+        expect(CONFIG.SEASON_MODIFIERS.summer.marketPrice).toBeLessThan(1);
+        expect(CONFIG.SEASON_MODIFIERS.summer.marketPrice).toBe(0.95);
+    });
+
+    it('should apply season growth modifiers', () => {
+        expect(CONFIG.SEASON_MODIFIERS.spring.growth).toBe(1.1);
+        expect(CONFIG.SEASON_MODIFIERS.winter.growth).toBe(0.85);
     });
 });
 
 TestRunner.describe('Feeding System', (it) => {
-    it('should feed all pigs for $5 each', () => {
+    it('should feed pigs with seasonal cost modifier', () => {
         let state = deepClone(DEFAULT_STATE);
-        state = reduce(state, { type: 'BUY_PIG' });
+        state.farm.season = 'winter';
         state = reduce(state, { type: 'BUY_PIG' });
         const moneyBefore = state.farm.money;
         state = reduce(state, { type: 'FEED_ALL' });
-        expect(state.farm.money).toBe(moneyBefore - 10); // 2 pigs * $5
+        const winterCost = Math.round(CONFIG.FEED_COST_PER_PIG * CONFIG.SEASON_MODIFIERS.winter.feedCost);
+        expect(state.farm.money).toBe(moneyBefore - winterCost);
     });
 
     it('should mark pigs as fed after feeding', () => {
@@ -624,19 +782,18 @@ TestRunner.describe('Feeding System', (it) => {
     it('should damage pig health if not fed for 2+ days', () => {
         let state = deepClone(DEFAULT_STATE);
         state = reduce(state, { type: 'BUY_PIG' });
-        state = reduce(state, { type: 'ADVANCE_DAY' }); // Day 1 unfed
-        state = reduce(state, { type: 'ADVANCE_DAY' }); // Day 2 unfed - damage starts
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        state = reduce(state, { type: 'ADVANCE_DAY' });
         expect(state.animals[0].health).toBeLessThan(100);
     });
 
     it('should kill pig if health reaches 0', () => {
         let state = deepClone(DEFAULT_STATE);
         state = reduce(state, { type: 'BUY_PIG' });
-        // Advance many days without feeding
         for (let i = 0; i < 30; i++) {
             state = reduce(state, { type: 'ADVANCE_DAY' });
         }
-        expect(state.animals).toHaveLength(0); // Pig died
+        expect(state.animals).toHaveLength(0);
     });
 });
 
@@ -676,7 +833,7 @@ TestRunner.describe('Time System', (it) => {
 
     it('should increment year after winter', () => {
         let state = deepClone(DEFAULT_STATE);
-        for (let i = 0; i < 120; i++) { // Full year
+        for (let i = 0; i < 120; i++) {
             state = reduce(state, { type: 'ADVANCE_DAY' });
         }
         expect(state.farm.year).toBe(2);
@@ -684,37 +841,39 @@ TestRunner.describe('Time System', (it) => {
 });
 
 TestRunner.describe('Economy Balance', (it) => {
-    it('should be possible to make profit with good play', () => {
+    it('should sell pig for profit with weight-based pricing', () => {
         let state = deepClone(DEFAULT_STATE);
-        // Buy 3 pigs
-        state = reduce(state, { type: 'BUY_PIG' });
-        state = reduce(state, { type: 'BUY_PIG' });
-        state = reduce(state, { type: 'BUY_PIG' });
-        // Cost: $600, remaining: $400
-
-        // Simulate 180 days with daily feeding
-        for (let i = 0; i < CONFIG.PIG_MATURITY_DAYS; i++) {
-            state = reduce(state, { type: 'FEED_ALL' }); // $15/day
-            state = reduce(state, { type: 'ADVANCE_DAY' });
-        }
-
-        // Check we didn't go bankrupt
-        expect(state.animals.length).toBeGreaterThan(0);
-
-        // Sell all pigs
-        while (state.animals.length > 0) {
-            state = reduce(state, { type: 'SELL_PIG', id: state.animals[0].id });
-        }
-
-        // Should have made some money back (may or may not be profit depending on genetics)
-        expect(state.stats.pigsSold).toBe(3);
+        state = reduce(state, { type: 'SPAWN_PIG', age: 180, weight: 300 });
+        const pigId = state.animals[0].id;
+        const moneyBefore = state.farm.money;
+        state = reduce(state, { type: 'SELL_PIG', id: pigId });
+        expect(state.farm.money).toBeGreaterThan(moneyBefore);
+        expect(state.stats.pigsSold).toBe(1);
     });
 
-    it('should track money spent correctly', () => {
+    it('should track money spent correctly with seasonal feed', () => {
         let state = deepClone(DEFAULT_STATE);
         state = reduce(state, { type: 'BUY_PIG' });
         state = reduce(state, { type: 'FEED_ALL' });
-        expect(state.stats.totalMoneySpent).toBe(205); // $200 pig + $5 feed
+        // $200 pig + $5 feed (spring = 1.0 modifier)
+        expect(state.stats.totalMoneySpent).toBe(205);
+    });
+
+    it('should give better prices in fall', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'SPAWN_PIG', age: 180, weight: 300 });
+
+        // Sell in spring
+        const springState = deepClone(state);
+        springState.farm.season = 'spring';
+        const springPrice = calculateSellPrice(springState.animals[0], 'spring', 1);
+
+        // Sell in fall
+        const fallState = deepClone(state);
+        fallState.farm.season = 'fall';
+        const fallPrice = calculateSellPrice(fallState.animals[0], 'fall', 1);
+
+        expect(fallPrice).toBeGreaterThan(springPrice);
     });
 });
 
