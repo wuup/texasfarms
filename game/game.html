@@ -1214,7 +1214,27 @@ const Game = {
         { id: 'year_one', name: 'Veteran', desc: 'Complete Year 1', emoji: '🏆' },
         { id: 'social', name: 'Social Butterfly', desc: 'Talk to all NPCs', emoji: '💬' },
         { id: 'storm_survivor', name: 'Storm Chaser', desc: 'Experience a storm', emoji: '⛈️' },
+        // Skill achievements
+        { id: 'skilled', name: 'Getting Good', desc: 'Reach level 5 in any skill', emoji: '⬆️' },
+        { id: 'master', name: 'Master', desc: 'Reach level 10 in any skill', emoji: '🎓' },
+        // Tool achievements
+        { id: 'first_upgrade', name: 'Upgraded!', desc: 'Upgrade any tool', emoji: '🔧' },
+        { id: 'gold_tool', name: 'Golden Touch', desc: 'Get a Gold tier tool', emoji: '🥇' },
+        // Crafting achievements
+        { id: 'first_craft', name: 'Craftsman', desc: 'Craft your first item', emoji: '🔨' },
+        { id: 'sprinkler_master', name: 'Irrigation Expert', desc: 'Place 5 sprinklers', emoji: '💧' },
+        // Resource achievements
+        { id: 'rock_collector', name: 'Rock Collector', desc: 'Gather 50 stone total', emoji: '🪨' },
+        { id: 'lumberjack', name: 'Lumberjack', desc: 'Gather 50 wood total', emoji: '🪵' },
+        // Foraging
+        { id: 'forager', name: 'Forager', desc: 'Forage 10 items', emoji: '🫐' },
     ],
+    // Lifetime stats for achievements
+    lifetimeStats: {
+        stoneGathered: 0,
+        woodGathered: 0,
+        itemsForaged: 0
+    },
     npcsTalkedTo: [],
 
     // Skills system
@@ -1808,6 +1828,10 @@ const Game = {
         this.updateInventoryUI();
         Audio.play('harvest');
         this.showToast(`Crafted ${recipe.result.emoji} ${recipe.result.name}!`);
+
+        // Crafting achievement
+        this.unlockAchievement('first_craft');
+
         this.showCraftingDialog(); // Refresh
     },
 
@@ -1858,6 +1882,10 @@ const Game = {
             };
             this.showToast(`⬆️ ${skillNames[skillName]} leveled up to ${skill.level}!`);
             Audio.play('catch');
+
+            // Check skill achievements
+            if (skill.level >= 5) this.unlockAchievement('skilled');
+            if (skill.level >= 10) this.unlockAchievement('master');
         }
     },
 
@@ -1952,6 +1980,10 @@ const Game = {
         Audio.play('achievement');
         this.showToast(`🔧 ${toolName} upgraded to ${tierInfo.name}!`);
         this.updateInventoryUI();
+
+        // Tool upgrade achievements
+        this.unlockAchievement('first_upgrade');
+        if (nextTier === 3) this.unlockAchievement('gold_tool');
 
         return true;
     },
@@ -2404,6 +2436,8 @@ const Game = {
             this.energy -= 3;
             Audio.play('plant');
             this.showToast('Placed sprinkler! It will water nearby crops each day.');
+            // Sprinkler achievement
+            if (this.sprinklers.length >= 5) this.unlockAchievement('sprinkler_master');
         } else if (item.id === 'scarecrow') {
             // Scarecrow just prevents crows (visual mostly for now)
             this.showToast('Scarecrow placed! Crows will stay away.');
@@ -2463,6 +2497,9 @@ const Game = {
                     const stoneYield = Math.floor(stoneBase * this.getSkillBonus('mining') * this.getToolYieldMultiplier('pickaxe'));
                     this.addToInventory(ITEMS.STONE, stoneYield);
                     this.addSkillXP('mining', 5);
+                    // Track lifetime stats for achievement
+                    this.lifetimeStats.stoneGathered += stoneYield;
+                    if (this.lifetimeStats.stoneGathered >= 50) this.unlockAchievement('rock_collector');
                     Audio.play('pickup');
                     this.showToast(`Got ${stoneYield} stone! (+5 Mining XP)`);
                 } else {
@@ -2482,6 +2519,9 @@ const Game = {
                     const woodYield = Math.floor(woodBase * this.getSkillBonus('mining') * this.getToolYieldMultiplier('axe'));
                     this.addToInventory(ITEMS.WOOD, woodYield);
                     this.addSkillXP('mining', 5);
+                    // Track lifetime stats for achievement
+                    this.lifetimeStats.woodGathered += woodYield;
+                    if (this.lifetimeStats.woodGathered >= 50) this.unlockAchievement('lumberjack');
                     Audio.play('pickup');
                     this.showToast(`Got ${woodYield} wood! (+5 Mining XP)`);
                 } else {
@@ -2873,6 +2913,10 @@ const Game = {
         const bonusQty = Math.floor(baseQty * this.getSkillBonus('foraging'));
         this.addToInventory(item, bonusQty);
 
+        // Track lifetime stats for achievement
+        this.lifetimeStats.itemsForaged += bonusQty;
+        if (this.lifetimeStats.itemsForaged >= 10) this.unlockAchievement('forager');
+
         // Gain foraging XP
         this.addSkillXP('foraging', 8);
 
@@ -3143,7 +3187,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.5.0',
+            version: '1.6.0',
             money: this.money,
             day: this.day,
             season: this.season,
@@ -3185,6 +3229,7 @@ const Game = {
             npcsTalkedTo: this.npcsTalkedTo,
             skills: this.skills,
             toolUpgrades: this.toolUpgrades,
+            lifetimeStats: this.lifetimeStats,
             playerX: this.player.x,
             playerY: this.player.y,
             musicEnabled: Audio.musicEnabled
@@ -3269,6 +3314,11 @@ const Game = {
             // Restore tool upgrades
             if (save.toolUpgrades) {
                 this.toolUpgrades = save.toolUpgrades;
+            }
+
+            // Restore lifetime stats
+            if (save.lifetimeStats) {
+                this.lifetimeStats = save.lifetimeStats;
             }
 
             // Create NPCs

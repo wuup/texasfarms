@@ -4,6 +4,29 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.6.0] - 2026-01-15
+
+### Added
+- **9 New Achievements** (21 total!)
+  - Getting Good: Reach level 5 in any skill
+  - Master: Reach level 10 in any skill
+  - Upgraded!: Upgrade any tool
+  - Golden Touch: Get a Gold tier tool
+  - Craftsman: Craft your first item
+  - Irrigation Expert: Place 5 sprinklers
+  - Rock Collector: Gather 50 stone total
+  - Lumberjack: Gather 50 wood total
+  - Forager: Forage 10 items
+
+- **Lifetime Statistics Tracking**
+  - Track stone gathered, wood gathered, items foraged
+  - Stats persist between sessions
+
+### Changed
+- Version bumped to 1.6.0
+
+---
+
 ## [1.5.0] - 2026-01-15
 
 ### Added
