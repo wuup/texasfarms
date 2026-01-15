@@ -4,6 +4,33 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.1.0] - 2026-01-15
+
+### Added
+- **Seasonal Crop System**
+  - Crops now have seasonal restrictions like Stardew Valley
+  - Spring crops: Turnip, Potato, Carrot
+  - Summer crops: Tomato, Pepper
+  - Fall crops: Pumpkin, Corn
+  - Some crops grow in multiple seasons (Turnip, Carrot, Corn)
+
+- **New Crops**
+  - 🥔 Potato (Spring only, 6 days, $120)
+  - 🌶️ Pepper (Summer only, 7 days, $140)
+  - 🎃 Pumpkin (Fall only, 12 days, $350)
+
+- **Crop Withering**
+  - Crops die when season changes if not harvestable in new season
+  - Plan your planting around season lengths!
+
+### Changed
+- Market seed shop now shows current season
+- In-season seeds highlighted in green
+- Out-of-season seeds grayed out with valid seasons shown
+- Version bumped to 1.1.0
+
+---
+
 ## [1.0.0] - 2026-01-15
 
 ### Added

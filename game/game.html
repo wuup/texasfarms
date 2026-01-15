@@ -283,8 +283,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v1.0.0
-// Feature-complete farming simulation!
+// TEXAS FARMS - THE GAME v1.1.0
+// Seasonal farming simulation!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -355,14 +355,24 @@ const ITEMS = {
     PICKAXE: { id: 'pickaxe', name: 'Pickaxe', emoji: '⛏️', type: 'tool', desc: 'Break rocks' },
     AXE: { id: 'axe', name: 'Axe', emoji: '🪓', type: 'tool', desc: 'Chop wood' },
     FISHING_ROD: { id: 'fishing_rod', name: 'Fishing Rod', emoji: '🎣', type: 'tool', desc: 'Catch fish in water' },
-    TURNIP_SEEDS: { id: 'turnip_seeds', name: 'Turnip Seeds', emoji: '🌱', type: 'seed', crop: 'turnip', growDays: 4, price: 20 },
-    CARROT_SEEDS: { id: 'carrot_seeds', name: 'Carrot Seeds', emoji: '🥕', type: 'seed', crop: 'carrot', growDays: 6, price: 35 },
-    TOMATO_SEEDS: { id: 'tomato_seeds', name: 'Tomato Seeds', emoji: '🍅', type: 'seed', crop: 'tomato', growDays: 8, price: 50 },
-    CORN_SEEDS: { id: 'corn_seeds', name: 'Corn Seeds', emoji: '🌽', type: 'seed', crop: 'corn', growDays: 10, price: 75 },
+    // Spring crops
+    TURNIP_SEEDS: { id: 'turnip_seeds', name: 'Turnip Seeds', emoji: '🌱', type: 'seed', crop: 'turnip', growDays: 4, price: 20, seasons: ['Spring', 'Fall'] },
+    POTATO_SEEDS: { id: 'potato_seeds', name: 'Potato Seeds', emoji: '🥔', type: 'seed', crop: 'potato', growDays: 6, price: 40, seasons: ['Spring'] },
+    CARROT_SEEDS: { id: 'carrot_seeds', name: 'Carrot Seeds', emoji: '🥕', type: 'seed', crop: 'carrot', growDays: 6, price: 35, seasons: ['Spring', 'Fall'] },
+    // Summer crops
+    TOMATO_SEEDS: { id: 'tomato_seeds', name: 'Tomato Seeds', emoji: '🍅', type: 'seed', crop: 'tomato', growDays: 8, price: 50, seasons: ['Summer'] },
+    CORN_SEEDS: { id: 'corn_seeds', name: 'Corn Seeds', emoji: '🌽', type: 'seed', crop: 'corn', growDays: 10, price: 75, seasons: ['Summer', 'Fall'] },
+    PEPPER_SEEDS: { id: 'pepper_seeds', name: 'Pepper Seeds', emoji: '🌶️', type: 'seed', crop: 'pepper', growDays: 7, price: 45, seasons: ['Summer'] },
+    // Fall crops
+    PUMPKIN_SEEDS: { id: 'pumpkin_seeds', name: 'Pumpkin Seeds', emoji: '🎃', type: 'seed', crop: 'pumpkin', growDays: 12, price: 100, seasons: ['Fall'] },
+    // Harvested crops
     TURNIP: { id: 'turnip', name: 'Turnip', emoji: '🥬', type: 'crop', sellPrice: 60 },
+    POTATO: { id: 'potato', name: 'Potato', emoji: '🥔', type: 'crop', sellPrice: 120 },
     CARROT: { id: 'carrot', name: 'Carrot', emoji: '🥕', type: 'crop', sellPrice: 100 },
     TOMATO: { id: 'tomato', name: 'Tomato', emoji: '🍅', type: 'crop', sellPrice: 150 },
     CORN: { id: 'corn', name: 'Corn', emoji: '🌽', type: 'crop', sellPrice: 200 },
+    PEPPER: { id: 'pepper', name: 'Pepper', emoji: '🌶️', type: 'crop', sellPrice: 140 },
+    PUMPKIN: { id: 'pumpkin', name: 'Pumpkin', emoji: '🎃', type: 'crop', sellPrice: 350 },
     STONE: { id: 'stone', name: 'Stone', emoji: '🪨', type: 'resource', sellPrice: 5 },
     WOOD: { id: 'wood', name: 'Wood', emoji: '🪵', type: 'resource', sellPrice: 10 },
     // Fish
@@ -389,9 +399,12 @@ const RECIPES = {
 // Crop growth stages
 const CROP_STAGES = {
     turnip: ['🌱', '🌿', '🥬', '🥬'],
+    potato: ['🌱', '🌿', '🥔', '🥔'],
     carrot: ['🌱', '🌿', '🥕', '🥕'],
     tomato: ['🌱', '🌿', '🪴', '🍅'],
     corn: ['🌱', '🌿', '🌾', '🌽'],
+    pepper: ['🌱', '🌿', '🪴', '🌶️'],
+    pumpkin: ['🌱', '🌿', '🪴', '🎃'],
 };
 
 // ==========================================
@@ -1649,9 +1662,27 @@ const Game = {
             this.day = 1;
             const seasons = ['Spring', 'Summer', 'Fall', 'Winter'];
             const idx = seasons.indexOf(this.season);
+            const oldSeason = this.season;
             this.season = seasons[(idx + 1) % 4];
             if (this.season === 'Spring') this.year++;
             this.showToast(`${this.season} has arrived!`);
+
+            // Wither crops that can't survive in the new season
+            const witheredCrops = this.crops.filter(crop => {
+                const seedItem = Object.values(ITEMS).find(i => i.crop === crop.type);
+                return seedItem && seedItem.seasons && !seedItem.seasons.includes(this.season);
+            });
+
+            if (witheredCrops.length > 0) {
+                witheredCrops.forEach(crop => {
+                    this.world[crop.y][crop.x] = TILES.TILLED;
+                });
+                this.crops = this.crops.filter(crop => {
+                    const seedItem = Object.values(ITEMS).find(i => i.crop === crop.type);
+                    return !seedItem || !seedItem.seasons || seedItem.seasons.includes(this.season);
+                });
+                this.showToast(`${witheredCrops.length} crops withered in the new season!`);
+            }
         }
 
         // Age animals
@@ -2029,6 +2060,13 @@ const Game = {
             return;
         }
 
+        // Check season restrictions
+        if (seedItem.seasons && !seedItem.seasons.includes(this.season)) {
+            this.showToast(`${seedItem.name} can't grow in ${this.season}!`);
+            Audio.play('error');
+            return;
+        }
+
         // Can only plant on tilled or watered soil
         if (tile !== TILES.TILLED && tile !== TILES.WATERED) {
             this.showToast('Till the soil first with a hoe!');
@@ -2331,17 +2369,29 @@ const Game = {
     },
 
     showBuySeedsDialog() {
-        let html = '<strong>Buy Seeds</strong><br><br>';
+        let html = `<strong>Buy Seeds</strong><br>`;
+        html += `<em>Current season: ${this.season}</em><br><br>`;
         let options = '';
 
-        const seeds = [ITEMS.TURNIP_SEEDS, ITEMS.CARROT_SEEDS, ITEMS.TOMATO_SEEDS, ITEMS.CORN_SEEDS];
+        const seeds = [
+            ITEMS.TURNIP_SEEDS, ITEMS.POTATO_SEEDS, ITEMS.CARROT_SEEDS,
+            ITEMS.TOMATO_SEEDS, ITEMS.CORN_SEEDS, ITEMS.PEPPER_SEEDS,
+            ITEMS.PUMPKIN_SEEDS
+        ];
+
         seeds.forEach(seed => {
-            if (this.money >= seed.price) {
+            const inSeason = seed.seasons && seed.seasons.includes(this.season);
+            const seasonIcon = inSeason ? '✓' : '✗';
+            const seasonColor = inSeason ? '#4ade80' : '#888';
+
+            if (this.money >= seed.price && inSeason) {
                 options += `<button onclick="Game.buySeed('${seed.id}')">
-                    ${seed.emoji} ${seed.name} - $${seed.price} (${seed.growDays} days)
+                    ${seed.emoji} ${seed.name} - $${seed.price} (${seed.growDays}d)
                 </button>`;
+            } else if (!inSeason) {
+                html += `<span style="color:${seasonColor}">${seasonIcon} ${seed.emoji} ${seed.name} - Out of season (${seed.seasons.join('/')})</span><br>`;
             } else {
-                html += `<span style="color:#888">${seed.emoji} ${seed.name} - $${seed.price}</span><br>`;
+                html += `<span style="color:#888">${seed.emoji} ${seed.name} - $${seed.price} (need $${seed.price - this.money} more)</span><br>`;
             }
         });
 
