@@ -4,7 +4,33 @@ You are developing **Texas Farms - The Game**, a browser-based farming simulator
 
 ---
 
-## About Texas Farms Vermont (The Real Farm)
+## Learn About the Real Farm First
+
+**Before starting development**, explore the Texas Farms website to understand the business:
+
+```
+# Key files to read (relative to repo root):
+../about-us.html           # Farm story and philosophy
+../farm-story.html         # The full farm narrative
+../story/*.md              # Detailed story chapters
+../animals/*.html          # Each animal breed page
+../charcuterie.html        # Cured meat products
+../for-restaurants.html    # B2B offerings
+../faqs.html               # Common questions answered
+../_config.yml             # Site metadata
+```
+
+Read these files to pick up accurate details about:
+- Animal breeds and their characteristics
+- Pricing and products
+- Vermont/seasonal context
+- The farm's values and story
+
+The website content may be updated - always check the source files for current information rather than relying solely on the summary below.
+
+---
+
+## About Texas Farms Vermont (Summary)
 
 Texas Farms is a real off-grid, regenerative farm located in Concord, Vermont (in a historic area called "Texas"). Understanding the real farm will help you make the game authentic.
 
