@@ -4,3228 +4,1053 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Texas Farms - The Game</title>
-    <meta name="description" content="A cozy farming simulator based on Texas Farms Vermont. Raise heritage Gloucestershire Old Spot pigs, breed for genetics, and survive Vermont winters.">
-    <link rel="icon" href="/favicon.ico">
     <style>
-/* ========================================
-   TEXAS FARMS - THE GAME
-   Base Styles & CSS Reset
-   ======================================== */
-
-:root {
-    --forest: #1a2e1a;
-    --forest-light: #2d4a3e;
-    --cream: #f7f4ed;
-    --cream-dark: #ebe6db;
-    --copper: #b87333;
-    --copper-light: #d4915c;
-    --text: #1a1a1a;
-    --text-light: #555;
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--forest);
-    color: var(--cream);
-    min-height: 100vh;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #1a2e1a;
     overflow: hidden;
+    touch-action: none;
 }
-
-/* ========================================
-   GAME CONTAINER
-   ======================================== */
-
 #game-container {
     width: 100vw;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 }
+canvas {
+    display: block;
+    image-rendering: pixelated;
+}
+/* HUD Overlay */
+#hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 100;
+}
+.hud-panel {
+    background: rgba(0,0,0,0.7);
+    color: #f7f4ed;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    pointer-events: auto;
+}
+.hud-panel h3 {
+    font-size: 12px;
+    color: #b87333;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+#money-display { font-size: 20px; font-weight: bold; color: #22c55e; }
+#time-display { font-weight: 600; }
 
-/* ========================================
-   SCREENS
-   ======================================== */
-
-.screen {
+/* Dialog Box */
+#dialog {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.9);
+    color: #f7f4ed;
+    padding: 16px 24px;
+    border-radius: 12px;
+    border: 2px solid #b87333;
+    max-width: 600px;
+    width: 90%;
     display: none;
-    width: 100%;
-    height: 100%;
-    flex-direction: column;
+    z-index: 200;
 }
-
-.screen.active {
+#dialog.show { display: block; }
+#dialog-text { margin-bottom: 12px; line-height: 1.5; }
+#dialog-options {
     display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+#dialog-options button {
+    background: #2d4a3e;
+    border: 1px solid #b87333;
+    color: #f7f4ed;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+#dialog-options button:hover { background: #3d5a4e; }
+#dialog-options button.primary { background: #b87333; }
+
+/* Instructions */
+#instructions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    color: #aaa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
 }
 
 /* Title Screen */
 #title-screen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a2e1a 0%, #2d4a3e 100%);
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+    z-index: 500;
 }
-
-.title-logo {
+#title-screen h1 {
     font-size: 3rem;
     margin-bottom: 0.5rem;
 }
-
-.title-name {
-    font-size: 2.5rem;
-    font-weight: 700;
+#title-screen h2 {
+    font-size: 2rem;
+    color: #f7f4ed;
     margin-bottom: 0.25rem;
-    color: var(--cream);
 }
-
-.title-subtitle {
-    font-size: 1rem;
-    color: var(--copper-light);
-    margin-bottom: 2rem;
+#title-screen p {
+    color: #b87333;
     font-style: italic;
+    margin-bottom: 2rem;
 }
-
-.title-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.btn {
-    padding: 1rem 2.5rem;
-    font-size: 1rem;
-    font-weight: 600;
+#title-screen button {
+    background: #b87333;
     border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.btn-primary {
-    background: var(--copper);
     color: white;
-}
-
-.btn-primary:hover {
-    background: var(--copper-light);
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--cream);
-    border: 1px solid rgba(255,255,255,0.3);
-}
-
-.btn-secondary:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-/* Game Screen */
-#game-screen {
-    background: var(--cream);
-    color: var(--text);
-}
-
-/* HUD */
-#hud {
-    background: var(--forest);
-    color: var(--cream);
-    padding: 0.75rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.hud-stat {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.hud-stat-icon {
-    font-size: 1.1rem;
-}
-
-.hud-stat-value {
-    font-weight: 600;
-}
-
-/* Farm View */
-#farm-view {
-    flex: 1;
-    padding: 1rem;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-/* Animals Area */
-#animals-area {
-    background: #e8e4db;
+    padding: 16px 48px;
+    font-size: 1.2rem;
     border-radius: 8px;
-    padding: 1rem;
-    min-height: 200px;
+    cursor: pointer;
+    margin: 8px;
 }
+#title-screen button:hover { background: #d4915c; }
 
-.animals-title {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-light);
-    margin-bottom: 0.75rem;
-}
-
-.animals-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-
-.animal-card {
-    background: white;
+/* Toast */
+#toast {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: #f7f4ed;
+    padding: 12px 24px;
     border-radius: 8px;
-    padding: 1rem;
-    min-width: 120px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.animal-card:hover {
-    transform: translateY(-2px);
-}
-
-.animal-emoji {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.animal-name {
-    font-weight: 600;
-    color: var(--forest);
-    font-size: 0.9rem;
-}
-
-.animal-status {
-    font-size: 0.75rem;
-    color: var(--text-light);
-    margin-top: 0.25rem;
-}
-
-.animal-health-bar {
-    height: 4px;
-    background: #ddd;
-    border-radius: 2px;
-    margin-top: 0.5rem;
-    overflow: hidden;
-}
-
-.animal-health-fill {
-    height: 100%;
-    background: var(--success);
-    transition: width 0.3s;
-}
-
-/* Actions Bar */
-#actions-bar {
-    background: var(--forest);
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.action-btn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.85rem;
-    background: var(--copper);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.action-btn:hover {
-    background: var(--copper-light);
-}
-
-.action-btn.active {
-    background: var(--success);
-    color: white;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
-.action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* ========================================
-   DEBUG PANEL
-   ======================================== */
-
-#debug-toggle {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    z-index: 1000;
-}
-
-#debug-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 400px;
-    max-width: 90vw;
-    height: 100vh;
-    background: #1a1a1a;
-    color: #f0f0f0;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 0.8rem;
-}
-
-#debug-panel.open {
-    transform: translateX(0);
-}
-
-.debug-header {
-    background: #2a2a2a;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #333;
-}
-
-.debug-header h3 {
-    color: var(--copper-light);
-}
-
-.debug-close {
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.debug-tabs {
-    display: flex;
-    background: #222;
-}
-
-.debug-tab {
-    flex: 1;
-    padding: 0.75rem;
-    background: none;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-}
-
-.debug-tab.active {
-    color: var(--copper-light);
-    border-bottom-color: var(--copper);
-}
-
-.debug-content {
-    flex: 1;
-    overflow: auto;
-    padding: 1rem;
-}
-
-.debug-section {
-    margin-bottom: 1.5rem;
-}
-
-.debug-section-title {
-    color: var(--copper-light);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-}
-
-.debug-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.debug-btn {
-    padding: 0.5rem 0.75rem;
-    background: #333;
-    border: 1px solid #444;
-    color: #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.75rem;
-}
-
-.debug-btn:hover {
-    background: #444;
-}
-
-.debug-state {
-    background: #111;
-    padding: 1rem;
-    border-radius: 4px;
-    overflow: auto;
-    max-height: 300px;
-    white-space: pre-wrap;
-    font-size: 0.7rem;
-    line-height: 1.4;
-}
-
-.debug-log {
-    background: #111;
-    padding: 0.5rem;
-    border-radius: 4px;
-    max-height: 200px;
-    overflow: auto;
-    font-size: 0.7rem;
-}
-
-.log-entry {
-    padding: 0.25rem 0;
-    border-bottom: 1px solid #222;
-}
-
-.log-entry.action { color: #4ade80; }
-.log-entry.warning { color: #fbbf24; }
-.log-entry.error { color: #f87171; }
-
-/* ========================================
-   MODALS
-   ======================================== */
-
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
     display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
+    z-index: 300;
 }
-
-.modal-overlay.open {
-    display: flex;
-}
-
-.modal {
-    background: var(--cream);
-    color: var(--text);
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 400px;
-    width: 90%;
-    max-height: 80vh;
-    overflow: auto;
-}
-
-.modal h2 {
-    color: var(--forest);
-    margin-bottom: 1rem;
-}
-
-/* ========================================
-   TOAST NOTIFICATIONS
-   ======================================== */
-
-#toast-container {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    pointer-events: none;
-}
-
-.toast {
-    background: var(--forest);
-    color: var(--cream);
-    padding: 0.75rem 1.25rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-    min-width: 200px;
-    max-width: 350px;
-}
-
-.toast.success { border-left: 4px solid var(--success); }
-.toast.warning { border-left: 4px solid var(--warning); }
-.toast.error { border-left: 4px solid var(--danger); }
-.toast.achievement {
-    background: linear-gradient(135deg, #1a2e1a 0%, #2d4a3e 100%);
-    border-left: 4px solid gold;
-}
-
-.toast-icon { font-size: 1.25rem; }
-.toast-message { flex: 1; font-size: 0.9rem; }
-
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; transform: translateX(50%); }
-}
-
-/* ========================================
-   ACHIEVEMENTS PANEL
-   ======================================== */
-
-#achievements-btn {
-    position: fixed;
-    bottom: 1rem;
-    left: 1rem;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    z-index: 1000;
-}
-
-.achievements-modal {
-    max-width: 500px;
-}
-
-.achievement-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
-    background: white;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    transition: transform 0.2s;
-}
-
-.achievement-item:hover {
-    transform: translateX(4px);
-}
-
-.achievement-item.locked {
-    opacity: 0.5;
-    filter: grayscale(1);
-}
-
-.achievement-icon {
-    font-size: 2rem;
-    width: 50px;
-    text-align: center;
-}
-
-.achievement-info {
-    flex: 1;
-}
-
-.achievement-name {
-    font-weight: 600;
-    color: var(--forest);
-}
-
-.achievement-desc {
-    font-size: 0.8rem;
-    color: var(--text-light);
-}
-
-.achievement-unlocked {
-    color: var(--success);
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-/* ========================================
-   MONEY ANIMATION
-   ======================================== */
-
-.money-change {
-    position: absolute;
-    font-weight: bold;
-    font-size: 1rem;
-    animation: floatUp 1s ease-out forwards;
-    pointer-events: none;
-    z-index: 100;
-}
-
-.money-change.positive { color: var(--success); }
-.money-change.negative { color: var(--danger); }
-
-@keyframes floatUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-30px); opacity: 0; }
-}
-
-/* ========================================
-   SEASON BACKGROUNDS
-   ======================================== */
-
-#farm-view.spring { background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%); }
-#farm-view.summer { background: linear-gradient(180deg, #fff8e1 0%, #ffecb3 100%); }
-#farm-view.fall { background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%); }
-#farm-view.winter { background: linear-gradient(180deg, #eceff1 0%, #cfd8dc 100%); }
-
-/* ========================================
-   ANIMAL ANIMATIONS
-   ======================================== */
-
-.animal-card.new {
-    animation: pop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes pop {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.animal-card.mature {
-    box-shadow: 0 0 0 3px var(--success), 0 4px 15px rgba(34, 197, 94, 0.3);
-}
-
-.animal-card.hungry {
-    animation: shake 0.5s ease-in-out;
-    box-shadow: 0 0 0 2px var(--warning);
-}
-
-.animal-card.pregnant {
-    background: linear-gradient(135deg, #fff5f8 0%, #ffe4ec 100%);
-    box-shadow: 0 0 0 2px #d94a8c;
-    animation: pulse-pregnant 2s ease-in-out infinite;
-}
-
-@keyframes pulse-pregnant {
-    0%, 100% { box-shadow: 0 0 0 2px #d94a8c; }
-    50% { box-shadow: 0 0 8px 2px #d94a8c; }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
-
-/* ========================================
-   PROGRESS BAR (in HUD)
-   ======================================== */
-
-.hud-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.progress-bar {
-    width: 60px;
-    height: 6px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--copper-light);
-    transition: width 0.3s;
-}
-
-/* ========================================
-   EVENT BANNER
-   ======================================== */
-
-#event-banner {
-    display: none;
-    background: linear-gradient(90deg, var(--copper), var(--copper-light));
-    color: white;
-    padding: 0.5rem 1rem;
-    text-align: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    animation: pulse 2s infinite;
-}
-
-#event-banner.active {
-    display: block;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
-}
-
-/* ========================================
-   TIPS/HINTS
-   ======================================== */
-
-.tip-bubble {
-    position: absolute;
-    background: var(--forest);
-    color: var(--cream);
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    max-width: 250px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    animation: bounce 0.5s ease;
-    z-index: 50;
-}
-
-.tip-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 20px;
-    border-width: 8px 8px 0;
-    border-style: solid;
-    border-color: var(--forest) transparent transparent;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-/* ========================================
-   FARM LAYOUT
-   ======================================== */
-
-.farm-layout {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 1rem;
-    flex: 1;
-    min-height: 0;
-}
-
-.farm-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.building {
-    background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
-    border-radius: 8px;
-    padding: 0.75rem;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    overflow: hidden;
-}
-
-.building:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.building::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 15px;
-    background: linear-gradient(180deg, #A52A2A 0%, #8B0000 100%);
-    border-radius: 8px 8px 0 0;
-}
-
-.building-icon {
-    font-size: 2rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.25rem;
-}
-
-.building-name {
-    color: var(--cream);
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.building-count {
-    background: var(--copper);
-    color: white;
-    padding: 0.15rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    position: absolute;
-    top: 20px;
-    right: 8px;
-}
-
-.farm-main {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-height: 0;
-    overflow: auto;
-}
-
-/* Pasture Area */
-.pasture {
-    background: linear-gradient(180deg, #90EE90 0%, #228B22 100%);
-    border-radius: 12px;
-    padding: 1rem;
-    min-height: 180px;
-    position: relative;
-    border: 3px solid #654321;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-}
-
-.pasture::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-        radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px),
-        radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
-    background-size: 20px 20px, 35px 35px;
-    background-position: 0 0, 10px 10px;
-    border-radius: 8px;
-    pointer-events: none;
-}
-
-.pasture-title {
-    position: absolute;
-    top: -12px;
-    left: 20px;
-    background: #654321;
-    color: var(--cream);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.pasture-fence {
-    position: absolute;
-    inset: -4px;
-    border: 4px dashed #654321;
-    border-radius: 16px;
-    pointer-events: none;
-}
-
-/* Weather decoration */
-.weather-decoration {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
-    opacity: 0.7;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-/* Season decorations in pasture */
-.pasture.spring { background: linear-gradient(180deg, #98FB98 0%, #3CB371 100%); }
-.pasture.summer { background: linear-gradient(180deg, #9ACD32 0%, #6B8E23 100%); }
-.pasture.fall { background: linear-gradient(180deg, #DAA520 0%, #8B4513 100%); }
-.pasture.winter { background: linear-gradient(180deg, #E0E0E0 0%, #A8A8A8 100%); }
-
-/* Info Panel */
-.farm-info {
-    background: white;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.info-label {
-    font-size: 0.65rem;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.info-value {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--forest);
-}
-
-.info-value.bonus {
-    color: var(--success);
-}
-
-.info-value.penalty {
-    color: var(--danger);
-}
-
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-
-@media (max-width: 600px) {
-    .title-name {
-        font-size: 2rem;
-    }
-
-    #hud {
-        font-size: 0.8rem;
-        padding: 0.5rem;
-    }
-
-    .hud-stat {
-        gap: 0.25rem;
-    }
-
-    /* Farm layout goes single column on mobile */
-    .farm-layout {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-    }
-
-    .farm-sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-        gap: 0.5rem;
-        padding-bottom: 0.25rem;
-    }
-
-    .building {
-        min-width: 80px;
-        padding: 0.5rem;
-    }
-
-    .building-icon {
-        font-size: 1.5rem;
-        margin-top: 0.25rem;
-    }
-
-    .building-name {
-        font-size: 0.65rem;
-    }
-
-    .building-count {
-        top: 15px;
-        right: 4px;
-        font-size: 0.6rem;
-        padding: 0.1rem 0.35rem;
-    }
-
-    .pasture {
-        min-height: 150px;
-        padding: 0.75rem;
-    }
-
-    .farm-info {
-        padding: 0.5rem 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .info-label {
-        font-size: 0.6rem;
-    }
-
-    .info-value {
-        font-size: 0.8rem;
-    }
-
-    .animal-card {
-        min-width: 100px;
-        padding: 0.75rem;
-    }
-
-    .animal-emoji {
-        font-size: 2rem;
-    }
-
-    #actions-bar {
-        padding: 0.75rem;
-        gap: 0.5rem;
-    }
-
-    /* Larger touch targets for mobile */
-    .action-btn {
-        padding: 1rem;
-        font-size: 0.9rem;
-        min-height: 48px;
-        flex: 1 1 calc(50% - 0.5rem);
-        justify-content: center;
-    }
-
-    .btn {
-        padding: 1rem 2rem;
-        min-height: 48px;
-    }
-
-    #debug-panel {
-        width: 100vw;
-    }
-
-    .toast {
-        min-width: 150px;
-        max-width: 280px;
-        font-size: 0.8rem;
-    }
-
-    #toast-container {
-        left: 1rem;
-        right: 1rem;
-    }
-
-    /* Hide debug by default on mobile, show achievements */
-    #debug-toggle {
-        display: none;
-    }
-
-    #achievements-btn {
-        bottom: auto;
-        top: auto;
-        right: 1rem;
-        left: auto;
-    }
-
-    /* Better modal on mobile */
-    .modal {
-        padding: 1.5rem;
-        border-radius: 12px 12px 0 0;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        max-width: 100%;
-        width: 100%;
-        max-height: 70vh;
-        animation: slideUp 0.3s ease;
-    }
-
-    @keyframes slideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
-    }
-
-    .modal-overlay {
-        align-items: flex-end;
-    }
-
-    /* Farm view improvements */
-    #farm-view {
-        padding: 0.75rem;
-    }
-
-    #animals-area {
-        padding: 0.75rem;
-    }
-
-    .animals-grid {
-        gap: 0.5rem;
-    }
-}
-
-/* Touch-friendly improvements */
-@media (hover: none) and (pointer: coarse) {
-    /* Styles for touch devices */
-    .action-btn:active,
-    .btn:active,
-    .animal-card:active {
-        transform: scale(0.95);
-        transition: transform 0.1s;
-    }
-
-    .debug-btn {
-        padding: 0.75rem 1rem;
-        min-height: 44px;
-    }
-}
-
-/* Landscape mobile */
-@media (max-height: 500px) and (orientation: landscape) {
-    #hud {
-        padding: 0.5rem 1rem;
-    }
-
-    #actions-bar {
-        padding: 0.5rem;
-    }
-
-    .action-btn {
-        padding: 0.5rem 1rem;
-    }
-
-    #farm-view {
-        padding: 0.5rem;
-    }
+#toast.show { display: block; animation: fadeInOut 3s forwards; }
+@keyframes fadeInOut {
+    0%, 80% { opacity: 1; }
+    100% { opacity: 0; }
 }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <!-- Title Screen -->
-        <div id="title-screen" class="screen active">
-            <div class="title-logo">🐷</div>
-            <h1 class="title-name">Texas Farms</h1>
-            <p class="title-subtitle">The Game</p>
-            <div class="title-buttons">
-                <button class="btn btn-primary" onclick="Game.newGame()">New Game</button>
-                <button class="btn btn-secondary" onclick="Game.loadGame()" id="continue-btn" style="display: none;">Continue</button>
-            </div>
-            <p style="margin-top: 2rem; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-                A farming simulator based on<br>
-                <a href="/home.html" style="color: var(--copper-light);">Texas Farms Vermont</a>
-            </p>
+<div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <div id="hud">
+        <div class="hud-panel">
+            <h3>Farmer</h3>
+            <div id="money-display">$500</div>
         </div>
-
-        <!-- Game Screen -->
-        <div id="game-screen" class="screen">
-            <!-- HUD -->
-            <div id="hud">
-                <div class="hud-stat">
-                    <span class="hud-stat-icon">💰</span>
-                    <span class="hud-stat-value" id="hud-money">$1,000</span>
-                </div>
-                <div class="hud-stat">
-                    <span class="hud-stat-icon">📅</span>
-                    <span class="hud-stat-value" id="hud-date">Day 1, Spring Y1</span>
-                </div>
-                <div class="hud-stat">
-                    <span class="hud-stat-icon">🐷</span>
-                    <span class="hud-stat-value" id="hud-animals">0</span>
-                </div>
-            </div>
-
-            <!-- Farm View -->
-            <div id="farm-view">
-                <div class="farm-layout">
-                    <!-- Farm Sidebar with Buildings -->
-                    <div class="farm-sidebar">
-                        <div class="building" onclick="Game.showBuildingInfo('barn')">
-                            <div class="building-icon">🏠</div>
-                            <div class="building-name">Pig Barn</div>
-                            <span class="building-count" id="barn-count">0</span>
-                        </div>
-                        <div class="building" onclick="Game.showBuildingInfo('feed')">
-                            <div class="building-icon">🌾</div>
-                            <div class="building-name">Feed Storage</div>
-                        </div>
-                        <div class="building" onclick="Game.showBuildingInfo('hutch')">
-                            <div class="building-icon">🐰</div>
-                            <div class="building-name">Rabbit Hutch</div>
-                            <span class="building-count" id="hutch-count">0</span>
-                        </div>
-                        <div class="building" style="opacity: 0.5; cursor: not-allowed;">
-                            <div class="building-icon">🐔</div>
-                            <div class="building-name">Chicken Coop</div>
-                            <span style="position: absolute; bottom: 5px; right: 8px; font-size: 0.6rem; color: #aaa;">Coming Soon</span>
-                        </div>
-                    </div>
-
-                    <!-- Main Farm Area -->
-                    <div class="farm-main">
-                        <!-- Season Info Panel -->
-                        <div class="farm-info" id="farm-info">
-                            <div class="info-item">
-                                <span class="info-label">Season</span>
-                                <span class="info-value" id="info-season">Spring</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Feed Cost</span>
-                                <span class="info-value" id="info-feed-cost">$5/pig</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Market Price</span>
-                                <span class="info-value" id="info-market">100%</span>
-                            </div>
-                            <div class="info-item" id="bonus-display" style="display: none;">
-                                <span class="info-label">Active Bonus</span>
-                                <span class="info-value bonus" id="info-bonus">+20%</span>
-                            </div>
-                        </div>
-
-                        <!-- Pasture Area -->
-                        <div class="pasture" id="pasture-area">
-                            <div class="pasture-title">Pig Pasture</div>
-                            <div class="pasture-fence"></div>
-                            <span class="weather-decoration" id="weather-icon">🌸</span>
-                            <div class="animals-grid" id="animals-grid">
-                                <!-- Animals render here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions Bar -->
-            <div id="actions-bar">
-                <button class="action-btn" onclick="Game.dispatch({type: 'BUY_PIG'})">
-                    🐷 Buy Pig ($200)
-                </button>
-                <button class="action-btn" onclick="Game.dispatch({type: 'BUY_RABBIT'})">
-                    🐰 Buy Rabbit ($50)
-                </button>
-                <button class="action-btn" onclick="Game.dispatch({type: 'FEED_ALL'})">
-                    🌾 Feed All
-                </button>
-                <button class="action-btn" onclick="Game.dispatch({type: 'ADVANCE_DAY'})">
-                    ⏭️ Next Day
-                </button>
-                <button class="action-btn" onclick="Game.toggleAutoPlay()" id="autoplay-btn">
-                    ▶️ Auto
-                </button>
-                <button class="action-btn" onclick="Game.save()">
-                    💾 Save
-                </button>
-            </div>
+        <div class="hud-panel">
+            <h3>Time</h3>
+            <div id="time-display">Day 1, Spring Y1</div>
+        </div>
+        <div class="hud-panel">
+            <h3>Farm</h3>
+            <div id="animal-count">0 animals</div>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
-
-    <!-- Event Banner -->
-    <div id="event-banner"></div>
-
-    <!-- Achievements Button -->
-    <button id="achievements-btn" onclick="Achievements.showModal()">🏆 Achievements</button>
-
-    <!-- Debug Toggle -->
-    <button id="debug-toggle" onclick="Debug.toggle()">🔧 Debug</button>
-
-    <!-- Debug Panel -->
-    <div id="debug-panel">
-        <div class="debug-header">
-            <h3>🔧 Debug Panel</h3>
-            <button class="debug-close" onclick="Debug.toggle()">×</button>
-        </div>
-        <div class="debug-tabs">
-            <button class="debug-tab active" onclick="Debug.showTab('state')">State</button>
-            <button class="debug-tab" onclick="Debug.showTab('controls')">Controls</button>
-            <button class="debug-tab" onclick="Debug.showTab('log')">Log</button>
-        </div>
-        <div class="debug-content">
-            <div id="debug-state-tab" class="debug-tab-content">
-                <div class="debug-section">
-                    <div class="debug-section-title">Game State</div>
-                    <pre class="debug-state" id="debug-state-view">Loading...</pre>
-                </div>
-            </div>
-            <div id="debug-controls-tab" class="debug-tab-content" style="display: none;">
-                <div class="debug-section">
-                    <div class="debug-section-title">Time Controls</div>
-                    <div class="debug-controls">
-                        <button class="debug-btn" onclick="Debug.advanceDays(1)">+1 Day</button>
-                        <button class="debug-btn" onclick="Debug.advanceDays(7)">+7 Days</button>
-                        <button class="debug-btn" onclick="Debug.advanceDays(30)">+30 Days</button>
-                        <button class="debug-btn" onclick="Debug.advanceDays(90)">+Season</button>
-                    </div>
-                </div>
-                <div class="debug-section">
-                    <div class="debug-section-title">Money</div>
-                    <div class="debug-controls">
-                        <button class="debug-btn" onclick="Debug.addMoney(100)">+$100</button>
-                        <button class="debug-btn" onclick="Debug.addMoney(1000)">+$1000</button>
-                        <button class="debug-btn" onclick="Debug.addMoney(-100)">-$100</button>
-                    </div>
-                </div>
-                <div class="debug-section">
-                    <div class="debug-section-title">Animals</div>
-                    <div class="debug-controls">
-                        <button class="debug-btn" onclick="Debug.spawnPig()">Spawn Pig</button>
-                        <button class="debug-btn" onclick="Debug.spawnAdultPig()">Spawn Adult Pig</button>
-                        <button class="debug-btn" onclick="Debug.killAll()">Kill All</button>
-                    </div>
-                </div>
-                <div class="debug-section">
-                    <div class="debug-section-title">Data</div>
-                    <div class="debug-controls">
-                        <button class="debug-btn" onclick="Debug.clearSave()">Clear Save</button>
-                        <button class="debug-btn" onclick="Debug.exportState()">Export JSON</button>
-                    </div>
-                </div>
-            </div>
-            <div id="debug-log-tab" class="debug-tab-content" style="display: none;">
-                <div class="debug-section">
-                    <div class="debug-section-title">Action Log</div>
-                    <div class="debug-log" id="debug-log">
-                        <!-- Log entries here -->
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="dialog">
+        <div id="dialog-text"></div>
+        <div id="dialog-options"></div>
     </div>
 
-    <!-- Modal Overlay -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal" id="modal-content">
-            <!-- Modal content injected here -->
-        </div>
+    <div id="toast"></div>
+
+    <div id="instructions">
+        WASD/Arrows: Move | E/Space: Interact
     </div>
+
+    <div id="title-screen">
+        <h1>🌾</h1>
+        <h2>Texas Farms</h2>
+        <p>A Vermont Farming Adventure</p>
+        <button onclick="Game.start()">Start Game</button>
+    </div>
+</div>
 
 <script>
-/* ========================================
-   TEXAS FARMS - THE GAME
-   Core Game Engine
-   ======================================== */
+// ==========================================
+// TEXAS FARMS - THE GAME v0.5.0
+// Now with actual gameplay!
+// ==========================================
+
+const TILE_SIZE = 48;
+const WORLD_WIDTH = 30;
+const WORLD_HEIGHT = 20;
+
+// ==========================================
+// WORLD MAP - Tile Types
+// ==========================================
+const TILES = {
+    GRASS: 0,
+    DIRT_PATH: 1,
+    WATER: 2,
+    FENCE: 3,
+    BARN_FLOOR: 4,
+    BARN_WALL: 5,
+    TREE: 6,
+    FLOWERS: 7,
+    HAY: 8,
+    TROUGH: 9,
+    DOOR: 10,
+    MARKET_STALL: 11,
+    HOUSE_WALL: 12,
+    HOUSE_FLOOR: 13,
+};
+
+// Colors for each tile
+const TILE_COLORS = {
+    [TILES.GRASS]: '#4a7c59',
+    [TILES.DIRT_PATH]: '#8b7355',
+    [TILES.WATER]: '#4a90d9',
+    [TILES.FENCE]: '#8b6914',
+    [TILES.BARN_FLOOR]: '#a0522d',
+    [TILES.BARN_WALL]: '#8b4513',
+    [TILES.TREE]: '#2d5a27',
+    [TILES.FLOWERS]: '#4a7c59',
+    [TILES.HAY]: '#daa520',
+    [TILES.TROUGH]: '#696969',
+    [TILES.DOOR]: '#654321',
+    [TILES.MARKET_STALL]: '#8b4513',
+    [TILES.HOUSE_WALL]: '#deb887',
+    [TILES.HOUSE_FLOOR]: '#d2b48c',
+};
+
+// Which tiles block movement
+const SOLID_TILES = [TILES.WATER, TILES.FENCE, TILES.BARN_WALL, TILES.TREE, TILES.HOUSE_WALL];
+
+// Generate the world map
+function generateWorld() {
+    const map = [];
+    for (let y = 0; y < WORLD_HEIGHT; y++) {
+        const row = [];
+        for (let x = 0; x < WORLD_WIDTH; x++) {
+            row.push(TILES.GRASS);
+        }
+        map.push(row);
+    }
+
+    // Add dirt path from left to right
+    for (let x = 0; x < WORLD_WIDTH; x++) {
+        map[10][x] = TILES.DIRT_PATH;
+        map[11][x] = TILES.DIRT_PATH;
+    }
+    // Vertical path
+    for (let y = 5; y < 15; y++) {
+        map[y][15] = TILES.DIRT_PATH;
+        map[y][16] = TILES.DIRT_PATH;
+    }
+
+    // Add pond
+    for (let y = 2; y < 5; y++) {
+        for (let x = 2; x < 6; x++) {
+            map[y][x] = TILES.WATER;
+        }
+    }
+
+    // Add trees around edges
+    for (let x = 0; x < WORLD_WIDTH; x++) {
+        if (Math.random() < 0.4) map[0][x] = TILES.TREE;
+        if (Math.random() < 0.4) map[WORLD_HEIGHT-1][x] = TILES.TREE;
+    }
+    for (let y = 0; y < WORLD_HEIGHT; y++) {
+        if (Math.random() < 0.5) map[y][0] = TILES.TREE;
+        if (Math.random() < 0.5) map[y][WORLD_WIDTH-1] = TILES.TREE;
+    }
+
+    // Add barn (pig barn)
+    for (let y = 3; y < 8; y++) {
+        for (let x = 20; x < 26; x++) {
+            if (y === 3 || y === 7 || x === 20 || x === 25) {
+                map[y][x] = TILES.BARN_WALL;
+            } else {
+                map[y][x] = TILES.BARN_FLOOR;
+            }
+        }
+    }
+    map[7][22] = TILES.DOOR; // Barn door
+    map[7][23] = TILES.DOOR;
+
+    // Add pig pasture fencing
+    for (let x = 19; x < 27; x++) {
+        map[9][x] = TILES.FENCE;
+        map[14][x] = TILES.FENCE;
+    }
+    for (let y = 9; y < 15; y++) {
+        map[y][19] = TILES.FENCE;
+        map[y][26] = TILES.FENCE;
+    }
+    map[11][19] = TILES.GRASS; // Gate
+
+    // Feed trough in pasture
+    map[12][22] = TILES.TROUGH;
+    map[12][23] = TILES.TROUGH;
+
+    // Farmhouse
+    for (let y = 3; y < 7; y++) {
+        for (let x = 8; x < 13; x++) {
+            if (y === 3 || y === 6 || x === 8 || x === 12) {
+                map[y][x] = TILES.HOUSE_WALL;
+            } else {
+                map[y][x] = TILES.HOUSE_FLOOR;
+            }
+        }
+    }
+    map[6][10] = TILES.DOOR; // House door
+
+    // Market stall at bottom
+    for (let x = 10; x < 14; x++) {
+        map[16][x] = TILES.MARKET_STALL;
+    }
+
+    // Random flowers
+    for (let y = 0; y < WORLD_HEIGHT; y++) {
+        for (let x = 0; x < WORLD_WIDTH; x++) {
+            if (map[y][x] === TILES.GRASS && Math.random() < 0.05) {
+                map[y][x] = TILES.FLOWERS;
+            }
+        }
+    }
+
+    return map;
+}
+
+// ==========================================
+// ENTITIES
+// ==========================================
+
+class Player {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.targetX = x;
+        this.targetY = y;
+        this.speed = 4;
+        this.direction = 'down';
+        this.moving = false;
+        this.sprite = '👨‍🌾';
+    }
+
+    update(keys, world, entities) {
+        let dx = 0, dy = 0;
+
+        if (keys.up) { dy = -1; this.direction = 'up'; }
+        if (keys.down) { dy = 1; this.direction = 'down'; }
+        if (keys.left) { dx = -1; this.direction = 'left'; }
+        if (keys.right) { dx = 1; this.direction = 'right'; }
+
+        if (dx !== 0 || dy !== 0) {
+            this.moving = true;
+            const newX = this.x + dx * this.speed;
+            const newY = this.y + dy * this.speed;
+
+            // Check collision with world
+            const tileX = Math.floor(newX / TILE_SIZE);
+            const tileY = Math.floor(newY / TILE_SIZE);
+
+            if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
+                const tile = world[tileY][tileX];
+                if (!SOLID_TILES.includes(tile)) {
+                    this.x = newX;
+                    this.y = newY;
+                }
+            }
+
+            // Keep in bounds
+            this.x = Math.max(0, Math.min(this.x, (WORLD_WIDTH - 1) * TILE_SIZE));
+            this.y = Math.max(0, Math.min(this.y, (WORLD_HEIGHT - 1) * TILE_SIZE));
+        } else {
+            this.moving = false;
+        }
+    }
+
+    draw(ctx, camera) {
+        const screenX = this.x - camera.x;
+        const screenY = this.y - camera.y;
+
+        // Draw shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(screenX + TILE_SIZE/2, screenY + TILE_SIZE - 5, 15, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw player emoji
+        ctx.font = `${TILE_SIZE - 8}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.sprite, screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+    }
+
+    getInteractionPoint() {
+        const offsets = {
+            up: { x: 0, y: -TILE_SIZE },
+            down: { x: 0, y: TILE_SIZE },
+            left: { x: -TILE_SIZE, y: 0 },
+            right: { x: TILE_SIZE, y: 0 }
+        };
+        const offset = offsets[this.direction];
+        return {
+            x: this.x + offset.x,
+            y: this.y + offset.y
+        };
+    }
+}
+
+class Animal {
+    constructor(x, y, type) {
+        this.id = Math.random().toString(36).substr(2, 9);
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.age = 0;
+        this.health = 100;
+        this.happiness = 80;
+        this.hunger = 0;
+        this.weight = type === 'pig' ? 50 : 0.5;
+        this.name = this.generateName();
+        this.wanderTimer = 0;
+        this.wanderDir = { x: 0, y: 0 };
+        this.genetics = {
+            quality: 0.5 + Math.random() * 0.4,
+            growth: 0.6 + Math.random() * 0.4,
+        };
+    }
+
+    generateName() {
+        const pigNames = ['Wilbur', 'Babe', 'Hamlet', 'Porky', 'Truffle', 'Rosie', 'Chester', 'Penny'];
+        const rabbitNames = ['Thumper', 'Flopsy', 'Cotton', 'Peter', 'Hazel', 'Clover'];
+        const names = this.type === 'pig' ? pigNames : rabbitNames;
+        return names[Math.floor(Math.random() * names.length)];
+    }
+
+    get sprite() {
+        if (this.type === 'pig') {
+            if (this.age < 60) return '🐷';
+            return '🐖';
+        }
+        return '🐰';
+    }
+
+    get maturityAge() {
+        return this.type === 'pig' ? 180 : 90;
+    }
+
+    get value() {
+        const basePrice = this.type === 'pig' ? 3 : 8;
+        return Math.round(this.weight * basePrice * this.genetics.quality);
+    }
+
+    update(world) {
+        // Random wandering
+        this.wanderTimer--;
+        if (this.wanderTimer <= 0) {
+            this.wanderTimer = 60 + Math.random() * 120;
+            if (Math.random() < 0.5) {
+                this.wanderDir = { x: 0, y: 0 };
+            } else {
+                const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+                this.wanderDir = dirs[Math.floor(Math.random() * dirs.length)];
+            }
+        }
+
+        if (this.wanderDir.x !== 0 || this.wanderDir.y !== 0) {
+            const newX = this.x + this.wanderDir.x * 1;
+            const newY = this.y + this.wanderDir.y * 1;
+
+            const tileX = Math.floor(newX / TILE_SIZE);
+            const tileY = Math.floor(newY / TILE_SIZE);
+
+            if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
+                const tile = world[tileY][tileX];
+                if (!SOLID_TILES.includes(tile) && tile !== TILES.WATER) {
+                    this.x = newX;
+                    this.y = newY;
+                } else {
+                    this.wanderDir = { x: 0, y: 0 };
+                }
+            }
+        }
+
+        // Keep in pasture area (rough bounds)
+        this.x = Math.max(20 * TILE_SIZE, Math.min(this.x, 25 * TILE_SIZE));
+        this.y = Math.max(10 * TILE_SIZE, Math.min(this.y, 13 * TILE_SIZE));
+    }
+
+    draw(ctx, camera) {
+        const screenX = this.x - camera.x;
+        const screenY = this.y - camera.y;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.beginPath();
+        ctx.ellipse(screenX + TILE_SIZE/2, screenY + TILE_SIZE - 8, 12, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sprite
+        ctx.font = `${TILE_SIZE - 12}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.sprite, screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+
+        // Hunger indicator
+        if (this.hunger > 50) {
+            ctx.font = '16px serif';
+            ctx.fillText('💭', screenX + TILE_SIZE - 5, screenY + 10);
+        }
+    }
+
+    feed() {
+        this.hunger = 0;
+        this.happiness = Math.min(100, this.happiness + 10);
+    }
+
+    advanceDay() {
+        this.age++;
+        this.hunger += 20;
+
+        // Weight gain if not hungry
+        if (this.hunger < 50) {
+            const gain = this.type === 'pig' ? 1.5 : 0.15;
+            this.weight += gain * this.genetics.growth;
+        }
+
+        // Health effects
+        if (this.hunger > 80) {
+            this.health -= 5;
+            this.happiness -= 10;
+        }
+
+        this.happiness = Math.max(0, Math.min(100, this.happiness));
+        this.health = Math.max(0, Math.min(100, this.health));
+    }
+}
 
 // ==========================================
 // GAME STATE
 // ==========================================
 
-const DEFAULT_STATE = {
-    meta: {
-        version: "0.4.0",
-        created: null,
-        lastSaved: null,
-        totalPlayTime: 0
-    },
-    farm: {
-        name: "My Farm",
-        money: 1000,
-        day: 1,
-        season: "spring",
-        year: 1
-    },
-    animals: [],
-    stats: {
-        totalAnimalsRaised: 0,
-        totalMoneyEarned: 0,
-        totalMoneySpent: 0,
-        pigsSold: 0
-    },
-    // Active bonuses from events
-    marketBonus: 1,
-    marketBonusDays: 0,
-    feedDiscount: 1,
-    feedDiscountDays: 0,
-    // Tutorial state
-    tutorialStep: 0,
-    tutorialShown: {}
-};
-
-// ==========================================
-// GAME CONFIG
-// ==========================================
-
-const CONFIG = {
-    // General settings
-    DAYS_PER_SEASON: 30,
-    SEASONS: ['spring', 'summer', 'fall', 'winter'],
-
-    // === PIG SETTINGS ===
-    PIG_PRICE: 200,
-    FEED_COST_PER_PIG: 5,
-    PIG_SELL_PRICE_PER_LB: 3,  // $3 per pound
-    PIG_MATURITY_DAYS: 180,
-
-    // Pig lifecycle stages
-    PIG_STAGES: {
-        piglet: { maxAge: 60, emoji: '🐷', minWeight: 50, label: 'Piglet' },
-        grower: { maxAge: 120, emoji: '🐖', minWeight: 100, label: 'Grower' },
-        finisher: { maxAge: 180, emoji: '🐷', minWeight: 180, label: 'Finisher' }
-    },
-
-    // Weight gain per day (base, modified by genetics)
-    WEIGHT_GAIN_BASE: 1.5, // lbs per day
-
-    // Pig breeding
-    PIG_BREEDING_MIN_AGE: 180,
-    PIG_PREGNANCY_DURATION: 114,     // 114 days for pigs
-    PIG_BREEDING_COOLDOWN: 60,
-    PIG_LITTER_SIZE_MIN: 6,
-    PIG_LITTER_SIZE_MAX: 12,
-
-    // === RABBIT SETTINGS ===
-    RABBIT_PRICE: 50,
-    FEED_COST_PER_RABBIT: 1,
-    RABBIT_SELL_PRICE_PER_LB: 8,    // $8 per pound (higher price, smaller animal)
-    RABBIT_MATURITY_DAYS: 90,        // 3 months to market weight
-
-    // Rabbit lifecycle stages
-    RABBIT_STAGES: {
-        kit: { maxAge: 30, emoji: '🐰', minWeight: 0.5, label: 'Kit' },
-        junior: { maxAge: 60, emoji: '🐇', minWeight: 3, label: 'Junior' },
-        adult: { maxAge: 90, emoji: '🐇', minWeight: 8, label: 'Adult' }
-    },
-
-    // Rabbit weight
-    RABBIT_WEIGHT_GAIN_BASE: 0.15,  // lbs per day
-    RABBIT_START_WEIGHT: 0.5,       // lbs (newborn kit)
-    RABBIT_MAX_WEIGHT: 12,          // lbs (Champagne D'Argent are 9-12 lbs)
-
-    // Rabbit breeding (much faster than pigs!)
-    RABBIT_BREEDING_MIN_AGE: 150,    // 5 months (females mature)
-    RABBIT_PREGNANCY_DURATION: 31,   // 31 days (4.5 weeks)
-    RABBIT_BREEDING_COOLDOWN: 14,    // Can rebreed after 2 weeks
-    RABBIT_LITTER_SIZE_MIN: 4,
-    RABBIT_LITTER_SIZE_MAX: 10,
-
-    // Rabbit pelt
-    RABBIT_PELT_PRICE: 15,          // Per pelt
-    RABBIT_PELT_MIN_AGE: 120,       // Only adults have quality pelts
-
-    // Season modifiers
-    SEASON_MODIFIERS: {
-        spring: { growth: 1.1, feedCost: 1.0, marketPrice: 1.0 },
-        summer: { growth: 1.0, feedCost: 0.9, marketPrice: 0.95 },
-        fall: { growth: 1.05, feedCost: 1.1, marketPrice: 1.15 },
-        winter: { growth: 0.85, feedCost: 1.3, marketPrice: 1.1 }
-    },
-
-    // Random event chances (per day)
-    EVENT_CHANCE: 0.08,  // 8% chance of event per day
-
-    // General breeding settings (legacy - for backward compatibility)
-    BREEDING_MIN_AGE: 180,          // Default for pigs
-    BREEDING_MIN_HAPPINESS: 60,     // Minimum happiness to breed
-    PREGNANCY_DURATION: 114,        // Default for pigs
-    BREEDING_COOLDOWN: 60,          // Default for pigs
-    LITTER_SIZE_MIN: 6,             // Default for pigs
-    LITTER_SIZE_MAX: 12,            // Default for pigs
-    BREEDING_STOCK_PREMIUM: 1.5,    // 50% premium for breeding stock
-    MUTATION_RATE: 0.1              // How much genetics can vary in offspring
-};
-
-// Random events that can occur
-const RANDOM_EVENTS = [
-    {
-        id: 'good_weather',
-        name: 'Perfect Weather',
-        message: 'Beautiful weather today! Your pigs are extra happy.',
-        effect: (state) => {
-            state.animals.forEach(a => { a.happiness = Math.min(100, a.happiness + 10); });
-            return state;
-        },
-        type: 'success'
-    },
-    {
-        id: 'market_boom',
-        name: 'Market Boom',
-        message: 'Pork prices are up! Great time to sell.',
-        effect: (state) => {
-            state.marketBonus = 1.2;
-            state.marketBonusDays = 3;
-            return state;
-        },
-        type: 'success'
-    },
-    {
-        id: 'visitor',
-        name: 'Farm Visitor',
-        message: 'A neighbor stopped by with a gift!',
-        effect: (state) => {
-            state.farm.money += 50;
-            return state;
-        },
-        type: 'success'
-    },
-    {
-        id: 'storm',
-        name: 'Storm Warning',
-        message: 'A storm rolled through. Pigs are stressed.',
-        effect: (state) => {
-            state.animals.forEach(a => { a.happiness = Math.max(0, a.happiness - 15); });
-            return state;
-        },
-        type: 'warning'
-    },
-    {
-        id: 'feed_discount',
-        name: 'Feed Sale',
-        message: 'The feed store has a sale! Feeding is cheaper today.',
-        effect: (state) => {
-            state.feedDiscount = 0.5;
-            state.feedDiscountDays = 2;
-            return state;
-        },
-        type: 'success'
-    },
-    {
-        id: 'vet_visit',
-        name: 'Vet Checkup',
-        message: 'The vet stopped by. Minor health boost for all animals.',
-        effect: (state) => {
-            state.animals.forEach(a => { a.health = Math.min(100, a.health + 5); });
-            return state;
-        },
-        type: 'success'
-    }
-];
-
-// ==========================================
-// UTILITY FUNCTIONS
-// ==========================================
-
-function generateId() {
-    return 'id_' + Math.random().toString(36).substr(2, 9);
-}
-
-function deepClone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
-
-function formatMoney(amount) {
-    return '$' + amount.toLocaleString();
-}
-
-function getSeasonIndex(season) {
-    return CONFIG.SEASONS.indexOf(season);
-}
-
-function getNextSeason(season) {
-    const idx = getSeasonIndex(season);
-    return CONFIG.SEASONS[(idx + 1) % 4];
-}
-
-function getSeasonIcon(season) {
-    const icons = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
-    return icons[season] || '📅';
-}
-
-function getPigStage(age) {
-    if (age <= CONFIG.PIG_STAGES.piglet.maxAge) return 'piglet';
-    if (age <= CONFIG.PIG_STAGES.grower.maxAge) return 'grower';
-    return 'finisher';
-}
-
-function getPigStageInfo(age) {
-    const stage = getPigStage(age);
-    return CONFIG.PIG_STAGES[stage];
-}
-
-function calculatePigWeight(pig) {
-    // Base weight + daily gains modified by genetics and happiness
-    const baseWeight = 50; // Starting weight in lbs
-    const dailyGain = CONFIG.WEIGHT_GAIN_BASE * pig.genetics.growthRate * (pig.happiness / 100);
-    return Math.round(baseWeight + (pig.age * dailyGain));
-}
-
-function calculateSellPrice(pig, season, marketBonus = 1) {
-    const weight = calculatePigWeight(pig);
-    const seasonMod = CONFIG.SEASON_MODIFIERS[season].marketPrice;
-    const qualityBonus = 1 + (pig.genetics.marbling * 0.3); // Up to 30% bonus for marbling
-    return Math.round(weight * CONFIG.PIG_SELL_PRICE_PER_LB * seasonMod * qualityBonus * marketBonus);
-}
-
-function triggerRandomEvent(state) {
-    if (Math.random() > CONFIG.EVENT_CHANCE) return null;
-    const event = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)];
-    return event;
-}
-
-// ==========================================
-// TOAST NOTIFICATION SYSTEM
-// ==========================================
-
-const Toast = {
-    show(message, type = 'info', icon = null) {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-
-        const icons = {
-            success: '✅',
-            warning: '⚠️',
-            error: '❌',
-            achievement: '🏆',
-            info: 'ℹ️',
-            money: '💰',
-            pig: '🐷'
-        };
-
-        toast.innerHTML = `
-            <span class="toast-icon">${icon || icons[type] || icons.info}</span>
-            <span class="toast-message">${message}</span>
-        `;
-
-        container.appendChild(toast);
-        Sound.play(type === 'achievement' ? 'achievement' : type === 'success' ? 'success' : 'click');
-
-        // Remove after animation
-        setTimeout(() => toast.remove(), 3000);
-    },
-
-    success(message) { this.show(message, 'success'); },
-    warning(message) { this.show(message, 'warning'); },
-    error(message) { this.show(message, 'error'); },
-    achievement(message) { this.show(message, 'achievement', '🏆'); }
-};
-
-// ==========================================
-// SOUND SYSTEM (Web Audio API)
-// ==========================================
-
-const Sound = {
+const Game = {
+    canvas: null,
     ctx: null,
-    enabled: true,
+    world: null,
+    player: null,
+    animals: [],
+    camera: { x: 0, y: 0 },
+    keys: { up: false, down: false, left: false, right: false, interact: false },
+    money: 500,
+    day: 1,
+    season: 'Spring',
+    year: 1,
+    dayTimer: 0,
+    DAY_LENGTH: 1800, // frames per day (30 seconds at 60fps)
+    running: false,
+    dialogOpen: false,
+    lastInteract: false,
 
     init() {
-        try {
-            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.log('Web Audio not supported');
-        }
+        this.canvas = document.getElementById('game-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+
+        // Keyboard input
+        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        window.addEventListener('keyup', (e) => this.handleKeyUp(e));
+
+        // Touch controls for mobile
+        this.setupTouchControls();
     },
 
-    play(type) {
-        if (!this.enabled || !this.ctx) return;
-
-        // Resume context if suspended (required by browsers)
-        if (this.ctx.state === 'suspended') {
-            this.ctx.resume();
-        }
-
-        const sounds = {
-            click: { freq: 800, duration: 0.05, type: 'sine' },
-            success: { freq: 523, duration: 0.15, type: 'sine', seq: [523, 659, 784] },
-            warning: { freq: 220, duration: 0.2, type: 'sawtooth' },
-            error: { freq: 150, duration: 0.3, type: 'square' },
-            achievement: { freq: 440, duration: 0.1, type: 'sine', seq: [440, 554, 659, 880] },
-            buy: { freq: 300, duration: 0.1, type: 'triangle' },
-            sell: { freq: 600, duration: 0.15, type: 'sine', seq: [400, 500, 600] },
-            feed: { freq: 350, duration: 0.08, type: 'sine' },
-            day: { freq: 440, duration: 0.1, type: 'sine' }
-        };
-
-        const sound = sounds[type] || sounds.click;
-
-        if (sound.seq) {
-            // Play sequence
-            sound.seq.forEach((freq, i) => {
-                this.playTone(freq, sound.duration, sound.type, i * sound.duration);
-            });
-        } else {
-            this.playTone(sound.freq, sound.duration, sound.type);
-        }
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     },
 
-    playTone(freq, duration, type = 'sine', delay = 0) {
-        if (!this.ctx) return;
-
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-
-        osc.type = type;
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime + delay);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + delay + duration);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-
-        osc.start(this.ctx.currentTime + delay);
-        osc.stop(this.ctx.currentTime + delay + duration);
-    }
-};
-
-// ==========================================
-// ACHIEVEMENTS SYSTEM
-// ==========================================
-
-const ACHIEVEMENTS = [
-    { id: 'first_pig', name: 'Humble Beginnings', desc: 'Buy your first pig', icon: '🐷', check: s => s.stats.totalAnimalsRaised >= 1 },
-    { id: 'first_sale', name: 'First Sale!', desc: 'Sell your first pig', icon: '💰', check: s => s.stats.pigsSold >= 1 },
-    { id: 'pig_farmer', name: 'Pig Farmer', desc: 'Own 5 pigs at once', icon: '🐖', check: s => s.animals.length >= 5 },
-    { id: 'survivor', name: 'Survivor', desc: 'Survive your first winter', icon: '❄️', check: s => s.farm.year >= 1 && s.farm.season !== 'winter' || s.farm.year >= 2 },
-    { id: 'thousand_dollar', name: 'Thousandaire', desc: 'Have $1,000 at once', icon: '💵', check: s => s.farm.money >= 1000 },
-    { id: 'five_thousand', name: 'High Roller', desc: 'Have $5,000 at once', icon: '💎', check: s => s.farm.money >= 5000 },
-    { id: 'ten_pigs_sold', name: 'Experienced Farmer', desc: 'Sell 10 pigs total', icon: '🌟', check: s => s.stats.pigsSold >= 10 },
-    { id: 'year_one', name: 'Year One Complete', desc: 'Complete your first full year', icon: '📅', check: s => s.farm.year >= 2 },
-    { id: 'heritage_breeder', name: 'Heritage Breeder', desc: 'Raise 20 pigs total', icon: '🏆', check: s => s.stats.totalAnimalsRaised >= 20 },
-    { id: 'wealthy_farmer', name: 'Wealthy Farmer', desc: 'Earn $10,000 total', icon: '👑', check: s => s.stats.totalMoneyEarned >= 10000 },
-    // Breeding achievements
-    { id: 'first_breed', name: 'Matchmaker', desc: 'Breed your first pair of pigs', icon: '💕', check: s => s.animals.some(a => a.pregnant) },
-    { id: 'first_litter', name: 'Proud Parent', desc: 'Have piglets born on your farm', icon: '🐷', check: s => s.animals.some(a => (a.lineage?.generation || 0) > 0) },
-    { id: 'geneticist', name: 'Geneticist', desc: 'Breed a pig with 85%+ avg genetics', icon: '🧬', check: s => s.animals.some(a => ((a.genetics.marbling + a.genetics.growthRate + (a.genetics.litterSize || 0.5)) / 3) > 0.85) },
-    { id: 'dynasty', name: 'Pig Dynasty', desc: 'Have a 3rd generation pig', icon: '👑', check: s => s.animals.some(a => (a.lineage?.generation || 0) >= 3) },
-    { id: 'big_litter', name: 'Full House', desc: 'Own 10+ pigs at once', icon: '🏠', check: s => s.animals.length >= 10 }
-];
-
-// ==========================================
-// TUTORIAL SYSTEM
-// ==========================================
-
-const TUTORIAL_HINTS = [
-    { id: 'welcome', condition: s => s.farm.day === 1 && s.animals.length === 0, message: "Welcome to Texas Farms! Start by buying your first Gloucestershire Old Spot pig.", delay: 1000 },
-    { id: 'first_pig', condition: s => s.animals.length === 1 && s.farm.day <= 2, message: "Great! Now feed your pig daily to keep it healthy and growing.", delay: 500 },
-    { id: 'advance_day', condition: s => s.animals.length > 0 && s.farm.day === 1, message: "Click 'Next Day' to advance time. Pigs need 180 days to reach market weight.", delay: 3000 },
-    { id: 'hunger_warning', condition: s => s.animals.some(a => a.daysSinceFed > 0 && a.health < 90), message: "Your pigs are hungry! Feed them regularly or they'll lose health.", priority: true },
-    { id: 'season_info', condition: s => s.farm.day === 1 && s.farm.season !== 'spring', message: `${s => s.farm.season.charAt(0).toUpperCase() + s.farm.season.slice(1)} is here! Feed costs and market prices change with seasons.`, delay: 1500 },
-    { id: 'mature_pig', condition: s => s.animals.some(a => a.age >= CONFIG.PIG_MATURITY_DAYS), message: "You have a mature pig! Click on it to see its value and sell it.", priority: true },
-    { id: 'winter_prep', condition: s => s.farm.season === 'fall' && s.farm.day > 15, message: "Winter is coming! Feed costs will increase. Make sure you have savings.", delay: 2000 },
-    { id: 'good_genetics', condition: s => s.animals.some(a => a.genetics.marbling > 0.8), message: "Nice! That pig has excellent marbling genetics - it'll sell for a premium!", delay: 1000 },
-    // Breeding hints
-    { id: 'breeding_ready', condition: s => {
-        const males = s.animals.filter(a => a.sex === 'male' && a.age >= CONFIG.BREEDING_MIN_AGE);
-        const females = s.animals.filter(a => a.sex === 'female' && a.age >= CONFIG.BREEDING_MIN_AGE);
-        return males.length > 0 && females.length > 0 && !s.animals.some(a => a.pregnant);
-    }, message: "You have mature pigs of both sexes! Click on one to start breeding and create offspring with combined genetics.", delay: 2000 },
-    { id: 'pregnant_pig', condition: s => s.animals.some(a => a.pregnant && a.pregnantDays < 10), message: "A pig is pregnant! Keep her happy and fed. Piglets arrive in about 114 days.", delay: 1000 },
-];
-
-const Tutorial = {
-    shown: {},
-
-    init() {
-        const saved = localStorage.getItem('texasfarms_tutorial');
-        if (saved) {
-            this.shown = JSON.parse(saved);
+    handleKeyDown(e) {
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') this.keys.up = true;
+        if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') this.keys.down = true;
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') this.keys.left = true;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') this.keys.right = true;
+        if (e.key === 'e' || e.key === 'E' || e.key === ' ') {
+            e.preventDefault();
+            this.keys.interact = true;
         }
+        if (e.key === 'Escape') this.closeDialog();
     },
 
-    check(state) {
-        if (!state) return;
+    handleKeyUp(e) {
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') this.keys.up = false;
+        if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') this.keys.down = false;
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') this.keys.left = false;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') this.keys.right = false;
+        if (e.key === 'e' || e.key === 'E' || e.key === ' ') this.keys.interact = false;
+    },
 
-        for (const hint of TUTORIAL_HINTS) {
-            if (this.shown[hint.id]) continue;
+    setupTouchControls() {
+        let touchStart = null;
 
-            try {
-                // Handle function-based messages
-                let conditionMet = false;
-                if (typeof hint.condition === 'function') {
-                    conditionMet = hint.condition(state);
-                }
+        this.canvas.addEventListener('touchstart', (e) => {
+            touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
 
-                if (conditionMet) {
-                    const delay = hint.delay || 0;
-                    setTimeout(() => {
-                        let message = hint.message;
-                        if (typeof message === 'function') {
-                            message = message(state);
-                        }
-                        Toast.show(message, 'info', '💡');
-                    }, delay);
+        this.canvas.addEventListener('touchmove', (e) => {
+            if (!touchStart) return;
+            const dx = e.touches[0].clientX - touchStart.x;
+            const dy = e.touches[0].clientY - touchStart.y;
 
-                    this.shown[hint.id] = true;
-                    this.save();
+            this.keys.left = dx < -20;
+            this.keys.right = dx > 20;
+            this.keys.up = dy < -20;
+            this.keys.down = dy > 20;
+        });
 
-                    // Only show one hint at a time unless priority
-                    if (!hint.priority) break;
-                }
-            } catch (e) {
-                // Skip hints that error
+        this.canvas.addEventListener('touchend', () => {
+            touchStart = null;
+            this.keys = { up: false, down: false, left: false, right: false, interact: false };
+        });
+
+        // Double tap to interact
+        let lastTap = 0;
+        this.canvas.addEventListener('touchstart', (e) => {
+            const now = Date.now();
+            if (now - lastTap < 300) {
+                this.keys.interact = true;
+                setTimeout(() => this.keys.interact = false, 100);
             }
-        }
-    },
-
-    save() {
-        localStorage.setItem('texasfarms_tutorial', JSON.stringify(this.shown));
-    },
-
-    reset() {
-        this.shown = {};
-        localStorage.removeItem('texasfarms_tutorial');
-    }
-};
-
-const Achievements = {
-    unlocked: new Set(),
-
-    init() {
-        // Load from localStorage
-        const saved = localStorage.getItem('texasfarms_achievements');
-        if (saved) {
-            this.unlocked = new Set(JSON.parse(saved));
-        }
-    },
-
-    check(state) {
-        if (!state) return;
-
-        ACHIEVEMENTS.forEach(achievement => {
-            if (!this.unlocked.has(achievement.id) && achievement.check(state)) {
-                this.unlock(achievement);
-            }
+            lastTap = now;
         });
     },
 
-    unlock(achievement) {
-        this.unlocked.add(achievement.id);
-        this.save();
-        Toast.achievement(`Achievement Unlocked: ${achievement.name}!`);
-        Sound.play('achievement');
+    start() {
+        document.getElementById('title-screen').style.display = 'none';
+
+        // Generate world
+        this.world = generateWorld();
+
+        // Create player
+        this.player = new Player(10 * TILE_SIZE, 10 * TILE_SIZE);
+
+        // Start with one pig
+        this.animals = [];
+
+        this.running = true;
+        this.gameLoop();
+
+        this.showToast('Welcome to your farm! Walk to the market stall to buy animals.');
     },
 
-    save() {
-        localStorage.setItem('texasfarms_achievements', JSON.stringify([...this.unlocked]));
-    },
+    gameLoop() {
+        if (!this.running) return;
 
-    showModal() {
-        const modal = document.getElementById('modal-content');
-        modal.innerHTML = `
-            <h2>🏆 Achievements</h2>
-            <p style="color: var(--text-light); margin-bottom: 1rem;">
-                ${this.unlocked.size} / ${ACHIEVEMENTS.length} unlocked
-            </p>
-            <div class="achievements-list">
-                ${ACHIEVEMENTS.map(a => `
-                    <div class="achievement-item ${this.unlocked.has(a.id) ? '' : 'locked'}">
-                        <div class="achievement-icon">${a.icon}</div>
-                        <div class="achievement-info">
-                            <div class="achievement-name">${a.name}</div>
-                            <div class="achievement-desc">${a.desc}</div>
-                            ${this.unlocked.has(a.id) ? '<div class="achievement-unlocked">✓ Unlocked</div>' : ''}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-            <div style="margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
-            </div>
-        `;
-        document.getElementById('modal-overlay').classList.add('open');
-    }
-};
-
-// ==========================================
-// ANIMAL FACTORY
-// ==========================================
-
-function createPig(name = null, geneticsOverride = null, lineage = null) {
-    const maleNames = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Chester', 'Bruno', 'Duke', 'Max'];
-    const femaleNames = ['Petunia', 'Spot', 'Rosie', 'Truffle', 'Maple', 'Ginger', 'Clover', 'Penny'];
-
-    const sex = Math.random() < 0.5 ? 'male' : 'female';
-    const names = sex === 'male' ? maleNames : femaleNames;
-
-    return {
-        id: generateId(),
-        type: 'gos_pig',
-        name: name || names[Math.floor(Math.random() * names.length)],
-        sex: sex,
-        age: 0,
-        weight: 50, // Starting weight in lbs (8-week old piglet)
-        health: 100,
-        happiness: 80,
-        fed: true,
-        daysSinceFed: 0,
-        genetics: geneticsOverride || {
-            marbling: 0.5 + Math.random() * 0.4,    // 50-90% quality
-            growthRate: 0.6 + Math.random() * 0.4,  // 60-100% growth speed
-            size: 0.5 + Math.random() * 0.3,        // 50-80% final size potential
-            litterSize: 0.5 + Math.random() * 0.5   // 50-100% litter size potential
-        },
-        // Breeding state
-        pregnant: false,
-        pregnantDays: 0,
-        pregnantWith: null,  // ID of father
-        breedingCooldown: 0,
-        // Lineage tracking
-        lineage: lineage || {
-            mother: null,
-            father: null,
-            generation: 0
-        }
-    };
-}
-
-// Create offspring pig with inherited genetics
-function createOffspring(mother, father) {
-    const mutate = (val) => {
-        const mutation = (Math.random() - 0.5) * 2 * CONFIG.MUTATION_RATE;
-        return Math.max(0.3, Math.min(1.0, val + mutation));
-    };
-
-    const inheritedGenetics = {
-        marbling: mutate((mother.genetics.marbling + father.genetics.marbling) / 2),
-        growthRate: mutate((mother.genetics.growthRate + father.genetics.growthRate) / 2),
-        size: mutate((mother.genetics.size + father.genetics.size) / 2),
-        litterSize: mutate((mother.genetics.litterSize + father.genetics.litterSize) / 2)
-    };
-
-    const lineage = {
-        mother: mother.id,
-        father: father.id,
-        generation: Math.max(mother.lineage?.generation || 0, father.lineage?.generation || 0) + 1
-    };
-
-    return createPig(null, inheritedGenetics, lineage);
-}
-
-// Check if a pig can breed
-function canBreed(pig) {
-    return pig.age >= CONFIG.BREEDING_MIN_AGE &&
-           pig.happiness >= CONFIG.BREEDING_MIN_HAPPINESS &&
-           pig.health >= 50 &&
-           !pig.pregnant &&
-           pig.breedingCooldown === 0;
-}
-
-// Get breeding-eligible pigs
-function getBreedingPairs(animals) {
-    const males = animals.filter(a => a.sex === 'male' && canBreed(a));
-    const females = animals.filter(a => a.sex === 'female' && canBreed(a));
-    return { males, females };
-}
-
-// Calculate litter size based on genetics
-function calculateLitterSize(mother, father) {
-    const avgLitterGene = (mother.genetics.litterSize + father.genetics.litterSize) / 2;
-    const range = CONFIG.LITTER_SIZE_MAX - CONFIG.LITTER_SIZE_MIN;
-    const baseLitter = CONFIG.LITTER_SIZE_MIN + Math.round(range * avgLitterGene);
-    // Add some randomness
-    const variance = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-    return Math.max(CONFIG.LITTER_SIZE_MIN, Math.min(CONFIG.LITTER_SIZE_MAX, baseLitter + variance));
-}
-
-// Calculate breeding stock value (premium for good genetics)
-function calculateBreedingStockPrice(pig) {
-    const basePrice = calculateSellPrice(pig, 'spring', 1); // Use spring as neutral
-    const avgGenetics = (pig.genetics.marbling + pig.genetics.growthRate + pig.genetics.size + pig.genetics.litterSize) / 4;
-    const geneticBonus = 1 + (avgGenetics - 0.5); // 0.5-1.5x based on genetics
-    return Math.round(basePrice * CONFIG.BREEDING_STOCK_PREMIUM * geneticBonus);
-}
-
-// ==========================================
-// RABBIT FACTORY
-// ==========================================
-
-function createRabbit(name = null, geneticsOverride = null, lineage = null) {
-    const maleNames = ['Thumper', 'Peter', 'Bugs', 'Clover', 'Hazel', 'Bramble', 'Thistle', 'Copper'];
-    const femaleNames = ['Flopsy', 'Mopsy', 'Cotton', 'Velvet', 'Silver', 'Pearl', 'Luna', 'Willow'];
-
-    const sex = Math.random() < 0.5 ? 'male' : 'female';
-    const names = sex === 'male' ? maleNames : femaleNames;
-
-    return {
-        id: generateId(),
-        type: 'champagne_rabbit',
-        name: name || names[Math.floor(Math.random() * names.length)],
-        sex: sex,
-        age: 0,
-        weight: CONFIG.RABBIT_START_WEIGHT,
-        health: 100,
-        happiness: 80,
-        fed: true,
-        daysSinceFed: 0,
-        genetics: geneticsOverride || {
-            furQuality: 0.5 + Math.random() * 0.4,    // 50-90% pelt quality
-            growthRate: 0.6 + Math.random() * 0.4,    // 60-100% growth speed
-            size: 0.5 + Math.random() * 0.3,          // 50-80% final size potential
-            litterSize: 0.5 + Math.random() * 0.5     // 50-100% litter size potential
-        },
-        // Breeding state
-        pregnant: false,
-        pregnantDays: 0,
-        pregnantWith: null,
-        breedingCooldown: 0,
-        // Lineage tracking
-        lineage: lineage || {
-            mother: null,
-            father: null,
-            generation: 0
-        }
-    };
-}
-
-// Create offspring rabbit with inherited genetics
-function createRabbitOffspring(mother, father) {
-    const mutate = (val) => {
-        const mutation = (Math.random() - 0.5) * 2 * CONFIG.MUTATION_RATE;
-        return Math.max(0.3, Math.min(1.0, val + mutation));
-    };
-
-    const inheritedGenetics = {
-        furQuality: mutate((mother.genetics.furQuality + father.genetics.furQuality) / 2),
-        growthRate: mutate((mother.genetics.growthRate + father.genetics.growthRate) / 2),
-        size: mutate((mother.genetics.size + father.genetics.size) / 2),
-        litterSize: mutate((mother.genetics.litterSize + father.genetics.litterSize) / 2)
-    };
-
-    const lineage = {
-        mother: mother.id,
-        father: father.id,
-        generation: Math.max(mother.lineage?.generation || 0, father.lineage?.generation || 0) + 1
-    };
-
-    return createRabbit(null, inheritedGenetics, lineage);
-}
-
-function getRabbitStage(age) {
-    if (age <= CONFIG.RABBIT_STAGES.kit.maxAge) return 'kit';
-    if (age <= CONFIG.RABBIT_STAGES.junior.maxAge) return 'junior';
-    return 'adult';
-}
-
-function getRabbitStageInfo(age) {
-    const stage = getRabbitStage(age);
-    return CONFIG.RABBIT_STAGES[stage];
-}
-
-function calculateRabbitWeight(rabbit) {
-    const baseWeight = CONFIG.RABBIT_START_WEIGHT;
-    const dailyGain = CONFIG.RABBIT_WEIGHT_GAIN_BASE * rabbit.genetics.growthRate * (rabbit.happiness / 100);
-    const weight = baseWeight + (rabbit.age * dailyGain);
-    return Math.min(CONFIG.RABBIT_MAX_WEIGHT, Math.round(weight * 10) / 10);
-}
-
-function calculateRabbitSellPrice(rabbit, season, marketBonus = 1) {
-    const weight = calculateRabbitWeight(rabbit);
-    const seasonMod = CONFIG.SEASON_MODIFIERS[season].marketPrice;
-    const qualityBonus = 1 + (rabbit.genetics.furQuality * 0.2); // Up to 20% bonus for fur
-    return Math.round(weight * CONFIG.RABBIT_SELL_PRICE_PER_LB * seasonMod * qualityBonus * marketBonus);
-}
-
-function calculateRabbitPeltPrice(rabbit) {
-    if (rabbit.age < CONFIG.RABBIT_PELT_MIN_AGE) return 0;
-    const qualityBonus = 1 + (rabbit.genetics.furQuality * 0.5); // Up to 50% bonus for fur quality
-    return Math.round(CONFIG.RABBIT_PELT_PRICE * qualityBonus);
-}
-
-function canRabbitBreed(rabbit) {
-    return rabbit.age >= CONFIG.RABBIT_BREEDING_MIN_AGE &&
-           rabbit.happiness >= CONFIG.BREEDING_MIN_HAPPINESS &&
-           rabbit.health >= 50 &&
-           !rabbit.pregnant &&
-           rabbit.breedingCooldown === 0;
-}
-
-function getBreedingRabbits(animals) {
-    const rabbits = animals.filter(a => a.type === 'champagne_rabbit');
-    const males = rabbits.filter(r => r.sex === 'male' && canRabbitBreed(r));
-    const females = rabbits.filter(r => r.sex === 'female' && canRabbitBreed(r));
-    return { males, females };
-}
-
-function calculateRabbitLitterSize(mother, father) {
-    const avgLitterGene = (mother.genetics.litterSize + father.genetics.litterSize) / 2;
-    const range = CONFIG.RABBIT_LITTER_SIZE_MAX - CONFIG.RABBIT_LITTER_SIZE_MIN;
-    const baseLitter = CONFIG.RABBIT_LITTER_SIZE_MIN + Math.round(range * avgLitterGene);
-    const variance = Math.floor(Math.random() * 3) - 1;
-    return Math.max(CONFIG.RABBIT_LITTER_SIZE_MIN, Math.min(CONFIG.RABBIT_LITTER_SIZE_MAX, baseLitter + variance));
-}
-
-function calculateRabbitBreedingStockPrice(rabbit) {
-    const basePrice = calculateRabbitSellPrice(rabbit, 'spring', 1);
-    const avgGenetics = (rabbit.genetics.furQuality + rabbit.genetics.growthRate + rabbit.genetics.size + rabbit.genetics.litterSize) / 4;
-    const geneticBonus = 1 + (avgGenetics - 0.5);
-    return Math.round(basePrice * CONFIG.BREEDING_STOCK_PREMIUM * geneticBonus);
-}
-
-// ==========================================
-// REDUCERS (State Mutations)
-// ==========================================
-
-function reduce(state, action) {
-    const newState = deepClone(state);
-
-    switch (action.type) {
-        case 'BUY_PIG': {
-            if (newState.farm.money < CONFIG.PIG_PRICE) {
-                Toast.warning("Can't afford a pig! Need $200");
-                Sound.play('error');
-                Debug.log('Cannot afford pig!', 'warning');
-                return state;
-            }
-            const pig = createPig();
-            pig.isNew = true; // Flag for animation
-            newState.animals.push(pig);
-            newState.farm.money -= CONFIG.PIG_PRICE;
-            newState.stats.totalMoneySpent += CONFIG.PIG_PRICE;
-            newState.stats.totalAnimalsRaised++;
-            Toast.show(`Welcome ${pig.name} to the farm!`, 'success', '🐷');
-            Sound.play('buy');
-            Debug.log(`Bought pig: ${pig.name}`, 'action');
-            return newState;
-        }
-
-        case 'SELL_PIG': {
-            const idx = newState.animals.findIndex(a => a.id === action.id);
-            if (idx === -1) return state;
-
-            const pig = newState.animals[idx];
-            const marketBonus = newState.marketBonus || 1;
-            const price = calculateSellPrice(pig, newState.farm.season, marketBonus);
-
-            newState.animals.splice(idx, 1);
-            newState.farm.money += price;
-            newState.stats.totalMoneyEarned += price;
-            newState.stats.pigsSold++;
-
-            // Show breakdown in toast
-            const weight = calculatePigWeight(pig);
-            Toast.success(`Sold ${pig.name} (${weight} lbs) for ${formatMoney(price)}!`);
-            Sound.play('sell');
-            Debug.log(`Sold ${pig.name} for ${formatMoney(price)} (${weight} lbs)`, 'action');
-            return newState;
-        }
-
-        case 'FEED_ALL': {
-            const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
-            const rabbitCount = newState.animals.filter(a => a.type === 'champagne_rabbit').length;
-            const totalAnimals = pigCount + rabbitCount;
-            const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
-            const discount = newState.feedDiscount || 1;
-            const pigCost = pigCount * CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost;
-            const rabbitCost = rabbitCount * CONFIG.FEED_COST_PER_RABBIT * seasonMod.feedCost;
-            const cost = Math.round((pigCost + rabbitCost) * discount);
-
-            if (totalAnimals === 0) {
-                Toast.show("No animals to feed!", 'info', '🌾');
-                return state;
-            }
-
-            if (newState.farm.money < cost) {
-                Toast.warning(`Need ${formatMoney(cost)} to feed all animals!`);
-                Sound.play('error');
-                Debug.log('Cannot afford to feed all animals!', 'warning');
-                return state;
-            }
-
-            newState.farm.money -= cost;
-            newState.stats.totalMoneySpent += cost;
-            newState.animals.forEach(a => {
-                a.fed = true;
-                a.daysSinceFed = 0;
-                a.happiness = Math.min(100, a.happiness + 5);
-            });
-
-            let feedMsg = `Fed ${totalAnimals} animal${totalAnimals > 1 ? 's' : ''} (${formatMoney(cost)})`;
-            if (discount < 1) feedMsg += ' - Sale!';
-
-            Toast.show(feedMsg, 'success', '🌾');
-            Sound.play('feed');
-            Debug.log(`Fed ${totalAnimals} animals for ${formatMoney(cost)}`, 'action');
-            return newState;
-        }
-
-        case 'ADVANCE_DAY': {
-            const prevSeason = newState.farm.season;
-            newState.farm.day++;
-
-            // Decrement any active bonuses
-            if (newState.marketBonusDays > 0) newState.marketBonusDays--;
-            if (newState.marketBonusDays === 0) newState.marketBonus = 1;
-            if (newState.feedDiscountDays > 0) newState.feedDiscountDays--;
-            if (newState.feedDiscountDays === 0) newState.feedDiscount = 1;
-
-            // Check season change
-            if (newState.farm.day > CONFIG.DAYS_PER_SEASON) {
-                newState.farm.day = 1;
-                newState.farm.season = getNextSeason(newState.farm.season);
-                if (newState.farm.season === 'spring') {
-                    newState.farm.year++;
-                    Toast.achievement(`Year ${newState.farm.year - 1} Complete!`);
-                }
-                Toast.show(`${newState.farm.season.charAt(0).toUpperCase() + newState.farm.season.slice(1)} has arrived!`, 'info', getSeasonIcon(newState.farm.season));
-                Debug.log(`Season changed to ${newState.farm.season}`, 'action');
-            }
-
-            // Get season modifiers
-            const seasonMod = CONFIG.SEASON_MODIFIERS[newState.farm.season];
-
-            // Track deaths and stage changes for notification
-            const deathList = [];
-            const stageChanges = [];
-
-            // Age and process all animals
-            newState.animals.forEach(animal => {
-                animal.age++;
-                animal.isNew = false;
-                animal.fed = false;
-                animal.daysSinceFed++;
-
-                if (animal.type === 'gos_pig') {
-                    // === PIG PROCESSING ===
-                    const prevStage = getPigStage(animal.age - 1);
-
-                    // Weight gain (only if fed recently)
-                    if (animal.daysSinceFed <= 1) {
-                        const dailyGain = CONFIG.WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
-                        animal.weight = Math.round(animal.weight + dailyGain);
-                    }
-
-                    // Check for stage transition
-                    const newStage = getPigStage(animal.age);
-                    if (newStage !== prevStage) {
-                        const stageInfo = getPigStageInfo(animal.age);
-                        stageChanges.push({ name: animal.name, stage: stageInfo.label, type: 'pig' });
-                    }
-
-                    // Check for maturity milestone
-                    if (animal.age === CONFIG.PIG_MATURITY_DAYS) {
-                        Toast.success(`${animal.name} is market ready! (${animal.weight} lbs)`);
-                    }
-                } else if (animal.type === 'champagne_rabbit') {
-                    // === RABBIT PROCESSING ===
-                    const prevStage = getRabbitStage(animal.age - 1);
-
-                    // Weight gain (only if fed recently)
-                    if (animal.daysSinceFed <= 1) {
-                        const dailyGain = CONFIG.RABBIT_WEIGHT_GAIN_BASE * animal.genetics.growthRate * seasonMod.growth;
-                        const newWeight = animal.weight + dailyGain;
-                        animal.weight = Math.min(CONFIG.RABBIT_MAX_WEIGHT, Math.round(newWeight * 10) / 10);
-                    }
-
-                    // Check for stage transition
-                    const newStage = getRabbitStage(animal.age);
-                    if (newStage !== prevStage) {
-                        const stageInfo = getRabbitStageInfo(animal.age);
-                        stageChanges.push({ name: animal.name, stage: stageInfo.label, type: 'rabbit' });
-                    }
-
-                    // Check for maturity milestone
-                    if (animal.age === CONFIG.RABBIT_MATURITY_DAYS) {
-                        Toast.success(`${animal.name} is market ready! (${animal.weight} lbs)`);
-                    }
-                }
-
-                // Hunger effects (all animals)
-                if (animal.daysSinceFed > 1) {
-                    animal.health -= 5;
-                    animal.happiness -= 10;
-                }
-
-                // Death check
-                if (animal.health <= 0) {
-                    deathList.push(animal.name);
-                    Debug.log(`${animal.name} died from neglect!`, 'error');
-                }
-            });
-
-            // Notify about stage changes (limit notifications)
-            if (stageChanges.length > 0 && stageChanges.length <= 3) {
-                stageChanges.forEach(sc => {
-                    const icon = sc.type === 'rabbit' ? '🐰' : '📈';
-                    Toast.show(`${sc.name} is now a ${sc.stage}!`, 'info', icon);
-                });
-            } else if (stageChanges.length > 3) {
-                Toast.show(`${stageChanges.length} animals grew to a new stage!`, 'info', '📈');
-            }
-
-            // Notify about deaths
-            if (deathList.length > 0) {
-                Toast.error(`${deathList.join(', ')} died from neglect!`);
-                Sound.play('error');
-            }
-
-            // Remove dead animals
-            newState.animals = newState.animals.filter(a => a.health > 0);
-
-            // Check for hungry animals warning
-            const hungryAnimals = newState.animals.filter(a => a.daysSinceFed > 0 && a.health < 80);
-            if (hungryAnimals.length > 0 && newState.farm.day % 3 === 0) {
-                Toast.warning(`${hungryAnimals.length} animal${hungryAnimals.length > 1 ? 's are' : ' is'} getting hungry!`);
-            }
-
-            // Process pregnancies and breeding cooldowns
-            const newBorns = [];
-            newState.animals.forEach(animal => {
-                // Decrement breeding cooldown
-                if (animal.breedingCooldown > 0) {
-                    animal.breedingCooldown--;
-                }
-
-                // Process pregnancy
-                if (animal.pregnant) {
-                    animal.pregnantDays++;
-
-                    // Determine pregnancy duration based on animal type
-                    const isPig = animal.type === 'gos_pig';
-                    const isRabbit = animal.type === 'champagne_rabbit';
-                    const pregnancyDuration = isPig ? CONFIG.PIG_PREGNANCY_DURATION :
-                                              isRabbit ? CONFIG.RABBIT_PREGNANCY_DURATION :
-                                              CONFIG.PREGNANCY_DURATION;
-
-                    // Birth!
-                    if (animal.pregnantDays >= pregnancyDuration) {
-                        const father = newState.animals.find(a => a.id === animal.pregnantWith);
-                        if (father || true) { // Allow birth even if father was sold
-                            if (isPig) {
-                                const fatherForCalc = father || { genetics: animal.genetics };
-                                const litterSize = calculateLitterSize(animal, fatherForCalc);
-                                for (let i = 0; i < litterSize; i++) {
-                                    const piglet = createOffspring(animal, fatherForCalc);
-                                    newBorns.push(piglet);
-                                }
-                                Toast.achievement(`${animal.name} gave birth to ${litterSize} piglets!`);
-                                Sound.play('achievement');
-                                Debug.log(`${animal.name} birthed ${litterSize} piglets`, 'action');
-                                animal.breedingCooldown = CONFIG.PIG_BREEDING_COOLDOWN;
-                            } else if (isRabbit) {
-                                const fatherForCalc = father || { genetics: animal.genetics };
-                                const litterSize = calculateRabbitLitterSize(animal, fatherForCalc);
-                                for (let i = 0; i < litterSize; i++) {
-                                    const kit = createRabbitOffspring(animal, fatherForCalc);
-                                    newBorns.push(kit);
-                                }
-                                Toast.achievement(`${animal.name} gave birth to ${litterSize} kits!`);
-                                Sound.play('achievement');
-                                Debug.log(`${animal.name} birthed ${litterSize} rabbit kits`, 'action');
-                                animal.breedingCooldown = CONFIG.RABBIT_BREEDING_COOLDOWN;
-                            }
-                        }
-                        // Reset pregnancy state
-                        animal.pregnant = false;
-                        animal.pregnantDays = 0;
-                        animal.pregnantWith = null;
-                    }
-                }
-            });
-
-            // Add newborns to farm
-            newBorns.forEach(baby => {
-                newState.animals.push(baby);
-                newState.stats.totalAnimalsRaised++;
-            });
-
-            // Random events
-            const event = triggerRandomEvent(newState);
-            if (event) {
-                event.effect(newState);
-                Toast.show(event.message, event.type, '🎲');
-                Debug.log(`Event: ${event.name}`, 'action');
-            }
-
-            Sound.play('day');
-            Debug.log(`Advanced to Day ${newState.farm.day}`, 'action');
-            return newState;
-        }
-
-        case 'ADD_MONEY': {
-            newState.farm.money += action.amount;
-            return newState;
-        }
-
-        case 'SPAWN_PIG': {
-            const pig = createPig();
-            if (action.age) pig.age = action.age;
-            newState.animals.push(pig);
-            newState.stats.totalAnimalsRaised++;
-            return newState;
-        }
-
-        case 'KILL_ALL': {
-            newState.animals = [];
-            return newState;
-        }
-
-        case 'BREED': {
-            const mother = newState.animals.find(a => a.id === action.motherId);
-            const father = newState.animals.find(a => a.id === action.fatherId);
-
-            if (!mother || !father) {
-                Toast.error("Selected animals not found!");
-                return state;
-            }
-
-            if (mother.sex !== 'female' || father.sex !== 'male') {
-                Toast.error("Need one female and one male pig to breed!");
-                return state;
-            }
-
-            if (!canBreed(mother)) {
-                let reason = '';
-                if (mother.age < CONFIG.BREEDING_MIN_AGE) reason = 'not mature';
-                else if (mother.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
-                else if (mother.pregnant) reason = 'already pregnant';
-                else if (mother.breedingCooldown > 0) reason = `needs ${mother.breedingCooldown} days rest`;
-                Toast.warning(`${mother.name} can't breed (${reason})`);
-                return state;
-            }
-
-            if (!canBreed(father)) {
-                let reason = '';
-                if (father.age < CONFIG.BREEDING_MIN_AGE) reason = 'not mature';
-                else if (father.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
-                else if (father.breedingCooldown > 0) reason = `needs ${father.breedingCooldown} days rest`;
-                Toast.warning(`${father.name} can't breed (${reason})`);
-                return state;
-            }
-
-            // Initiate breeding
-            mother.pregnant = true;
-            mother.pregnantDays = 0;
-            mother.pregnantWith = father.id;
-            father.breedingCooldown = CONFIG.BREEDING_COOLDOWN;
-
-            Toast.success(`${mother.name} and ${father.name} are breeding! Piglets in ~${CONFIG.PREGNANCY_DURATION} days.`);
-            Sound.play('achievement');
-            Debug.log(`Breeding: ${mother.name} x ${father.name}`, 'action');
-            return newState;
-        }
-
-        case 'SELL_BREEDING_STOCK': {
-            const idx = newState.animals.findIndex(a => a.id === action.id);
-            if (idx === -1) return state;
-
-            const pig = newState.animals[idx];
-
-            if (pig.pregnant) {
-                Toast.warning("Can't sell a pregnant pig as breeding stock!");
-                return state;
-            }
-
-            if (pig.age < CONFIG.BREEDING_MIN_AGE) {
-                Toast.warning("Pig must be mature to sell as breeding stock!");
-                return state;
-            }
-
-            const price = calculateBreedingStockPrice(pig);
-            newState.animals.splice(idx, 1);
-            newState.farm.money += price;
-            newState.stats.totalMoneyEarned += price;
-            newState.stats.pigsSold++;
-
-            Toast.success(`Sold ${pig.name} as breeding stock for ${formatMoney(price)}!`);
-            Sound.play('sell');
-            Debug.log(`Sold breeding stock ${pig.name} for ${formatMoney(price)}`, 'action');
-            return newState;
-        }
-
-        // ==========================================
-        // RABBIT ACTIONS
-        // ==========================================
-
-        case 'BUY_RABBIT': {
-            if (newState.farm.money < CONFIG.RABBIT_PRICE) {
-                Toast.warning("Can't afford a rabbit! Need $50");
-                Sound.play('error');
-                Debug.log('Cannot afford rabbit!', 'warning');
-                return state;
-            }
-            const rabbit = createRabbit();
-            rabbit.isNew = true;
-            newState.animals.push(rabbit);
-            newState.farm.money -= CONFIG.RABBIT_PRICE;
-            newState.stats.totalMoneySpent += CONFIG.RABBIT_PRICE;
-            newState.stats.totalAnimalsRaised++;
-            Toast.show(`Welcome ${rabbit.name} the Champagne D'Argent to the farm!`, 'success', '🐰');
-            Sound.play('buy');
-            Debug.log(`Bought rabbit: ${rabbit.name}`, 'action');
-            return newState;
-        }
-
-        case 'SELL_RABBIT': {
-            const idx = newState.animals.findIndex(a => a.id === action.id);
-            if (idx === -1) return state;
-
-            const rabbit = newState.animals[idx];
-            const marketBonus = newState.marketBonus || 1;
-            const price = calculateRabbitSellPrice(rabbit, newState.farm.season, marketBonus);
-            const peltPrice = calculateRabbitPeltPrice(rabbit);
-            const totalPrice = price + peltPrice;
-
-            newState.animals.splice(idx, 1);
-            newState.farm.money += totalPrice;
-            newState.stats.totalMoneyEarned += totalPrice;
-            newState.stats.rabbitsSold = (newState.stats.rabbitsSold || 0) + 1;
-
-            const weight = calculateRabbitWeight(rabbit);
-            let msg = `Sold ${rabbit.name} (${weight} lbs) for ${formatMoney(price)}`;
-            if (peltPrice > 0) msg += ` + ${formatMoney(peltPrice)} pelt`;
-            Toast.success(msg + '!');
-            Sound.play('sell');
-            Debug.log(`Sold ${rabbit.name} for ${formatMoney(totalPrice)}`, 'action');
-            return newState;
-        }
-
-        case 'BREED_RABBIT': {
-            const mother = newState.animals.find(a => a.id === action.motherId);
-            const father = newState.animals.find(a => a.id === action.fatherId);
-
-            if (!mother || !father) {
-                Toast.error("Selected rabbits not found!");
-                return state;
-            }
-
-            if (mother.sex !== 'female' || father.sex !== 'male') {
-                Toast.error("Need one doe and one buck to breed!");
-                return state;
-            }
-
-            if (!canRabbitBreed(mother)) {
-                let reason = '';
-                if (mother.age < CONFIG.RABBIT_BREEDING_MIN_AGE) reason = 'not mature';
-                else if (mother.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
-                else if (mother.pregnant) reason = 'already pregnant';
-                else if (mother.breedingCooldown > 0) reason = `needs ${mother.breedingCooldown} days rest`;
-                Toast.warning(`${mother.name} can't breed (${reason})`);
-                return state;
-            }
-
-            if (!canRabbitBreed(father)) {
-                let reason = '';
-                if (father.age < CONFIG.RABBIT_BREEDING_MIN_AGE) reason = 'not mature';
-                else if (father.happiness < CONFIG.BREEDING_MIN_HAPPINESS) reason = 'not happy enough';
-                else if (father.breedingCooldown > 0) reason = `needs ${father.breedingCooldown} days rest`;
-                Toast.warning(`${father.name} can't breed (${reason})`);
-                return state;
-            }
-
-            mother.pregnant = true;
-            mother.pregnantDays = 0;
-            mother.pregnantWith = father.id;
-            father.breedingCooldown = CONFIG.RABBIT_BREEDING_COOLDOWN;
-
-            Toast.success(`${mother.name} and ${father.name} are breeding! Kits in ~${CONFIG.RABBIT_PREGNANCY_DURATION} days.`);
-            Sound.play('achievement');
-            Debug.log(`Breeding rabbits: ${mother.name} x ${father.name}`, 'action');
-            return newState;
-        }
-
-        case 'SELL_RABBIT_BREEDING_STOCK': {
-            const idx = newState.animals.findIndex(a => a.id === action.id);
-            if (idx === -1) return state;
-
-            const rabbit = newState.animals[idx];
-
-            if (rabbit.pregnant) {
-                Toast.warning("Can't sell a pregnant rabbit as breeding stock!");
-                return state;
-            }
-
-            if (rabbit.age < CONFIG.RABBIT_BREEDING_MIN_AGE) {
-                Toast.warning("Rabbit must be mature to sell as breeding stock!");
-                return state;
-            }
-
-            const price = calculateRabbitBreedingStockPrice(rabbit);
-            newState.animals.splice(idx, 1);
-            newState.farm.money += price;
-            newState.stats.totalMoneyEarned += price;
-            newState.stats.rabbitsSold = (newState.stats.rabbitsSold || 0) + 1;
-
-            Toast.success(`Sold ${rabbit.name} as breeding stock for ${formatMoney(price)}!`);
-            Sound.play('sell');
-            Debug.log(`Sold rabbit breeding stock ${rabbit.name} for ${formatMoney(price)}`, 'action');
-            return newState;
-        }
-
-        default:
-            return state;
-    }
-}
-
-// ==========================================
-// GAME OBJECT
-// ==========================================
-
-const Game = {
-    state: null,
-    autoPlayInterval: null,
-    autoPlaySpeed: 500, // ms between ticks
-
-    init() {
-        // Initialize subsystems
-        Sound.init();
-        Achievements.init();
-        Tutorial.init();
-
-        // Check for saved game
-        const saved = localStorage.getItem('texasfarms_save');
-        if (saved) {
-            document.getElementById('continue-btn').style.display = 'block';
-        }
-    },
-
-    toggleAutoPlay() {
-        if (this.autoPlayInterval) {
-            // Stop auto-play
-            clearInterval(this.autoPlayInterval);
-            this.autoPlayInterval = null;
-            document.getElementById('autoplay-btn').innerHTML = '▶️ Auto';
-            document.getElementById('autoplay-btn').classList.remove('active');
-            Toast.show('Auto-play stopped', 'info', '⏹️');
-        } else {
-            // Start auto-play (feed + advance day)
-            this.autoPlayInterval = setInterval(() => {
-                if (!this.state || this.state.animals.length === 0) {
-                    this.toggleAutoPlay(); // Stop if no animals
-                    return;
-                }
-                this.dispatch({ type: 'FEED_ALL' });
-                this.dispatch({ type: 'ADVANCE_DAY' });
-            }, this.autoPlaySpeed);
-            document.getElementById('autoplay-btn').innerHTML = '⏸️ Stop';
-            document.getElementById('autoplay-btn').classList.add('active');
-            Toast.show('Auto-play started (Feed + Advance)', 'info', '▶️');
-        }
-    },
-
-    newGame() {
-        this.state = deepClone(DEFAULT_STATE);
-        this.state.meta.created = Date.now();
-        this.showScreen('game-screen');
-        this.render();
-        Toast.show('Welcome to Texas Farms! Buy your first pig to get started.', 'info', '🏠');
-        Debug.log('New game started', 'action');
-        // Check initial tutorials after a short delay
-        setTimeout(() => Tutorial.check(this.state), 1500);
-    },
-
-    loadGame() {
-        const saved = localStorage.getItem('texasfarms_save');
-        if (saved) {
-            try {
-                this.state = JSON.parse(saved);
-                this.showScreen('game-screen');
-                this.render();
-                Toast.success('Game loaded!');
-                Debug.log('Game loaded', 'action');
-            } catch (e) {
-                Debug.log('Failed to load save', 'error');
-                this.newGame();
-            }
-        }
-    },
-
-    save() {
-        if (!this.state) return;
-        this.state.meta.lastSaved = Date.now();
-        localStorage.setItem('texasfarms_save', JSON.stringify(this.state));
-        Toast.show('Game saved!', 'success', '💾');
-        Debug.log('Game saved', 'action');
-    },
-
-    dispatch(action) {
-        if (!this.state) return;
-        const prevMoney = this.state.farm.money;
-        this.state = reduce(this.state, action);
+        this.update();
         this.render();
 
-        // Show money change animation
-        const moneyDiff = this.state.farm.money - prevMoney;
-        if (moneyDiff !== 0) {
-            this.showMoneyChange(moneyDiff);
+        requestAnimationFrame(() => this.gameLoop());
+    },
+
+    update() {
+        if (this.dialogOpen) return;
+
+        // Update player
+        this.player.update(this.keys, this.world, this.animals);
+
+        // Update camera to follow player
+        this.camera.x = this.player.x - this.canvas.width / 2 + TILE_SIZE / 2;
+        this.camera.y = this.player.y - this.canvas.height / 2 + TILE_SIZE / 2;
+
+        // Keep camera in bounds
+        this.camera.x = Math.max(0, Math.min(this.camera.x, WORLD_WIDTH * TILE_SIZE - this.canvas.width));
+        this.camera.y = Math.max(0, Math.min(this.camera.y, WORLD_HEIGHT * TILE_SIZE - this.canvas.height));
+
+        // Update animals
+        this.animals.forEach(a => a.update(this.world));
+
+        // Day/night cycle
+        this.dayTimer++;
+        if (this.dayTimer >= this.DAY_LENGTH) {
+            this.advanceDay();
         }
 
-        // Check achievements and tutorials after every action
-        Achievements.check(this.state);
-        Tutorial.check(this.state);
-
-        Debug.updateStateView();
-    },
-
-    showMoneyChange(amount) {
-        const el = document.createElement('div');
-        el.className = `money-change ${amount > 0 ? 'positive' : 'negative'}`;
-        el.textContent = `${amount > 0 ? '+' : ''}${formatMoney(amount)}`;
-        el.style.left = '50%';
-        el.style.top = '60px';
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 1000);
-    },
-
-    showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    },
-
-    render() {
-        if (!this.state) return;
-
-        const season = this.state.farm.season;
-        const seasonMod = CONFIG.SEASON_MODIFIERS[season];
-        const seasonIcons = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
+        // Handle interactions
+        if (this.keys.interact && !this.lastInteract) {
+            this.tryInteract();
+        }
+        this.lastInteract = this.keys.interact;
 
         // Update HUD
-        document.getElementById('hud-money').textContent = formatMoney(this.state.farm.money);
-        document.getElementById('hud-date').textContent =
-            `Day ${this.state.farm.day}, ${season.charAt(0).toUpperCase() + season.slice(1)} Y${this.state.farm.year}`;
-        document.getElementById('hud-animals').textContent = this.state.animals.length;
-
-        // Update building counts
-        const pigCount = this.state.animals.filter(a => a.type === 'gos_pig').length;
-        const rabbitCount = this.state.animals.filter(a => a.type === 'champagne_rabbit').length;
-        document.getElementById('barn-count').textContent = pigCount;
-        document.getElementById('hutch-count').textContent = rabbitCount;
-
-        // Update season info panel
-        document.getElementById('info-season').textContent = season.charAt(0).toUpperCase() + season.slice(1) + ' ' + seasonIcons[season];
-
-        const feedCost = Math.round(CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost * (this.state.feedDiscount || 1));
-        const feedEl = document.getElementById('info-feed-cost');
-        feedEl.textContent = `$${feedCost}/pig`;
-        feedEl.className = 'info-value' + (seasonMod.feedCost > 1 ? ' penalty' : (seasonMod.feedCost < 1 || this.state.feedDiscount < 1 ? ' bonus' : ''));
-
-        const marketEl = document.getElementById('info-market');
-        const marketPct = Math.round(seasonMod.marketPrice * (this.state.marketBonus || 1) * 100);
-        marketEl.textContent = `${marketPct}%`;
-        marketEl.className = 'info-value' + (marketPct > 100 ? ' bonus' : (marketPct < 100 ? ' penalty' : ''));
-
-        // Show active bonus if any
-        const bonusDisplay = document.getElementById('bonus-display');
-        if (this.state.marketBonusDays > 0 || this.state.feedDiscountDays > 0) {
-            bonusDisplay.style.display = 'flex';
-            const bonuses = [];
-            if (this.state.marketBonusDays > 0) bonuses.push(`Market +${Math.round((this.state.marketBonus - 1) * 100)}%`);
-            if (this.state.feedDiscountDays > 0) bonuses.push(`Feed -${Math.round((1 - this.state.feedDiscount) * 100)}%`);
-            document.getElementById('info-bonus').textContent = bonuses.join(', ');
-        } else {
-            bonusDisplay.style.display = 'none';
-        }
-
-        // Update weather icon
-        document.getElementById('weather-icon').textContent = seasonIcons[season];
-
-        // Apply season to pasture and farm view
-        const farmView = document.getElementById('farm-view');
-        farmView.className = '';
-        farmView.classList.add(season);
-
-        const pasture = document.getElementById('pasture-area');
-        pasture.className = 'pasture ' + season;
-
-        // Render animals
-        const grid = document.getElementById('animals-grid');
-        grid.innerHTML = '';
-
-        if (this.state.animals.length === 0) {
-            grid.innerHTML = '<p style="color: #888; font-style: italic;">No animals yet. Buy a pig or rabbit to get started!</p>';
-        } else {
-            this.state.animals.forEach(animal => {
-                const card = document.createElement('div');
-                const isPig = animal.type === 'gos_pig';
-                const isRabbit = animal.type === 'champagne_rabbit';
-
-                // Get type-specific data
-                let isMature, stageInfo, weight, pregnancyDuration;
-                if (isPig) {
-                    isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
-                    stageInfo = getPigStageInfo(animal.age);
-                    weight = calculatePigWeight(animal);
-                    pregnancyDuration = CONFIG.PIG_PREGNANCY_DURATION;
-                } else if (isRabbit) {
-                    isMature = animal.age >= CONFIG.RABBIT_MATURITY_DAYS;
-                    stageInfo = getRabbitStageInfo(animal.age);
-                    weight = calculateRabbitWeight(animal);
-                    pregnancyDuration = CONFIG.RABBIT_PREGNANCY_DURATION;
-                }
-
-                const isHungry = animal.daysSinceFed > 1;
-                const sexIcon = animal.sex === 'male' ? '♂' : '♀';
-                const sexColor = animal.sex === 'male' ? '#4a90d9' : '#d94a8c';
-
-                // Build class list
-                let cardClasses = 'animal-card';
-                if (animal.isNew) cardClasses += ' new';
-                if (isMature) cardClasses += ' mature';
-                if (isHungry) cardClasses += ' hungry';
-                if (animal.pregnant) cardClasses += ' pregnant';
-                card.className = cardClasses;
-
-                card.onclick = () => this.showAnimalModal(animal);
-
-                // Status line - show pregnancy or regular status
-                let status;
-                if (animal.pregnant) {
-                    const daysLeft = pregnancyDuration - animal.pregnantDays;
-                    status = `🤰 ${daysLeft} days`;
-                } else {
-                    status = isMature ? `✅ ${weight} lbs` : `${stageInfo.label} · ${weight} lbs`;
-                }
-
-                let emoji = animal.fed ? stageInfo.emoji : (isHungry ? stageInfo.emoji + '😫' : stageInfo.emoji + '💤');
-                if (animal.pregnant) {
-                    emoji = isPig ? '🤰🐷' : '🤰🐰';
-                }
-
-                card.innerHTML = `
-                    <div class="animal-emoji">${emoji}</div>
-                    <div class="animal-name">${animal.name} <span style="color: ${sexColor}; font-size: 0.9rem;">${sexIcon}</span></div>
-                    <div class="animal-status">${status}</div>
-                    <div class="animal-health-bar">
-                        <div class="animal-health-fill" style="width: ${animal.health}%; background: ${animal.health > 50 ? 'var(--success)' : animal.health > 25 ? 'var(--warning)' : 'var(--danger)'}"></div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+        this.updateHUD();
     },
 
-    showAnimalModal(animal) {
-        const isPig = animal.type === 'gos_pig';
-        const isRabbit = animal.type === 'champagne_rabbit';
-        const marketBonus = this.state.marketBonus || 1;
+    advanceDay() {
+        this.dayTimer = 0;
+        this.day++;
 
-        // Type-specific values
-        let isMature, canBreedNow, stageInfo, weight, sellPrice, breedingStockPrice, maturityDays, pregnancyDuration, breedingMinAge;
-        let breedingPartners, sexLabel, breedLabel, geneticLabel, sellAction, breedingSellAction, breedAction;
-
-        if (isPig) {
-            isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
-            canBreedNow = canBreed(animal);
-            stageInfo = getPigStageInfo(animal.age);
-            weight = calculatePigWeight(animal);
-            sellPrice = calculateSellPrice(animal, this.state.farm.season, marketBonus);
-            breedingStockPrice = isMature && !animal.pregnant ? calculateBreedingStockPrice(animal) : 0;
-            maturityDays = CONFIG.PIG_MATURITY_DAYS;
-            pregnancyDuration = CONFIG.PIG_PREGNANCY_DURATION;
-            breedingMinAge = CONFIG.PIG_BREEDING_MIN_AGE;
-            const { males, females } = getBreedingPairs(this.state.animals);
-            breedingPartners = (animal.sex === 'male' ? females : males).filter(p => p.id !== animal.id && p.type === 'gos_pig');
-            sexLabel = animal.sex === 'male' ? 'Boar' : 'Sow';
-            breedLabel = '🐷 Breeding';
-            geneticLabel = 'GOS Heritage';
-            sellAction = 'SELL_PIG';
-            breedingSellAction = 'SELL_BREEDING_STOCK';
-            breedAction = 'BREED';
-        } else if (isRabbit) {
-            isMature = animal.age >= CONFIG.RABBIT_MATURITY_DAYS;
-            canBreedNow = canRabbitBreed(animal);
-            stageInfo = getRabbitStageInfo(animal.age);
-            weight = calculateRabbitWeight(animal);
-            sellPrice = calculateRabbitSellPrice(animal, this.state.farm.season, marketBonus);
-            breedingStockPrice = isMature && !animal.pregnant ? calculateRabbitBreedingStockPrice(animal) : 0;
-            maturityDays = CONFIG.RABBIT_MATURITY_DAYS;
-            pregnancyDuration = CONFIG.RABBIT_PREGNANCY_DURATION;
-            breedingMinAge = CONFIG.RABBIT_BREEDING_MIN_AGE;
-            const { males, females } = getBreedingRabbits(this.state.animals);
-            breedingPartners = (animal.sex === 'male' ? females : males).filter(p => p.id !== animal.id);
-            sexLabel = animal.sex === 'male' ? 'Buck' : 'Doe';
-            breedLabel = '🐰 Breeding';
-            geneticLabel = "Champagne D'Argent";
-            sellAction = 'SELL_RABBIT';
-            breedingSellAction = 'SELL_RABBIT_BREEDING_STOCK';
-            breedAction = 'BREED_RABBIT';
+        // Season change every 30 days
+        if (this.day > 30) {
+            this.day = 1;
+            const seasons = ['Spring', 'Summer', 'Fall', 'Winter'];
+            const idx = seasons.indexOf(this.season);
+            this.season = seasons[(idx + 1) % 4];
+            if (this.season === 'Spring') this.year++;
+            this.showToast(`${this.season} has arrived!`);
         }
 
-        const sexIcon = animal.sex === 'male' ? '♂' : '♀';
-        const sexColor = animal.sex === 'male' ? '#4a90d9' : '#d94a8c';
+        // Age animals
+        this.animals.forEach(a => a.advanceDay());
 
-        // Get lineage info
-        const mother = animal.lineage?.mother ? this.state.animals.find(a => a.id === animal.lineage.mother) : null;
-        const father = animal.lineage?.father ? this.state.animals.find(a => a.id === animal.lineage.father) : null;
-        const generation = animal.lineage?.generation || 0;
-
-        // Genetics display (different for pigs vs rabbits)
-        const geneticsHTML = isPig ? `
-            <div>Marbling: <span style="font-weight: 600; color: ${animal.genetics.marbling > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.marbling * 100)}%</span></div>
-            <div>Growth: <span style="font-weight: 600; color: ${animal.genetics.growthRate > 0.8 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.growthRate * 100)}%</span></div>
-            <div>Size: <span style="font-weight: 600;">${Math.round(animal.genetics.size * 100)}%</span></div>
-            <div>Litter: <span style="font-weight: 600; color: ${(animal.genetics.litterSize || 0.5) > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round((animal.genetics.litterSize || 0.5) * 100)}%</span></div>
-        ` : `
-            <div>Fur Quality: <span style="font-weight: 600; color: ${animal.genetics.furQuality > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.furQuality * 100)}%</span></div>
-            <div>Growth: <span style="font-weight: 600; color: ${animal.genetics.growthRate > 0.8 ? 'var(--success)' : 'inherit'}">${Math.round(animal.genetics.growthRate * 100)}%</span></div>
-            <div>Size: <span style="font-weight: 600;">${Math.round(animal.genetics.size * 100)}%</span></div>
-            <div>Litter: <span style="font-weight: 600; color: ${(animal.genetics.litterSize || 0.5) > 0.7 ? 'var(--success)' : 'inherit'}">${Math.round((animal.genetics.litterSize || 0.5) * 100)}%</span></div>
-        `;
-
-        // Pelt price for rabbits
-        const peltPrice = isRabbit ? calculateRabbitPeltPrice(animal) : 0;
-
-        const modal = document.getElementById('modal-content');
-        modal.innerHTML = `
-            <h2>${stageInfo.emoji} ${animal.name} <span style="color: ${sexColor}; font-size: 1rem;">${sexIcon} ${sexLabel}</span></h2>
-            <p style="color: var(--copper); font-weight: 600; margin-bottom: 1rem;">
-                ${stageInfo.label} · ${animal.age} days old
-                ${generation > 0 ? ` · Gen ${generation}` : ''}
-            </p>
-
-            ${animal.pregnant ? `
-                <div style="background: #fef3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem;">
-                    <p style="font-weight: 600; color: #856404;">🤰 Pregnant!</p>
-                    <p style="font-size: 0.9rem; color: #856404;">
-                        ${pregnancyDuration - animal.pregnantDays} days until birth
-                        (Day ${animal.pregnantDays}/${pregnancyDuration})
-                    </p>
-                </div>
-            ` : ''}
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
-                <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${weight}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-light);">lbs</div>
-                </div>
-                <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: ${animal.health > 50 ? 'var(--success)' : 'var(--danger)'};">${animal.health}%</div>
-                    <div style="font-size: 0.75rem; color: var(--text-light);">Health</div>
-                </div>
-            </div>
-
-            <p><strong>Happiness:</strong> ${animal.happiness}% ${animal.happiness >= CONFIG.BREEDING_MIN_HAPPINESS ? '😊' : '😔'}</p>
-            <p><strong>Fed today:</strong> ${animal.fed ? '✅ Yes' : '❌ No'}</p>
-            ${animal.breedingCooldown > 0 ? `<p><strong>Breeding cooldown:</strong> ${animal.breedingCooldown} days</p>` : ''}
-            ${peltPrice > 0 ? `<p><strong>Pelt Value:</strong> ${formatMoney(peltPrice)}</p>` : ''}
-
-            <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
-
-            <p><strong>Genetics (${geneticLabel}):</strong></p>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; margin-left: 1rem; margin-bottom: 1rem; font-size: 0.9rem;">
-                ${geneticsHTML}
-            </div>
-
-            ${generation > 0 ? `
-                <p style="font-size: 0.85rem; color: var(--text-light);">
-                    <strong>Lineage:</strong>
-                    ${mother ? `Mother: ${mother.name}` : 'Mother: (sold)'}
-                    ${father ? ` · Father: ${father.name}` : ' · Father: (sold)'}
-                </p>
-            ` : ''}
-
-            <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
-
-            ${animal.age >= breedingMinAge && canBreedNow && breedingPartners.length > 0 ? `
-                <p><strong>${breedLabel}:</strong></p>
-                <div style="margin-bottom: 1rem;">
-                    <select id="breed-partner" style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ddd; margin-top: 0.25rem;">
-                        <option value="">Select a partner...</option>
-                        ${breedingPartners.map(p => {
-                            const avgGen = isPig
-                                ? ((p.genetics.marbling + p.genetics.growthRate + (p.genetics.litterSize || 0.5)) / 3)
-                                : ((p.genetics.furQuality + p.genetics.growthRate + (p.genetics.litterSize || 0.5)) / 3);
-                            return `<option value="${p.id}">${p.name} (${Math.round(avgGen * 100)}% avg genetics)</option>`;
-                        }).join('')}
-                    </select>
-                    <button class="btn btn-secondary" style="margin-top: 0.5rem; width: 100%;" onclick="Game.breedWith('${animal.id}', '${animal.sex}', '${animal.type}')">Breed</button>
-                </div>
-            ` : ''}
-
-            <p><strong>Market Value:</strong> ${formatMoney(sellPrice + peltPrice)} ${isMature ? '✅' : '⏳'}</p>
-            ${!isMature ? `<p style="font-size: 0.8rem; color: var(--warning);">Wait ${maturityDays - animal.age} more days for full value</p>` : ''}
-
-            ${breedingStockPrice > sellPrice ? `
-                <p style="font-size: 0.9rem; color: var(--success); margin-top: 0.5rem;">
-                    <strong>Breeding Stock Value:</strong> ${formatMoney(breedingStockPrice)} (+${Math.round((breedingStockPrice/sellPrice - 1) * 100)}% premium!)
-                </p>
-            ` : ''}
-
-            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;">
-                <button class="btn btn-primary" onclick="Game.dispatch({type: '${sellAction}', id: '${animal.id}'}); Game.closeModal();">
-                    Sell ${formatMoney(sellPrice + peltPrice)}
-                </button>
-                ${breedingStockPrice > 0 ? `
-                    <button class="btn btn-secondary" onclick="Game.dispatch({type: '${breedingSellAction}', id: '${animal.id}'}); Game.closeModal();">
-                        Sell Breeding ${formatMoney(breedingStockPrice)}
-                    </button>
-                ` : ''}
-                <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
-            </div>
-        `;
-        document.getElementById('modal-overlay').classList.add('open');
+        // Remove dead animals
+        const dead = this.animals.filter(a => a.health <= 0);
+        if (dead.length > 0) {
+            this.showToast(`${dead.map(a => a.name).join(', ')} died from neglect!`);
+        }
+        this.animals = this.animals.filter(a => a.health > 0);
     },
 
-    closeModal() {
-        document.getElementById('modal-overlay').classList.remove('open');
-    },
+    tryInteract() {
+        const point = this.player.getInteractionPoint();
+        const tileX = Math.floor(point.x / TILE_SIZE);
+        const tileY = Math.floor(point.y / TILE_SIZE);
 
-    breedWith(animalId, animalSex, animalType = 'gos_pig') {
-        const partnerId = document.getElementById('breed-partner').value;
-        if (!partnerId) {
-            Toast.warning('Select a breeding partner first!');
+        // Check for animals nearby
+        const nearbyAnimal = this.animals.find(a => {
+            const ax = Math.floor(a.x / TILE_SIZE);
+            const ay = Math.floor(a.y / TILE_SIZE);
+            return Math.abs(ax - tileX) <= 1 && Math.abs(ay - tileY) <= 1;
+        });
+
+        if (nearbyAnimal) {
+            this.showAnimalDialog(nearbyAnimal);
             return;
         }
 
-        const motherId = animalSex === 'female' ? animalId : partnerId;
-        const fatherId = animalSex === 'male' ? animalId : partnerId;
+        // Check tiles
+        if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
+            const tile = this.world[tileY][tileX];
 
-        const action = animalType === 'champagne_rabbit' ? 'BREED_RABBIT' : 'BREED';
-        this.dispatch({ type: action, motherId, fatherId });
-        this.closeModal();
-    },
-
-    showBuildingInfo(building) {
-        const modal = document.getElementById('modal-content');
-        const season = this.state.farm.season;
-        const seasonMod = CONFIG.SEASON_MODIFIERS[season];
-
-        if (building === 'barn') {
-            const pigCount = this.state.animals.length;
-            const totalWeight = this.state.animals.reduce((sum, p) => sum + calculatePigWeight(p), 0);
-            const maturePigs = this.state.animals.filter(p => p.age >= CONFIG.PIG_MATURITY_DAYS).length;
-            const avgHealth = pigCount > 0 ? Math.round(this.state.animals.reduce((sum, p) => sum + p.health, 0) / pigCount) : 0;
-
-            modal.innerHTML = `
-                <h2>🏠 Pig Barn</h2>
-                <p style="color: var(--text-light); margin-bottom: 1rem;">Home to your Gloucestershire Old Spot pigs</p>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${pigCount}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Total Pigs</div>
-                    </div>
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${maturePigs}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Market Ready</div>
-                    </div>
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${totalWeight}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Total lbs</div>
-                    </div>
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: ${avgHealth > 70 ? 'var(--success)' : 'var(--warning)'}">${avgHealth}%</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Avg Health</div>
-                    </div>
-                </div>
-
-                <p style="font-size: 0.85rem; color: var(--text-light);">
-                    GOS pigs are known for their excellent marbling and docile temperament.
-                    They reach market weight at 180 days.
-                </p>
-
-                <div style="margin-top: 1.5rem;">
-                    <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
-                </div>
-            `;
-        } else if (building === 'feed') {
-            const pigCount = this.state.animals.filter(a => a.type === 'gos_pig').length;
-            const rabbitCount = this.state.animals.filter(a => a.type === 'champagne_rabbit').length;
-            const feedCostPig = Math.round(CONFIG.FEED_COST_PER_PIG * seasonMod.feedCost * (this.state.feedDiscount || 1));
-            const feedCostRabbit = Math.round(CONFIG.FEED_COST_PER_RABBIT * seasonMod.feedCost * (this.state.feedDiscount || 1));
-            const dailyCost = (feedCostPig * pigCount) + (feedCostRabbit * rabbitCount);
-
-            modal.innerHTML = `
-                <h2>🌾 Feed Storage</h2>
-                <p style="color: var(--text-light); margin-bottom: 1rem;">Premium feed for your heritage animals</p>
-
-                <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <p><strong>Pig Feed:</strong> ${formatMoney(feedCostPig)}/pig/day</p>
-                    <p><strong>Rabbit Feed:</strong> ${formatMoney(feedCostRabbit)}/rabbit/day</p>
-                    <hr style="margin: 0.5rem 0; border: none; border-top: 1px solid #ddd;">
-                    <p><strong>Daily Total:</strong> ${formatMoney(dailyCost)} (${pigCount} pigs + ${rabbitCount} rabbits)</p>
-                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light);">
-                        ${seasonMod.feedCost > 1 ? '⚠️ Winter prices are higher!' : seasonMod.feedCost < 1 ? '✅ Summer feed is cheaper!' : 'Normal seasonal pricing'}
-                    </p>
-                </div>
-
-                <div style="margin-top: 1.5rem;">
-                    <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
-                </div>
-            `;
-        } else if (building === 'hutch') {
-            const rabbits = this.state.animals.filter(a => a.type === 'champagne_rabbit');
-            const rabbitCount = rabbits.length;
-            const totalWeight = rabbits.reduce((sum, r) => sum + calculateRabbitWeight(r), 0);
-            const matureRabbits = rabbits.filter(r => r.age >= CONFIG.RABBIT_MATURITY_DAYS).length;
-            const avgHealth = rabbitCount > 0 ? Math.round(rabbits.reduce((sum, r) => sum + r.health, 0) / rabbitCount) : 0;
-            const pregnantDoes = rabbits.filter(r => r.pregnant).length;
-
-            modal.innerHTML = `
-                <h2>🐰 Rabbit Hutch</h2>
-                <p style="color: var(--text-light); margin-bottom: 1rem;">Home to your Champagne D'Argent rabbits</p>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${rabbitCount}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Total Rabbits</div>
-                    </div>
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${matureRabbits}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Market Ready</div>
-                    </div>
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--forest);">${totalWeight.toFixed(1)}</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Total lbs</div>
-                    </div>
-                    <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 6px; text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: ${avgHealth > 70 ? 'var(--success)' : 'var(--warning)'}">${avgHealth}%</div>
-                        <div style="font-size: 0.75rem; color: var(--text-light);">Avg Health</div>
-                    </div>
-                </div>
-
-                ${pregnantDoes > 0 ? `<p style="color: var(--success); font-weight: 600;">🤰 ${pregnantDoes} doe${pregnantDoes > 1 ? 's' : ''} pregnant!</p>` : ''}
-
-                <p style="font-size: 0.85rem; color: var(--text-light);">
-                    Champagne D'Argent rabbits are prized for their silvery fur and excellent meat quality.
-                    They reach market weight at 90 days and can breed at 150 days.
-                </p>
-
-                <div style="margin-top: 1rem; padding: 0.75rem; background: #e8f4e8; border-radius: 6px;">
-                    <p style="font-size: 0.85rem; color: var(--forest);">
-                        <strong>🐰 Rabbit Tips:</strong><br>
-                        • Faster breeding than pigs (31-day pregnancy)<br>
-                        • Valuable pelts from adults (120+ days)<br>
-                        • Lower feed cost, quicker returns
-                    </p>
-                </div>
-
-                <div style="margin-top: 1.5rem;">
-                    <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
-                </div>
-            `;
-        }
-
-        document.getElementById('modal-overlay').classList.add('open');
-    }
-};
-
-// ==========================================
-// DEBUG PANEL
-// ==========================================
-
-const Debug = {
-    logs: [],
-
-    toggle() {
-        document.getElementById('debug-panel').classList.toggle('open');
-        this.updateStateView();
-    },
-
-    showTab(tabName) {
-        document.querySelectorAll('.debug-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.debug-tab-content').forEach(t => t.style.display = 'none');
-
-        event.target.classList.add('active');
-        document.getElementById(`debug-${tabName}-tab`).style.display = 'block';
-    },
-
-    updateStateView() {
-        if (Game.state) {
-            document.getElementById('debug-state-view').textContent = JSON.stringify(Game.state, null, 2);
+            if (tile === TILES.MARKET_STALL) {
+                this.showMarketDialog();
+            } else if (tile === TILES.TROUGH) {
+                this.feedAnimals();
+            } else if (tile === TILES.DOOR && tileX >= 20) {
+                this.showBarnDialog();
+            } else if (tile === TILES.DOOR && tileX < 15) {
+                this.showHouseDialog();
+            }
         }
     },
 
-    log(message, type = 'info') {
-        const entry = { time: new Date().toLocaleTimeString(), message, type };
-        this.logs.unshift(entry);
-        if (this.logs.length > 100) this.logs.pop();
+    showMarketDialog() {
+        const pigPrice = 200;
+        const rabbitPrice = 50;
 
-        const logEl = document.getElementById('debug-log');
-        logEl.innerHTML = this.logs.map(l =>
-            `<div class="log-entry ${l.type}">[${l.time}] ${l.message}</div>`
-        ).join('');
-    },
+        let html = '<strong>Market Stall</strong><br><br>';
+        html += 'What would you like to do?';
 
-    advanceDays(n) {
-        for (let i = 0; i < n; i++) {
-            Game.dispatch({ type: 'ADVANCE_DAY' });
+        let options = '';
+        if (this.money >= pigPrice) {
+            options += `<button onclick="Game.buyAnimal('pig')">Buy Pig ($${pigPrice})</button>`;
         }
+        if (this.money >= rabbitPrice) {
+            options += `<button onclick="Game.buyAnimal('rabbit')">Buy Rabbit ($${rabbitPrice})</button>`;
+        }
+
+        // Sell options
+        const matureAnimals = this.animals.filter(a => a.age >= a.maturityAge);
+        if (matureAnimals.length > 0) {
+            options += `<button onclick="Game.showSellDialog()">Sell Animals (${matureAnimals.length} ready)</button>`;
+        }
+
+        options += `<button onclick="Game.closeDialog()">Leave</button>`;
+
+        this.showDialog(html, options);
     },
 
-    addMoney(amount) {
-        Game.dispatch({ type: 'ADD_MONEY', amount });
+    showSellDialog() {
+        const mature = this.animals.filter(a => a.age >= a.maturityAge);
+
+        let html = '<strong>Sell Animals</strong><br><br>';
+        let options = '';
+
+        mature.forEach(a => {
+            html += `${a.sprite} ${a.name}: ${Math.round(a.weight)} lbs - $${a.value}<br>`;
+            options += `<button onclick="Game.sellAnimal('${a.id}')">Sell ${a.name} ($${a.value})</button>`;
+        });
+
+        options += `<button onclick="Game.showMarketDialog()">Back</button>`;
+
+        this.showDialog(html, options);
     },
 
-    spawnPig() {
-        Game.dispatch({ type: 'SPAWN_PIG' });
+    showAnimalDialog(animal) {
+        let html = `<strong>${animal.sprite} ${animal.name}</strong><br><br>`;
+        html += `Age: ${animal.age} days<br>`;
+        html += `Weight: ${Math.round(animal.weight * 10) / 10} lbs<br>`;
+        html += `Health: ${animal.health}%<br>`;
+        html += `Happiness: ${animal.happiness}%<br>`;
+        html += `Hunger: ${animal.hunger > 50 ? '🍖 Hungry!' : 'Fed'}<br>`;
+        html += `<br>Value: $${animal.value}`;
+        if (animal.age < animal.maturityAge) {
+            html += ` (mature in ${animal.maturityAge - animal.age} days)`;
+        }
+
+        let options = `<button onclick="Game.petAnimal('${animal.id}')">Pet ${animal.name}</button>`;
+        options += `<button onclick="Game.closeDialog()">Close</button>`;
+
+        this.showDialog(html, options);
     },
 
-    spawnAdultPig() {
-        Game.dispatch({ type: 'SPAWN_PIG', age: CONFIG.PIG_MATURITY_DAYS });
+    showBarnDialog() {
+        const pigs = this.animals.filter(a => a.type === 'pig');
+        let html = '<strong>🏠 Pig Barn</strong><br><br>';
+        html += `Pigs: ${pigs.length}<br>`;
+        if (pigs.length > 0) {
+            const totalWeight = pigs.reduce((sum, p) => sum + p.weight, 0);
+            const avgHealth = Math.round(pigs.reduce((sum, p) => sum + p.health, 0) / pigs.length);
+            html += `Total Weight: ${Math.round(totalWeight)} lbs<br>`;
+            html += `Avg Health: ${avgHealth}%<br>`;
+        }
+
+        this.showDialog(html, `<button onclick="Game.closeDialog()">Close</button>`);
     },
 
-    killAll() {
-        Game.dispatch({ type: 'KILL_ALL' });
+    showHouseDialog() {
+        let html = '<strong>🏡 Farmhouse</strong><br><br>';
+        html += `Money: $${this.money}<br>`;
+        html += `Animals: ${this.animals.length}<br>`;
+        html += `Day ${this.day}, ${this.season} Year ${this.year}<br>`;
+        html += '<br><em>Time passes as you explore the farm.</em>';
+
+        let options = `<button onclick="Game.sleep()">Sleep (Skip to next day)</button>`;
+        options += `<button onclick="Game.saveGame()">Save Game</button>`;
+        options += `<button onclick="Game.closeDialog()">Close</button>`;
+
+        this.showDialog(html, options);
     },
 
-    clearSave() {
-        localStorage.removeItem('texasfarms_save');
-        this.log('Save cleared', 'warning');
+    buyAnimal(type) {
+        const price = type === 'pig' ? 200 : 50;
+        if (this.money < price) {
+            this.showToast("Can't afford that!");
+            return;
+        }
+
+        this.money -= price;
+
+        // Spawn in pasture
+        const x = (21 + Math.random() * 3) * TILE_SIZE;
+        const y = (11 + Math.random() * 2) * TILE_SIZE;
+        const animal = new Animal(x, y, type);
+        this.animals.push(animal);
+
+        this.showToast(`Welcome ${animal.name} to the farm!`);
+        this.closeDialog();
     },
 
-    exportState() {
-        const blob = new Blob([JSON.stringify(Game.state, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'texasfarms-save.json';
-        a.click();
-    }
-};
+    sellAnimal(id) {
+        const idx = this.animals.findIndex(a => a.id === id);
+        if (idx === -1) return;
 
-// ==========================================
-// PLAYTEST API (For automated testing)
-// ==========================================
+        const animal = this.animals[idx];
+        this.money += animal.value;
+        this.animals.splice(idx, 1);
 
-const Playtest = {
-    // Run a scenario and return results
-    async run(scenario) {
-        const game = deepClone(DEFAULT_STATE);
-        const metrics = {
-            startMoney: game.farm.money,
-            actions: [],
-            checkpoints: []
+        this.showToast(`Sold ${animal.name} for $${animal.value}!`);
+        this.closeDialog();
+    },
+
+    petAnimal(id) {
+        const animal = this.animals.find(a => a.id === id);
+        if (animal) {
+            animal.happiness = Math.min(100, animal.happiness + 5);
+            this.showToast(`${animal.name} seems happy!`);
+        }
+        this.closeDialog();
+    },
+
+    feedAnimals() {
+        const hungry = this.animals.filter(a => a.hunger > 0);
+        if (hungry.length === 0) {
+            this.showToast('No animals need feeding!');
+            return;
+        }
+
+        const cost = hungry.reduce((sum, a) => sum + (a.type === 'pig' ? 5 : 1), 0);
+
+        if (this.money < cost) {
+            this.showToast(`Need $${cost} to feed all animals!`);
+            return;
+        }
+
+        this.money -= cost;
+        hungry.forEach(a => a.feed());
+        this.showToast(`Fed ${hungry.length} animals for $${cost}!`);
+    },
+
+    sleep() {
+        this.dayTimer = this.DAY_LENGTH - 1;
+        this.showToast('Slept through the night...');
+        this.closeDialog();
+    },
+
+    saveGame() {
+        const save = {
+            money: this.money,
+            day: this.day,
+            season: this.season,
+            year: this.year,
+            animals: this.animals.map(a => ({
+                type: a.type,
+                x: a.x,
+                y: a.y,
+                age: a.age,
+                health: a.health,
+                happiness: a.happiness,
+                hunger: a.hunger,
+                weight: a.weight,
+                name: a.name,
+                genetics: a.genetics
+            }))
         };
+        localStorage.setItem('texasfarms_save', JSON.stringify(save));
+        this.showToast('Game saved!');
+    },
 
-        // Apply start state if provided
-        if (scenario.startState) {
-            Object.assign(game, scenario.startState);
+    showDialog(text, optionsHTML) {
+        document.getElementById('dialog-text').innerHTML = text;
+        document.getElementById('dialog-options').innerHTML = optionsHTML;
+        document.getElementById('dialog').classList.add('show');
+        this.dialogOpen = true;
+    },
+
+    closeDialog() {
+        document.getElementById('dialog').classList.remove('show');
+        this.dialogOpen = false;
+    },
+
+    showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.remove('show');
+        void toast.offsetWidth; // Trigger reflow
+        toast.classList.add('show');
+    },
+
+    updateHUD() {
+        document.getElementById('money-display').textContent = `$${this.money}`;
+        document.getElementById('time-display').textContent = `Day ${this.day}, ${this.season} Y${this.year}`;
+        document.getElementById('animal-count').textContent = `${this.animals.length} animals`;
+    },
+
+    render() {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw world
+        for (let y = 0; y < WORLD_HEIGHT; y++) {
+            for (let x = 0; x < WORLD_WIDTH; x++) {
+                const tile = this.world[y][x];
+                const screenX = x * TILE_SIZE - this.camera.x;
+                const screenY = y * TILE_SIZE - this.camera.y;
+
+                // Skip if off screen
+                if (screenX < -TILE_SIZE || screenX > this.canvas.width ||
+                    screenY < -TILE_SIZE || screenY > this.canvas.height) continue;
+
+                // Draw base tile
+                ctx.fillStyle = TILE_COLORS[tile] || '#4a7c59';
+                ctx.fillRect(screenX, screenY, TILE_SIZE, TILE_SIZE);
+
+                // Draw tile decorations
+                ctx.font = `${TILE_SIZE - 8}px serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                if (tile === TILES.TREE) {
+                    ctx.fillText('🌲', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.FLOWERS) {
+                    ctx.fillText('🌸', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.TROUGH) {
+                    ctx.fillStyle = '#555';
+                    ctx.fillRect(screenX + 4, screenY + TILE_SIZE - 16, TILE_SIZE - 8, 12);
+                } else if (tile === TILES.MARKET_STALL) {
+                    ctx.fillText('🏪', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.HAY) {
+                    ctx.fillText('🌾', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                }
+            }
         }
 
-        // Run actions
-        for (const action of scenario.actions) {
-            const before = game.farm.money;
-            const result = reduce(game, action);
-            Object.assign(game, result);
-            metrics.actions.push({
-                action: action.type,
-                moneyBefore: before,
-                moneyAfter: game.farm.money
-            });
+        // Draw animals (sorted by Y for depth)
+        const sortedAnimals = [...this.animals].sort((a, b) => a.y - b.y);
+        sortedAnimals.forEach(a => a.draw(ctx, this.camera));
+
+        // Draw player
+        this.player.draw(ctx, this.camera);
+
+        // Draw interaction hint
+        const point = this.player.getInteractionPoint();
+        const tileX = Math.floor(point.x / TILE_SIZE);
+        const tileY = Math.floor(point.y / TILE_SIZE);
+
+        if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
+            const tile = this.world[tileY][tileX];
+            if (tile === TILES.MARKET_STALL || tile === TILES.TROUGH || tile === TILES.DOOR) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(
+                    tileX * TILE_SIZE - this.camera.x + 2,
+                    tileY * TILE_SIZE - this.camera.y + 2,
+                    TILE_SIZE - 4,
+                    TILE_SIZE - 4
+                );
+            }
         }
 
-        return {
-            finalState: game,
-            metrics: {
-                ...metrics,
-                finalMoney: game.farm.money,
-                daysPlayed: game.farm.day,
-                animalsAlive: game.animals.length,
-                moneyDelta: game.farm.money - metrics.startMoney
-            },
-            passed: scenario.validate ? scenario.validate(game) : true
-        };
+        // Check for nearby animals
+        const nearbyAnimal = this.animals.find(a => {
+            const ax = Math.floor(a.x / TILE_SIZE);
+            const ay = Math.floor(a.y / TILE_SIZE);
+            return Math.abs(ax - tileX) <= 1 && Math.abs(ay - tileY) <= 1;
+        });
+
+        if (nearbyAnimal) {
+            ctx.strokeStyle = 'rgba(255,255,0,0.5)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+                Math.floor(nearbyAnimal.x / TILE_SIZE) * TILE_SIZE - this.camera.x + 2,
+                Math.floor(nearbyAnimal.y / TILE_SIZE) * TILE_SIZE - this.camera.y + 2,
+                TILE_SIZE - 4,
+                TILE_SIZE - 4
+            );
+        }
     }
 };
 
-// ==========================================
-// INIT
-// ==========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    Game.init();
-});
-
-// Close modal on overlay click
-document.getElementById('modal-overlay').addEventListener('click', (e) => {
-    if (e.target.id === 'modal-overlay') {
-        Game.closeModal();
-    }
-});
+// Initialize on load
+window.addEventListener('DOMContentLoaded', () => Game.init());
 </script>
 </body>
 </html>
