@@ -4,6 +4,190 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.0.0] - 2026-01-15
+
+### Added
+- **Shipping Bin**
+  - Place items for overnight sale
+  - View items in bin and total value
+  - Automatic payment at day start
+  - Located near farmhouse (📦 icon)
+
+- **Crafting System**
+  - Press C to open crafting menu
+  - Sprinkler recipe: 5 stone + 3 wood
+  - Scarecrow recipe: 10 wood + 2 stone
+  - Shows available resources
+
+- **Sprinklers**
+  - Crafted item that auto-waters crops
+  - Waters all 8 adjacent tiles each morning
+  - Place on grass or tilled soil
+
+- **Foraging System**
+  - Berry bushes (🫐) scattered around map
+  - Find Wild Berries, Mushrooms, or Wild Honey
+  - Bushes regrow after 3 days
+
+- **Resource Respawning**
+  - Cleared rocks and stumps respawn after 7 days
+  - Sustainable resource gathering
+
+### Changed
+- Version bumped to 1.0.0 (feature complete!)
+- Help dialog updated with crafting info
+- Controls panel shows crafting key
+
+---
+
+## [0.9.0] - 2026-01-15
+
+### Added
+- **Achievement System**
+  - 12 achievements to unlock
+  - Press Tab to view progress
+  - Achievements: Green Thumb, Entrepreneur, Angler, Lucky Catch
+  - Achievements: Animal Friend, Farm Empire, Wealthy Farmer, Millionaire
+  - Achievements: Survivor, Veteran, Social Butterfly, Storm Chaser
+  - Achievement popup with sound on unlock
+  - Progress saved to localStorage
+
+### Changed
+- Version bumped to 0.9.0
+- Help dialog updated with Tab key info
+
+---
+
+## [0.8.0] - 2026-01-15
+
+### Added
+- **Weather System**
+  - Dynamic weather: Sunny, Cloudy, Rainy, Stormy
+  - Weather icon in HUD shows current conditions
+  - Rain particles with wind effect
+  - Storm lightning flashes with thunder sound
+  - Season affects weather probability
+  - Rain automatically waters all crops!
+
+### Changed
+- Version bumped to 0.8.0
+- Weather persists for 3-10 real minutes
+
+---
+
+## [0.7.0] - 2026-01-15
+
+### Added
+- **Full Tutorial System**
+  - Step-by-step walkthrough for new players
+  - Teaches: movement, inventory, tilling, planting, watering
+  - Teaches: energy, fishing, NPCs, and market
+  - Can be skipped anytime with ESC
+  - Progress tracked through gameplay actions
+
+- **Help System**
+  - Press H anytime to see controls and tips
+  - Complete reference for all game mechanics
+
+- **Fishing Mini-Game**
+  - Fishing Rod tool added to starter inventory
+  - Cast line into water and wait for bite
+  - Press E quickly when "!" appears to catch
+  - 4 fish types: Bass ($40), Trout ($80), Catfish ($120)
+  - Rare Golden Fish worth $500!
+  - Old Boot junk item for variety
+  - Visual fishing line and bobber animation
+  - Sound effects for cast, splash, bite, catch
+
+### Changed
+- Instructions panel simplified
+- Starting inventory now includes Fishing Rod
+- Version bumped to 0.7.0
+
+---
+
+## [0.6.0] - 2026-01-15
+
+### Added
+- **Full Inventory System**
+  - 8-slot inventory bar at bottom of screen
+  - Number keys 1-8 to select items
+  - Q key to see item info
+  - Items stack with count display
+  - Tool selection highlights
+
+- **Farming Tools**
+  - Hoe: Till grass into farmland
+  - Watering Can: Water tilled soil and crops
+  - Pickaxe: Break rocks for stone
+  - Axe: Chop stumps for wood
+
+- **Crop System**
+  - 4 crop types: Turnips (4 days), Carrots (6 days), Tomatoes (8 days), Corn (10 days)
+  - Visual growth stages for each crop
+  - Water indicator shows when crops need water
+  - Sparkle effect when crops are ready to harvest
+  - Seeds purchasable at market stall
+
+- **Energy System**
+  - Energy bar displays current stamina
+  - Tools and actions cost energy
+  - Energy restored when new day starts
+  - "Too tired" warning when depleted
+
+- **Day/Night Cycle**
+  - Visual lighting changes throughout day
+  - Dawn and sunset golden hour effects
+  - Night overlay with blue tint
+  - Time passes automatically
+
+- **Sound Effects (Web Audio API)**
+  - Unique sounds for: hoe, water, plant, harvest, pickup, error, sell
+  - No external audio files required
+
+- **NPC Characters**
+  - Mayor Bob: Greets you near the farmhouse
+  - Sally (Shopkeeper): Runs the market stall
+  - Old Pete (Wanderer): Roams around giving advice
+  - NPCs have rotating dialog
+  - Gift system - give items to NPCs for reactions
+
+- **Resource Gathering**
+  - Rocks appear on map (use pickaxe)
+  - Wood stumps appear (use axe)
+  - Collected resources can be sold
+
+### Changed
+- Market now organized into Buy Animals, Buy Seeds, Sell sections
+- Seeds sold in packs of 5
+- Interaction highlight shows for all usable tiles
+- NPCs highlighted in cyan when nearby
+- Version bumped to 0.6.0
+
+---
+
+## [0.5.0] - 2026-01-15
+
+### Added
+- **Complete Game Rewrite**
+  - Canvas-based 2D exploration gameplay
+  - Top-down tile map world
+  - Walking farmer character
+  - WASD/Arrow movement with collision
+
+- **Interactive World**
+  - 30x20 tile world map
+  - Farmhouse, Barn, Market Stall, Pond
+  - Fenced pasture for animals
+  - Feed trough for feeding
+
+- **Real-time Gameplay**
+  - Time passes automatically (30 sec = 1 day)
+  - No more click-per-day tedium
+  - Sleep at farmhouse to skip to next day
+
+---
+
 ## [0.4.0] - 2026-01-15
 
 ### Added

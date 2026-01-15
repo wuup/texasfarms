@@ -84,16 +84,88 @@ canvas {
 #dialog-options button:hover { background: #3d5a4e; }
 #dialog-options button.primary { background: #b87333; }
 
+/* Inventory Bar */
+#inventory-bar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.8);
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid #b87333;
+    z-index: 100;
+}
+.inv-slot {
+    width: 48px;
+    height: 48px;
+    background: rgba(50,50,50,0.8);
+    border: 2px solid #555;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s;
+}
+.inv-slot:hover { background: rgba(80,80,80,0.8); }
+.inv-slot.selected { border-color: #ffcc00; box-shadow: 0 0 10px rgba(255,204,0,0.5); }
+.inv-slot .count {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 12px;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+}
+.inv-slot .key {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 10px;
+    color: #888;
+}
+
+/* Energy Bar */
+#energy-bar {
+    position: absolute;
+    top: 80px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    padding: 8px;
+    border-radius: 8px;
+    z-index: 100;
+}
+#energy-bar label { color: #aaa; font-size: 12px; }
+#energy-fill {
+    width: 100px;
+    height: 12px;
+    background: #333;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+#energy-fill-inner {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    transition: width 0.3s;
+}
+
 /* Instructions */
 #instructions {
     position: absolute;
-    bottom: 10px;
+    bottom: 90px;
     right: 10px;
     background: rgba(0,0,0,0.6);
     color: #aaa;
     padding: 8px 12px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.4;
 }
 
 /* Title Screen */
@@ -165,6 +237,7 @@ canvas {
         <div class="hud-panel">
             <h3>Time</h3>
             <div id="time-display">Day 1, Spring Y1</div>
+            <div id="weather-display" style="font-size: 18px; margin-top: 4px;">☀️</div>
         </div>
         <div class="hud-panel">
             <h3>Farm</h3>
@@ -179,8 +252,25 @@ canvas {
 
     <div id="toast"></div>
 
+    <div id="inventory-bar">
+        <div class="inv-slot selected" onclick="Game.selectSlot(0)"><span class="key">1</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(1)"><span class="key">2</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(2)"><span class="key">3</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(3)"><span class="key">4</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(4)"><span class="key">5</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(5)"><span class="key">6</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(6)"><span class="key">7</span></div>
+        <div class="inv-slot" onclick="Game.selectSlot(7)"><span class="key">8</span></div>
+    </div>
+
+    <div id="energy-bar">
+        <label>Energy</label>
+        <div id="energy-fill"><div id="energy-fill-inner" style="width: 100%"></div></div>
+    </div>
+
     <div id="instructions">
-        WASD/Arrows: Move | E/Space: Interact
+        WASD: Move | E: Interact<br>
+        1-8: Select | C: Craft | H: Help
     </div>
 
     <div id="title-screen">
@@ -193,8 +283,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v0.5.0
-// Now with actual gameplay!
+// TEXAS FARMS - THE GAME v1.0.0
+// Feature-complete farming simulation!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -219,6 +309,13 @@ const TILES = {
     MARKET_STALL: 11,
     HOUSE_WALL: 12,
     HOUSE_FLOOR: 13,
+    TILLED: 14,       // Hoed soil ready for planting
+    WATERED: 15,      // Watered tilled soil
+    STONE: 16,        // Rocks to break
+    WOOD: 17,         // Stumps to chop
+    SHIPPING_BIN: 18, // Sell items overnight
+    SPRINKLER: 19,    // Auto-waters nearby crops
+    BERRY_BUSH: 20,   // Forageable berries
 };
 
 // Colors for each tile
@@ -237,10 +334,184 @@ const TILE_COLORS = {
     [TILES.MARKET_STALL]: '#8b4513',
     [TILES.HOUSE_WALL]: '#deb887',
     [TILES.HOUSE_FLOOR]: '#d2b48c',
+    [TILES.TILLED]: '#6b4423',
+    [TILES.WATERED]: '#4a3520',
+    [TILES.STONE]: '#666',
+    [TILES.WOOD]: '#5a4020',
+    [TILES.SHIPPING_BIN]: '#8b4513',
+    [TILES.SPRINKLER]: '#4a7c59',
+    [TILES.BERRY_BUSH]: '#2d6a2d',
 };
 
 // Which tiles block movement
-const SOLID_TILES = [TILES.WATER, TILES.FENCE, TILES.BARN_WALL, TILES.TREE, TILES.HOUSE_WALL];
+const SOLID_TILES = [TILES.WATER, TILES.FENCE, TILES.BARN_WALL, TILES.TREE, TILES.HOUSE_WALL, TILES.STONE, TILES.WOOD];
+
+// ==========================================
+// ITEMS & TOOLS
+// ==========================================
+const ITEMS = {
+    HOE: { id: 'hoe', name: 'Hoe', emoji: '🔨', type: 'tool', desc: 'Till soil for planting' },
+    WATERING_CAN: { id: 'watering_can', name: 'Watering Can', emoji: '🪣', type: 'tool', desc: 'Water your crops' },
+    PICKAXE: { id: 'pickaxe', name: 'Pickaxe', emoji: '⛏️', type: 'tool', desc: 'Break rocks' },
+    AXE: { id: 'axe', name: 'Axe', emoji: '🪓', type: 'tool', desc: 'Chop wood' },
+    FISHING_ROD: { id: 'fishing_rod', name: 'Fishing Rod', emoji: '🎣', type: 'tool', desc: 'Catch fish in water' },
+    TURNIP_SEEDS: { id: 'turnip_seeds', name: 'Turnip Seeds', emoji: '🌱', type: 'seed', crop: 'turnip', growDays: 4, price: 20 },
+    CARROT_SEEDS: { id: 'carrot_seeds', name: 'Carrot Seeds', emoji: '🥕', type: 'seed', crop: 'carrot', growDays: 6, price: 35 },
+    TOMATO_SEEDS: { id: 'tomato_seeds', name: 'Tomato Seeds', emoji: '🍅', type: 'seed', crop: 'tomato', growDays: 8, price: 50 },
+    CORN_SEEDS: { id: 'corn_seeds', name: 'Corn Seeds', emoji: '🌽', type: 'seed', crop: 'corn', growDays: 10, price: 75 },
+    TURNIP: { id: 'turnip', name: 'Turnip', emoji: '🥬', type: 'crop', sellPrice: 60 },
+    CARROT: { id: 'carrot', name: 'Carrot', emoji: '🥕', type: 'crop', sellPrice: 100 },
+    TOMATO: { id: 'tomato', name: 'Tomato', emoji: '🍅', type: 'crop', sellPrice: 150 },
+    CORN: { id: 'corn', name: 'Corn', emoji: '🌽', type: 'crop', sellPrice: 200 },
+    STONE: { id: 'stone', name: 'Stone', emoji: '🪨', type: 'resource', sellPrice: 5 },
+    WOOD: { id: 'wood', name: 'Wood', emoji: '🪵', type: 'resource', sellPrice: 10 },
+    // Fish
+    BASS: { id: 'bass', name: 'Bass', emoji: '🐟', type: 'fish', sellPrice: 40, rarity: 0.4 },
+    TROUT: { id: 'trout', name: 'Trout', emoji: '🐠', type: 'fish', sellPrice: 80, rarity: 0.3 },
+    CATFISH: { id: 'catfish', name: 'Catfish', emoji: '🐡', type: 'fish', sellPrice: 120, rarity: 0.2 },
+    GOLDEN_FISH: { id: 'golden_fish', name: 'Golden Fish', emoji: '✨🐟', type: 'fish', sellPrice: 500, rarity: 0.05 },
+    OLD_BOOT: { id: 'old_boot', name: 'Old Boot', emoji: '👢', type: 'junk', sellPrice: 1, rarity: 0.05 },
+    // Foraging
+    WILD_BERRIES: { id: 'wild_berries', name: 'Wild Berries', emoji: '🫐', type: 'forage', sellPrice: 25 },
+    MUSHROOM: { id: 'mushroom', name: 'Mushroom', emoji: '🍄', type: 'forage', sellPrice: 40 },
+    WILD_HONEY: { id: 'wild_honey', name: 'Wild Honey', emoji: '🍯', type: 'forage', sellPrice: 100 },
+    // Craftables
+    SPRINKLER: { id: 'sprinkler', name: 'Sprinkler', emoji: '💧', type: 'placeable', desc: 'Auto-waters 8 tiles around it' },
+    SCARECROW: { id: 'scarecrow', name: 'Scarecrow', emoji: '🎃', type: 'placeable', desc: 'Protects crops from crows' },
+};
+
+// Crafting recipes
+const RECIPES = {
+    sprinkler: { result: ITEMS.SPRINKLER, ingredients: { stone: 5, wood: 3 } },
+    scarecrow: { result: ITEMS.SCARECROW, ingredients: { wood: 10, stone: 2 } },
+};
+
+// Crop growth stages
+const CROP_STAGES = {
+    turnip: ['🌱', '🌿', '🥬', '🥬'],
+    carrot: ['🌱', '🌿', '🥕', '🥕'],
+    tomato: ['🌱', '🌿', '🪴', '🍅'],
+    corn: ['🌱', '🌿', '🌾', '🌽'],
+};
+
+// ==========================================
+// AUDIO - Web Audio API sounds
+// ==========================================
+const Audio = {
+    ctx: null,
+    init() {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    },
+    play(type) {
+        if (!this.ctx) this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        const now = this.ctx.currentTime;
+        gain.gain.setValueAtTime(0.1, now);
+
+        switch(type) {
+            case 'hoe':
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+                break;
+            case 'water':
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+                break;
+            case 'plant':
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+                break;
+            case 'harvest':
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523, now);
+                gain.gain.setValueAtTime(0.15, now);
+                osc.frequency.setValueAtTime(659, now + 0.1);
+                osc.frequency.setValueAtTime(784, now + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+                break;
+            case 'pickup':
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+                break;
+            case 'error':
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(200, now);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+                break;
+            case 'sell':
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.setValueAtTime(800, now + 0.1);
+                osc.frequency.setValueAtTime(1000, now + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+                break;
+            case 'cast':
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+                break;
+            case 'bite':
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+                gain.gain.setValueAtTime(0.08, now);
+                osc.frequency.setValueAtTime(1000, now + 0.05);
+                osc.frequency.setValueAtTime(800, now + 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+                break;
+            case 'catch':
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.setValueAtTime(600, now + 0.1);
+                osc.frequency.setValueAtTime(800, now + 0.2);
+                osc.frequency.setValueAtTime(1200, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+                break;
+            case 'splash':
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+                break;
+        }
+    }
+};
 
 // Generate the world map
 function generateWorld() {
@@ -326,6 +597,43 @@ function generateWorld() {
         map[16][x] = TILES.MARKET_STALL;
     }
 
+    // Shipping bin near house
+    map[7][13] = TILES.SHIPPING_BIN;
+
+    // Berry bushes in the wild areas
+    const berrySpots = [{x:1, y:8}, {x:28, y:3}, {x:27, y:15}, {x:3, y:17}];
+    berrySpots.forEach(pos => {
+        if (map[pos.y][pos.x] === TILES.GRASS) {
+            map[pos.y][pos.x] = TILES.BERRY_BUSH;
+        }
+    });
+
+    // Farm plot area (left side, for crops)
+    // Just mark it with dirt path border to show the planting area
+    for (let x = 2; x < 8; x++) {
+        map[6][x] = TILES.DIRT_PATH;
+        map[12][x] = TILES.DIRT_PATH;
+    }
+    for (let y = 6; y < 13; y++) {
+        map[y][2] = TILES.DIRT_PATH;
+        map[y][7] = TILES.DIRT_PATH;
+    }
+
+    // Add some rocks and stumps to clear
+    const resourcePositions = [
+        {x: 14, y: 3, type: TILES.STONE},
+        {x: 16, y: 5, type: TILES.STONE},
+        {x: 12, y: 14, type: TILES.WOOD},
+        {x: 17, y: 16, type: TILES.WOOD},
+        {x: 8, y: 15, type: TILES.STONE},
+        {x: 5, y: 14, type: TILES.WOOD},
+    ];
+    resourcePositions.forEach(r => {
+        if (map[r.y][r.x] === TILES.GRASS) {
+            map[r.y][r.x] = r.type;
+        }
+    });
+
     // Random flowers
     for (let y = 0; y < WORLD_HEIGHT; y++) {
         for (let x = 0; x < WORLD_WIDTH; x++) {
@@ -336,6 +644,133 @@ function generateWorld() {
     }
 
     return map;
+}
+
+// ==========================================
+// NPCs
+// ==========================================
+const NPC_DATA = {
+    mayor: {
+        name: 'Mayor Bob',
+        sprite: '👴',
+        dialog: [
+            "Howdy neighbor! Welcome to Texas Farms!",
+            "Plant crops, raise animals, and make this land flourish!",
+            "Come see me if you need any advice.",
+        ],
+        gifts: { turnip: "Oh, a turnip! My favorite. Thank you!" }
+    },
+    shopkeeper: {
+        name: 'Sally',
+        sprite: '👩‍🌾',
+        dialog: [
+            "Welcome to my shop! I sell seeds and buy produce.",
+            "Turnips grow quick - great for beginners!",
+            "Tomatoes take longer but sell for more!",
+        ],
+        gifts: { corn: "Corn! I can make some great cornbread with this!" }
+    },
+    wanderer: {
+        name: 'Old Pete',
+        sprite: '🧓',
+        dialog: [
+            "Back in my day, we farmed without all these fancy tools...",
+            "*mumbles about the weather*",
+            "Have you checked the pond? Sometimes I see fish jumping...",
+            "The barn door's always open for shelter from storms.",
+        ],
+        gifts: { carrot: "A carrot? Don't mind if I do!" }
+    }
+};
+
+class NPC {
+    constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.data = NPC_DATA[type];
+        this.dialogIndex = 0;
+        this.wanderTimer = 0;
+        this.wanderDir = { x: 0, y: 0 };
+        this.homeX = x;
+        this.homeY = y;
+        this.lastTalked = -999;
+    }
+
+    get sprite() { return this.data.sprite; }
+    get name() { return this.data.name; }
+
+    update(world, day) {
+        // Only wanderer moves around
+        if (this.type === 'wanderer') {
+            this.wanderTimer--;
+            if (this.wanderTimer <= 0) {
+                this.wanderTimer = 90 + Math.random() * 180;
+                if (Math.random() < 0.3) {
+                    this.wanderDir = { x: 0, y: 0 };
+                } else {
+                    const dirs = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+                    this.wanderDir = dirs[Math.floor(Math.random() * dirs.length)];
+                }
+            }
+
+            if (this.wanderDir.x !== 0 || this.wanderDir.y !== 0) {
+                const newX = this.x + this.wanderDir.x * 0.8;
+                const newY = this.y + this.wanderDir.y * 0.8;
+
+                // Stay near home
+                const distFromHome = Math.abs(newX - this.homeX) + Math.abs(newY - this.homeY);
+                if (distFromHome < TILE_SIZE * 6) {
+                    const tileX = Math.floor(newX / TILE_SIZE);
+                    const tileY = Math.floor(newY / TILE_SIZE);
+
+                    if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
+                        const tile = world[tileY][tileX];
+                        if (!SOLID_TILES.includes(tile)) {
+                            this.x = newX;
+                            this.y = newY;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    draw(ctx, camera) {
+        const screenX = this.x - camera.x;
+        const screenY = this.y - camera.y;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(screenX + TILE_SIZE/2, screenY + TILE_SIZE - 5, 15, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sprite
+        ctx.font = `${TILE_SIZE - 8}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.sprite, screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+
+        // Name tag
+        ctx.font = '12px sans-serif';
+        ctx.fillStyle = '#fff';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.strokeText(this.name, screenX + TILE_SIZE/2, screenY - 5);
+        ctx.fillText(this.name, screenX + TILE_SIZE/2, screenY - 5);
+    }
+
+    getDialog(day) {
+        // Different dialog if talked to recently
+        if (day - this.lastTalked < 1) {
+            return "We already talked today! Come back tomorrow.";
+        }
+        this.lastTalked = day;
+        const dialog = this.data.dialog[this.dialogIndex];
+        this.dialogIndex = (this.dialogIndex + 1) % this.data.dialog.length;
+        return dialog;
+    }
 }
 
 // ==========================================
@@ -570,6 +1005,135 @@ const Game = {
     dialogOpen: false,
     lastInteract: false,
 
+    // New systems
+    energy: 100,
+    maxEnergy: 100,
+    selectedSlot: 0,
+    inventory: [], // Array of {item, count}
+    crops: [], // Array of {x, y, type, age, watered}
+    npcs: [], // Array of NPC instances
+    timeOfDay: 0, // 0-1 for day/night cycle
+
+    // Tutorial system
+    tutorial: {
+        active: true,
+        step: 0,
+        completed: [],
+        shown: false
+    },
+
+    // Weather system
+    weather: {
+        type: 'sunny', // sunny, cloudy, rainy, stormy
+        particles: [],
+        nextChange: 0
+    },
+
+    // Shipping bin & sprinklers
+    shippingBin: [], // Items to sell at end of day
+    sprinklers: [],  // {x, y} positions of placed sprinklers
+    forageCooldowns: {}, // Track when forageables respawn
+    clearedResources: [], // {x, y, type, respawnDay} for rocks/stumps to respawn
+
+    // Achievements
+    achievements: [],
+    ACHIEVEMENT_DEFS: [
+        { id: 'first_crop', name: 'Green Thumb', desc: 'Harvest your first crop', emoji: '🌱' },
+        { id: 'first_sale', name: 'Entrepreneur', desc: 'Make your first sale', emoji: '💰' },
+        { id: 'first_fish', name: 'Angler', desc: 'Catch your first fish', emoji: '🎣' },
+        { id: 'golden_catch', name: 'Lucky Catch', desc: 'Catch a Golden Fish', emoji: '✨' },
+        { id: 'first_animal', name: 'Animal Friend', desc: 'Buy your first animal', emoji: '🐷' },
+        { id: 'full_farm', name: 'Farm Empire', desc: 'Have 10+ crops planted', emoji: '🌾' },
+        { id: 'rich', name: 'Wealthy Farmer', desc: 'Have $1000 or more', emoji: '💎' },
+        { id: 'very_rich', name: 'Millionaire', desc: 'Have $5000 or more', emoji: '👑' },
+        { id: 'survivor', name: 'Survivor', desc: 'Survive 30 days', emoji: '📅' },
+        { id: 'year_one', name: 'Veteran', desc: 'Complete Year 1', emoji: '🏆' },
+        { id: 'social', name: 'Social Butterfly', desc: 'Talk to all NPCs', emoji: '💬' },
+        { id: 'storm_survivor', name: 'Storm Chaser', desc: 'Experience a storm', emoji: '⛈️' },
+    ],
+    npcsTalkedTo: [],
+
+    // Tutorial steps
+    TUTORIAL_STEPS: [
+        {
+            id: 'welcome',
+            title: 'Welcome to Texas Farms!',
+            text: 'This tutorial will teach you the basics of farming. You can skip it anytime by pressing ESC.',
+            trigger: 'auto',
+            arrow: null
+        },
+        {
+            id: 'movement',
+            title: 'Movement',
+            text: 'Use WASD or Arrow keys to walk around. Try walking to the farm plot on the left!',
+            trigger: 'auto',
+            check: (game) => Math.abs(game.player.x - 5*48) < 100 && Math.abs(game.player.y - 9*48) < 100
+        },
+        {
+            id: 'inventory',
+            title: 'Inventory',
+            text: 'Press 1-8 to select items in your toolbar at the bottom. Try pressing 1 to select your Hoe!',
+            trigger: 'auto',
+            check: (game) => game.selectedSlot === 0
+        },
+        {
+            id: 'till',
+            title: 'Tilling Soil',
+            text: 'With the Hoe selected, face a grass tile and press E to till it into farmland. Try it now!',
+            trigger: 'auto',
+            check: (game) => game.tutorial.completed.includes('tilled')
+        },
+        {
+            id: 'seeds',
+            title: 'Planting Seeds',
+            text: 'Press 6 to select Turnip Seeds. Then face tilled soil and press E to plant!',
+            trigger: 'auto',
+            check: (game) => game.crops.length > 0
+        },
+        {
+            id: 'water',
+            title: 'Watering Crops',
+            text: 'Press 2 to select Watering Can. Water your planted crop by pressing E. Crops only grow when watered!',
+            trigger: 'auto',
+            check: (game) => game.crops.some(c => c.watered)
+        },
+        {
+            id: 'energy',
+            title: 'Energy System',
+            text: 'Actions use energy (green bar, top-right). Sleep at your farmhouse (door on the white building) to restore it!',
+            trigger: 'auto',
+            check: (game) => game.tutorial.completed.includes('slept')
+        },
+        {
+            id: 'fishing',
+            title: 'Fishing',
+            text: 'Press 5 to select your Fishing Rod. Face the pond water and press E to fish! Press E again when you see "!"',
+            trigger: 'auto',
+            check: (game) => game.tutorial.completed.includes('caught_fish')
+        },
+        {
+            id: 'npcs',
+            title: 'Meeting NPCs',
+            text: 'Walk up to villagers and press E to talk. Sally at the Market sells seeds. The Mayor is near your house.',
+            trigger: 'auto',
+            check: (game) => game.tutorial.completed.includes('talked_npc')
+        },
+        {
+            id: 'market',
+            title: 'The Market',
+            text: 'Go to the Market Stall (store icon, bottom center) and press E. You can buy seeds, animals, and sell crops!',
+            trigger: 'auto',
+            check: (game) => game.tutorial.completed.includes('visited_market')
+        },
+        {
+            id: 'complete',
+            title: 'Tutorial Complete!',
+            text: 'You learned the basics! Plant crops, raise animals, fish, and make friends. Day changes every 30 seconds. Good luck!',
+            trigger: 'auto',
+            check: () => true
+        }
+    ],
+
     init() {
         this.canvas = document.getElementById('game-canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -599,6 +1163,33 @@ const Game = {
             this.keys.interact = true;
         }
         if (e.key === 'Escape') this.closeDialog();
+
+        // Number keys 1-8 for inventory slots
+        const num = parseInt(e.key);
+        if (num >= 1 && num <= 8) {
+            this.selectSlot(num - 1);
+        }
+
+        // Q to drop/use item info
+        if (e.key === 'q' || e.key === 'Q') {
+            this.showItemInfo();
+        }
+
+        // H for help
+        if (e.key === 'h' || e.key === 'H') {
+            this.showHelpDialog();
+        }
+
+        // Tab for achievements
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            this.showAchievementsDialog();
+        }
+
+        // C for crafting
+        if (e.key === 'c' || e.key === 'C') {
+            this.showCraftingDialog();
+        }
     },
 
     handleKeyUp(e) {
@@ -653,13 +1244,240 @@ const Game = {
         // Create player
         this.player = new Player(10 * TILE_SIZE, 10 * TILE_SIZE);
 
-        // Start with one pig
-        this.animals = [];
+        // Initialize inventory with starter tools
+        this.inventory = [
+            { item: ITEMS.HOE, count: 1 },
+            { item: ITEMS.WATERING_CAN, count: 1 },
+            { item: ITEMS.PICKAXE, count: 1 },
+            { item: ITEMS.AXE, count: 1 },
+            { item: ITEMS.FISHING_ROD, count: 1 },
+            { item: ITEMS.TURNIP_SEEDS, count: 10 },
+            null, null
+        ];
 
+        // Fishing state
+        this.fishing = {
+            active: false,
+            phase: 'idle', // 'idle', 'casting', 'waiting', 'bite', 'reeling'
+            timer: 0,
+            biteWindow: 0,
+            targetFish: null
+        };
+
+        // Reset game state
+        this.animals = [];
+        this.crops = [];
+        this.energy = 100;
+        this.money = 500;
+        this.day = 1;
+        this.season = 'Spring';
+        this.year = 1;
+        this.timeOfDay = 0.25; // Start at morning
+
+        // Create NPCs
+        this.npcs = [
+            new NPC(11 * TILE_SIZE, 16 * TILE_SIZE, 'shopkeeper'), // At market stall
+            new NPC(9 * TILE_SIZE, 8 * TILE_SIZE, 'mayor'),        // Near house
+            new NPC(14 * TILE_SIZE, 12 * TILE_SIZE, 'wanderer'),   // Wandering
+        ];
+
+        this.updateInventoryUI();
         this.running = true;
         this.gameLoop();
 
-        this.showToast('Welcome to your farm! Walk to the market stall to buy animals.');
+        // Show first tutorial step after a brief delay
+        setTimeout(() => this.showTutorialStep(), 500);
+    },
+
+    showTutorialStep() {
+        if (!this.tutorial.active) return;
+
+        const step = this.TUTORIAL_STEPS[this.tutorial.step];
+        if (!step) {
+            this.tutorial.active = false;
+            return;
+        }
+
+        let html = `<strong>Tutorial: ${step.title}</strong><br><br>`;
+        html += step.text;
+
+        let options = '';
+        if (step.id === 'complete') {
+            options = `<button onclick="Game.finishTutorial()">Start Farming!</button>`;
+        } else {
+            options = `<button onclick="Game.closeTutorialStep()">Got it!</button>`;
+            options += `<button onclick="Game.skipTutorial()">Skip Tutorial</button>`;
+        }
+
+        this.showDialog(html, options);
+    },
+
+    closeTutorialStep() {
+        this.closeDialog();
+        this.tutorial.shown = true;
+    },
+
+    skipTutorial() {
+        this.tutorial.active = false;
+        this.closeDialog();
+        this.showToast('Tutorial skipped. Press H anytime for help!');
+    },
+
+    finishTutorial() {
+        this.tutorial.active = false;
+        this.closeDialog();
+        this.showToast('Tutorial complete! Enjoy your farm!');
+    },
+
+    updateTutorial() {
+        if (!this.tutorial.active || !this.tutorial.shown) return;
+
+        const step = this.TUTORIAL_STEPS[this.tutorial.step];
+        if (!step || !step.check) return;
+
+        if (step.check(this)) {
+            this.tutorial.step++;
+            this.tutorial.shown = false;
+            // Small delay before showing next step
+            setTimeout(() => this.showTutorialStep(), 300);
+        }
+    },
+
+    completeTutorialAction(action) {
+        if (!this.tutorial.completed.includes(action)) {
+            this.tutorial.completed.push(action);
+        }
+    },
+
+    showHelpDialog() {
+        let html = '<strong>Game Controls</strong><br><br>';
+        html += '<b>Movement:</b> WASD or Arrow Keys<br>';
+        html += '<b>Interact/Use Tool:</b> E or Spacebar<br>';
+        html += '<b>Select Item:</b> 1-8 keys<br>';
+        html += '<b>Item Info:</b> Q key<br>';
+        html += '<b>Help:</b> H key<br>';
+        html += '<b>Crafting:</b> C key<br>';
+        html += '<b>Achievements:</b> Tab key<br>';
+        html += '<b>Close Menu:</b> Escape<br><br>';
+
+        html += '<b>Tools:</b><br>';
+        html += '- Hoe: Till grass into farmland<br>';
+        html += '- Watering Can: Water crops (they grow when watered)<br>';
+        html += '- Pickaxe: Break rocks for stone<br>';
+        html += '- Axe: Chop stumps for wood<br>';
+        html += '- Fishing Rod: Fish in the pond<br><br>';
+
+        html += '<b>Tips:</b><br>';
+        html += '- Plant seeds on tilled soil<br>';
+        html += '- Water crops daily for them to grow<br>';
+        html += '- Use the 📦 Shipping Bin to sell overnight<br>';
+        html += '- Forage 🫐 berries from bushes around the map<br>';
+        html += '- Craft sprinklers (C key) to auto-water crops<br>';
+        html += '- Sleep at farmhouse to restore energy<br>';
+        html += '- Day changes every 30 seconds<br>';
+
+        this.showDialog(html, `<button onclick="Game.closeDialog()">Got it!</button>`);
+    },
+
+    showAchievementsDialog() {
+        const unlocked = this.achievements.length;
+        const total = this.ACHIEVEMENT_DEFS.length;
+
+        let html = `<strong>Achievements (${unlocked}/${total})</strong><br><br>`;
+
+        this.ACHIEVEMENT_DEFS.forEach(ach => {
+            const isUnlocked = this.achievements.includes(ach.id);
+            if (isUnlocked) {
+                html += `<span style="color:#4ade80">${ach.emoji} <b>${ach.name}</b> - ${ach.desc}</span><br>`;
+            } else {
+                html += `<span style="color:#666">🔒 <b>???</b> - ${ach.desc}</span><br>`;
+            }
+        });
+
+        this.showDialog(html, `<button onclick="Game.closeDialog()">Close</button>`);
+    },
+
+    showCraftingDialog() {
+        let html = '<strong>🔨 Crafting</strong><br><br>';
+
+        // Count resources in inventory
+        const resources = {};
+        this.inventory.forEach(slot => {
+            if (slot && slot.item.type === 'resource') {
+                resources[slot.item.id] = (resources[slot.item.id] || 0) + slot.count;
+            }
+        });
+
+        html += `<b>Your resources:</b> `;
+        html += `🪨 ${resources.stone || 0} Stone, 🪵 ${resources.wood || 0} Wood<br><br>`;
+        html += `<b>Recipes:</b><br>`;
+
+        let options = '';
+        Object.entries(RECIPES).forEach(([key, recipe]) => {
+            const canCraft = Object.entries(recipe.ingredients).every(([item, needed]) => {
+                return (resources[item] || 0) >= needed;
+            });
+
+            const ingredientStr = Object.entries(recipe.ingredients)
+                .map(([item, needed]) => `${needed} ${item}`)
+                .join(', ');
+
+            if (canCraft) {
+                html += `<span style="color:#4ade80">${recipe.result.emoji} ${recipe.result.name}: ${ingredientStr}</span><br>`;
+                options += `<button onclick="Game.craft('${key}')">${recipe.result.emoji} Craft ${recipe.result.name}</button>`;
+            } else {
+                html += `<span style="color:#666">${recipe.result.emoji} ${recipe.result.name}: ${ingredientStr}</span><br>`;
+            }
+        });
+
+        options += `<button onclick="Game.closeDialog()">Close</button>`;
+        this.showDialog(html, options);
+    },
+
+    craft(recipeKey) {
+        const recipe = RECIPES[recipeKey];
+        if (!recipe) return;
+
+        // Check if we have ingredients
+        const resources = {};
+        this.inventory.forEach(slot => {
+            if (slot && slot.item.type === 'resource') {
+                resources[slot.item.id] = (resources[slot.item.id] || 0) + slot.count;
+            }
+        });
+
+        const canCraft = Object.entries(recipe.ingredients).every(([item, needed]) => {
+            return (resources[item] || 0) >= needed;
+        });
+
+        if (!canCraft) {
+            this.showToast('Not enough materials!');
+            Audio.play('error');
+            return;
+        }
+
+        // Remove ingredients
+        Object.entries(recipe.ingredients).forEach(([itemId, needed]) => {
+            let remaining = needed;
+            for (let i = 0; i < this.inventory.length && remaining > 0; i++) {
+                const slot = this.inventory[i];
+                if (slot && slot.item.id === itemId) {
+                    const take = Math.min(slot.count, remaining);
+                    slot.count -= take;
+                    remaining -= take;
+                    if (slot.count <= 0) {
+                        this.inventory[i] = null;
+                    }
+                }
+            }
+        });
+
+        // Add result
+        this.addToInventory(recipe.result, 1);
+        this.updateInventoryUI();
+        Audio.play('harvest');
+        this.showToast(`Crafted ${recipe.result.emoji} ${recipe.result.name}!`);
+        this.showCraftingDialog(); // Refresh
     },
 
     gameLoop() {
@@ -688,8 +1506,15 @@ const Game = {
         // Update animals
         this.animals.forEach(a => a.update(this.world));
 
-        // Day/night cycle
+        // Update NPCs
+        this.npcs.forEach(npc => npc.update(this.world, this.day));
+
+        // Update fishing
+        this.updateFishing();
+
+        // Day/night cycle and time of day
         this.dayTimer++;
+        this.timeOfDay = this.dayTimer / this.DAY_LENGTH;
         if (this.dayTimer >= this.DAY_LENGTH) {
             this.advanceDay();
         }
@@ -700,13 +1525,124 @@ const Game = {
         }
         this.lastInteract = this.keys.interact;
 
-        // Update HUD
+        // Update HUD and energy bar
         this.updateHUD();
+        document.getElementById('energy-fill-inner').style.width = `${this.energy}%`;
+
+        // Update tutorial
+        this.updateTutorial();
+
+        // Update weather
+        this.updateWeather();
+
+        // Check achievements
+        this.checkAchievements();
+    },
+
+    checkAchievements() {
+        // Rich achievements
+        if (this.money >= 1000) this.unlockAchievement('rich');
+        if (this.money >= 5000) this.unlockAchievement('very_rich');
+
+        // Farm size
+        if (this.crops.length >= 10) this.unlockAchievement('full_farm');
+
+        // Days survived
+        const totalDays = (this.year - 1) * 120 + (this.getSeasonIndex() * 30) + this.day;
+        if (totalDays >= 30) this.unlockAchievement('survivor');
+        if (this.year >= 2) this.unlockAchievement('year_one');
+
+        // Social
+        if (this.npcsTalkedTo.length >= 3) this.unlockAchievement('social');
+
+        // Storm
+        if (this.weather.type === 'stormy') this.unlockAchievement('storm_survivor');
+    },
+
+    getSeasonIndex() {
+        return ['Spring', 'Summer', 'Fall', 'Winter'].indexOf(this.season);
+    },
+
+    unlockAchievement(id) {
+        if (this.achievements.includes(id)) return;
+
+        const achievement = this.ACHIEVEMENT_DEFS.find(a => a.id === id);
+        if (!achievement) return;
+
+        this.achievements.push(id);
+        Audio.play('catch'); // Achievement sound
+
+        // Show achievement popup
+        this.showToast(`Achievement Unlocked: ${achievement.emoji} ${achievement.name}`);
+
+        // Save achievements
+        localStorage.setItem('texasfarms_achievements', JSON.stringify(this.achievements));
+    },
+
+    updateWeather() {
+        // Random weather changes
+        this.weather.nextChange--;
+        if (this.weather.nextChange <= 0) {
+            const roll = Math.random();
+            const seasonMod = this.season === 'Spring' ? 0.1 : this.season === 'Summer' ? -0.1 : this.season === 'Fall' ? 0.05 : 0.15;
+
+            if (roll < 0.5 + seasonMod) {
+                this.weather.type = 'sunny';
+            } else if (roll < 0.7 + seasonMod) {
+                this.weather.type = 'cloudy';
+            } else if (roll < 0.9 + seasonMod) {
+                this.weather.type = 'rainy';
+            } else {
+                this.weather.type = 'stormy';
+            }
+
+            // Weather lasts 3-10 minutes of real time
+            this.weather.nextChange = 180 * 60 + Math.random() * 420 * 60;
+
+            // Announce weather changes
+            if (this.weather.type === 'rainy') {
+                this.showToast('Rain is starting to fall...');
+            } else if (this.weather.type === 'stormy') {
+                this.showToast('A storm is rolling in!');
+            }
+        }
+
+        // Update rain particles
+        if (this.weather.type === 'rainy' || this.weather.type === 'stormy') {
+            // Add new particles
+            const intensity = this.weather.type === 'stormy' ? 8 : 4;
+            for (let i = 0; i < intensity; i++) {
+                this.weather.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: -10,
+                    speed: 8 + Math.random() * 4,
+                    length: this.weather.type === 'stormy' ? 20 : 12
+                });
+            }
+
+            // Update existing particles
+            this.weather.particles = this.weather.particles.filter(p => {
+                p.y += p.speed;
+                p.x -= p.speed * 0.3; // Wind effect
+                return p.y < this.canvas.height + 20;
+            });
+
+            // Limit particle count
+            if (this.weather.particles.length > 500) {
+                this.weather.particles = this.weather.particles.slice(-500);
+            }
+        } else {
+            this.weather.particles = [];
+        }
     },
 
     advanceDay() {
         this.dayTimer = 0;
         this.day++;
+        this.timeOfDay = 0.25; // Reset to morning
+
+        // Restore energy when new day starts
+        this.energy = this.maxEnergy;
 
         // Season change every 30 days
         if (this.day > 30) {
@@ -727,12 +1663,78 @@ const Game = {
             this.showToast(`${dead.map(a => a.name).join(', ')} died from neglect!`);
         }
         this.animals = this.animals.filter(a => a.health > 0);
+
+        // Auto-water crops if it rained
+        const wasRainy = this.weather.type === 'rainy' || this.weather.type === 'stormy';
+        if (wasRainy) {
+            this.crops.forEach(crop => {
+                crop.watered = true;
+                this.world[crop.y][crop.x] = TILES.WATERED;
+            });
+            this.showToast('The rain watered all your crops!');
+        }
+
+        // Sprinkler auto-watering
+        this.sprinklers.forEach(sprinkler => {
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const crop = this.crops.find(c => c.x === sprinkler.x + dx && c.y === sprinkler.y + dy);
+                    if (crop) {
+                        crop.watered = true;
+                        this.world[crop.y][crop.x] = TILES.WATERED;
+                    }
+                }
+            }
+        });
+
+        // Grow crops
+        this.crops.forEach(crop => {
+            if (crop.watered) {
+                crop.age++;
+                crop.watered = false; // Reset watered status each day
+                // Reset tile to tilled (from watered)
+                this.world[crop.y][crop.x] = TILES.TILLED;
+            }
+        });
+
+        // Process shipping bin - sell items overnight
+        if (this.shippingBin.length > 0) {
+            const total = this.shippingBin.reduce((sum, item) => sum + (item.item.sellPrice || 0) * item.count, 0);
+            this.money += total;
+            const itemCount = this.shippingBin.reduce((sum, item) => sum + item.count, 0);
+            this.showToast(`📦 Shipping: +$${total} for ${itemCount} items!`);
+            Audio.play('sell');
+            this.shippingBin = [];
+            this.unlockAchievement('first_sale');
+        }
+
+        // Respawn cleared resources
+        const toRespawn = this.clearedResources.filter(r => r.respawnDay <= this.day);
+        toRespawn.forEach(r => {
+            // Only respawn if tile is still grass
+            if (this.world[r.y][r.x] === TILES.GRASS) {
+                this.world[r.y][r.x] = r.type;
+            }
+        });
+        this.clearedResources = this.clearedResources.filter(r => r.respawnDay > this.day);
     },
 
     tryInteract() {
         const point = this.player.getInteractionPoint();
         const tileX = Math.floor(point.x / TILE_SIZE);
         const tileY = Math.floor(point.y / TILE_SIZE);
+
+        // Check for NPCs nearby
+        const nearbyNPC = this.npcs.find(npc => {
+            const nx = Math.floor(npc.x / TILE_SIZE);
+            const ny = Math.floor(npc.y / TILE_SIZE);
+            return Math.abs(nx - tileX) <= 1 && Math.abs(ny - tileY) <= 1;
+        });
+
+        if (nearbyNPC) {
+            this.showNPCDialog(nearbyNPC);
+            return;
+        }
 
         // Check for animals nearby
         const nearbyAnimal = this.animals.find(a => {
@@ -750,42 +1752,651 @@ const Game = {
         if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
             const tile = this.world[tileY][tileX];
 
+            // Check for interactions with buildings first
             if (tile === TILES.MARKET_STALL) {
                 this.showMarketDialog();
+                return;
             } else if (tile === TILES.TROUGH) {
                 this.feedAnimals();
+                return;
             } else if (tile === TILES.DOOR && tileX >= 20) {
                 this.showBarnDialog();
+                return;
             } else if (tile === TILES.DOOR && tileX < 15) {
                 this.showHouseDialog();
+                return;
+            } else if (tile === TILES.SHIPPING_BIN) {
+                this.showShippingBinDialog();
+                return;
+            } else if (tile === TILES.BERRY_BUSH) {
+                this.forageBerryBush(tileX, tileY);
+                return;
+            }
+
+            // Check for crop harvest
+            const crop = this.crops.find(c => c.x === tileX && c.y === tileY);
+            if (crop) {
+                const seedItem = Object.values(ITEMS).find(i => i.crop === crop.type);
+                if (crop.age >= seedItem.growDays) {
+                    this.harvestCrop(crop);
+                    return;
+                }
+            }
+
+            // Use currently selected tool/item
+            const selectedItem = this.inventory[this.selectedSlot];
+            if (!selectedItem) {
+                // No item selected - just show what's there
+                if (crop) {
+                    const seedItem = Object.values(ITEMS).find(i => i.crop === crop.type);
+                    const daysLeft = seedItem.growDays - crop.age;
+                    this.showToast(`${crop.type}: ${daysLeft > 0 ? daysLeft + ' days until harvest' : 'Ready!'}`);
+                }
+                return;
+            }
+
+            // Use the selected item/tool
+            this.useItem(selectedItem.item, tileX, tileY, tile, crop);
+        }
+    },
+
+    useItem(item, tileX, tileY, tile, crop) {
+        // Check energy
+        if (this.energy < 5) {
+            this.showToast("Too tired! Sleep to restore energy.");
+            Audio.play('error');
+            return;
+        }
+
+        switch(item.type) {
+            case 'tool':
+                this.useTool(item, tileX, tileY, tile, crop);
+                break;
+            case 'seed':
+                this.plantSeed(item, tileX, tileY, tile);
+                break;
+            case 'placeable':
+                this.placeItem(item, tileX, tileY, tile);
+                break;
+        }
+    },
+
+    placeItem(item, tileX, tileY, tile) {
+        // Can only place on grass or tilled soil
+        if (tile !== TILES.GRASS && tile !== TILES.TILLED && tile !== TILES.FLOWERS) {
+            this.showToast("Can't place that here!");
+            Audio.play('error');
+            return;
+        }
+
+        if (item.id === 'sprinkler') {
+            this.world[tileY][tileX] = TILES.SPRINKLER;
+            this.sprinklers.push({ x: tileX, y: tileY });
+            this.removeFromInventory(item);
+            this.energy -= 3;
+            Audio.play('plant');
+            this.showToast('Placed sprinkler! It will water nearby crops each day.');
+        } else if (item.id === 'scarecrow') {
+            // Scarecrow just prevents crows (visual mostly for now)
+            this.showToast('Scarecrow placed! Crows will stay away.');
+            this.removeFromInventory(item);
+            this.energy -= 3;
+            Audio.play('plant');
+        }
+    },
+
+    useTool(tool, tileX, tileY, tile, crop) {
+        switch(tool.id) {
+            case 'hoe':
+                // Till grass into farmland
+                if (tile === TILES.GRASS || tile === TILES.FLOWERS) {
+                    this.world[tileY][tileX] = TILES.TILLED;
+                    this.energy -= 5;
+                    Audio.play('hoe');
+                    this.showToast('Tilled the soil!');
+                    this.completeTutorialAction('tilled');
+                } else if (tile === TILES.TILLED || tile === TILES.WATERED) {
+                    this.showToast('Already tilled!');
+                } else {
+                    this.showToast("Can't till that!");
+                    Audio.play('error');
+                }
+                break;
+
+            case 'watering_can':
+                // Water tilled soil or crops
+                if (tile === TILES.TILLED) {
+                    this.world[tileY][tileX] = TILES.WATERED;
+                    this.energy -= 3;
+                    Audio.play('water');
+                    // Mark crop as watered if there's one there
+                    if (crop) {
+                        crop.watered = true;
+                        this.showToast('Watered the crop!');
+                    } else {
+                        this.showToast('Watered the soil!');
+                    }
+                } else if (tile === TILES.WATERED) {
+                    this.showToast('Already watered!');
+                } else {
+                    this.showToast("Can't water that!");
+                    Audio.play('error');
+                }
+                break;
+
+            case 'pickaxe':
+                // Break rocks
+                if (tile === TILES.STONE) {
+                    this.world[tileY][tileX] = TILES.GRASS;
+                    this.clearedResources.push({ x: tileX, y: tileY, type: TILES.STONE, respawnDay: this.day + 7 });
+                    this.energy -= 8;
+                    this.addToInventory(ITEMS.STONE, 1 + Math.floor(Math.random() * 2));
+                    Audio.play('pickup');
+                    this.showToast('Got stone!');
+                } else {
+                    this.showToast("Can't mine that!");
+                    Audio.play('error');
+                }
+                break;
+
+            case 'axe':
+                // Chop wood
+                if (tile === TILES.WOOD) {
+                    this.world[tileY][tileX] = TILES.GRASS;
+                    this.clearedResources.push({ x: tileX, y: tileY, type: TILES.WOOD, respawnDay: this.day + 7 });
+                    this.energy -= 8;
+                    this.addToInventory(ITEMS.WOOD, 2 + Math.floor(Math.random() * 2));
+                    Audio.play('pickup');
+                    this.showToast('Got wood!');
+                } else {
+                    this.showToast("Can't chop that!");
+                    Audio.play('error');
+                }
+                break;
+
+            case 'fishing_rod':
+                // Fish in water
+                if (tile === TILES.WATER) {
+                    this.startFishing(tileX, tileY);
+                } else {
+                    this.showToast("Need to face water to fish!");
+                    Audio.play('error');
+                }
+                break;
+        }
+    },
+
+    startFishing(waterX, waterY) {
+        if (this.fishing.active) {
+            // Already fishing - check if it's a bite
+            if (this.fishing.phase === 'bite') {
+                this.catchFish();
+            }
+            return;
+        }
+
+        this.fishing.active = true;
+        this.fishing.phase = 'casting';
+        this.fishing.timer = 30; // Cast animation frames
+        this.fishing.waterX = waterX;
+        this.fishing.waterY = waterY;
+        this.energy -= 3;
+        Audio.play('cast');
+        this.showToast('Casting...');
+    },
+
+    updateFishing() {
+        if (!this.fishing.active) return;
+
+        this.fishing.timer--;
+
+        switch (this.fishing.phase) {
+            case 'casting':
+                if (this.fishing.timer <= 0) {
+                    this.fishing.phase = 'waiting';
+                    this.fishing.timer = 120 + Math.random() * 240; // 2-6 seconds wait
+                    Audio.play('splash');
+                    this.showToast('Waiting for a bite...');
+                }
+                break;
+
+            case 'waiting':
+                if (this.fishing.timer <= 0) {
+                    // Fish bites!
+                    this.fishing.phase = 'bite';
+                    this.fishing.biteWindow = 60; // 1 second to react
+                    this.selectRandomFish();
+                    Audio.play('bite');
+                    this.showToast('! ! ! FISH ON ! ! !');
+                }
+                break;
+
+            case 'bite':
+                this.fishing.biteWindow--;
+                if (this.fishing.biteWindow <= 0) {
+                    // Missed the fish
+                    this.fishing.active = false;
+                    this.fishing.phase = 'idle';
+                    this.showToast('The fish got away...');
+                }
+                break;
+        }
+    },
+
+    selectRandomFish() {
+        const fishItems = Object.values(ITEMS).filter(i => i.type === 'fish' || i.type === 'junk');
+        const roll = Math.random();
+        let cumulative = 0;
+
+        for (const fish of fishItems) {
+            cumulative += fish.rarity;
+            if (roll < cumulative) {
+                this.fishing.targetFish = fish;
+                return;
+            }
+        }
+        // Default to bass
+        this.fishing.targetFish = ITEMS.BASS;
+    },
+
+    catchFish() {
+        const fish = this.fishing.targetFish;
+        this.fishing.active = false;
+        this.fishing.phase = 'idle';
+
+        if (fish) {
+            this.addToInventory(fish, 1);
+            Audio.play('catch');
+            this.completeTutorialAction('caught_fish');
+            this.unlockAchievement('first_fish');
+            if (fish.type === 'junk') {
+                this.showToast(`Caught: ${fish.emoji} ${fish.name}... Better luck next time!`);
+            } else if (fish.id === 'golden_fish') {
+                this.showToast(`WOW! ${fish.emoji} A GOLDEN FISH! Worth $${fish.sellPrice}!`);
+                this.unlockAchievement('golden_catch');
+            } else {
+                this.showToast(`Caught: ${fish.emoji} ${fish.name}! Worth $${fish.sellPrice}`);
             }
         }
     },
 
-    showMarketDialog() {
-        const pigPrice = 200;
-        const rabbitPrice = 50;
+    plantSeed(seedItem, tileX, tileY, tile) {
+        // Check if there's already a crop here
+        const existingCrop = this.crops.find(c => c.x === tileX && c.y === tileY);
+        if (existingCrop) {
+            this.showToast('Already planted here!');
+            Audio.play('error');
+            return;
+        }
 
+        // Can only plant on tilled or watered soil
+        if (tile !== TILES.TILLED && tile !== TILES.WATERED) {
+            this.showToast('Till the soil first with a hoe!');
+            Audio.play('error');
+            return;
+        }
+
+        // Plant the seed
+        this.crops.push({
+            x: tileX,
+            y: tileY,
+            type: seedItem.crop,
+            age: 0,
+            watered: tile === TILES.WATERED
+        });
+
+        // Remove seed from inventory
+        const slot = this.inventory[this.selectedSlot];
+        slot.count--;
+        if (slot.count <= 0) {
+            this.inventory[this.selectedSlot] = null;
+        }
+        this.updateInventoryUI();
+
+        this.energy -= 2;
+        Audio.play('plant');
+        this.showToast(`Planted ${seedItem.crop} seeds!`);
+    },
+
+    harvestCrop(crop) {
+        // Find the crop item
+        const cropItem = Object.values(ITEMS).find(i => i.id === crop.type);
+        if (!cropItem) return;
+
+        // Add to inventory
+        this.addToInventory(cropItem, 1 + Math.floor(Math.random() * 2));
+
+        // Remove crop from list
+        this.crops = this.crops.filter(c => c !== crop);
+
+        // Reset tile to tilled
+        this.world[crop.y][crop.x] = TILES.TILLED;
+
+        this.energy -= 2;
+        Audio.play('harvest');
+        this.showToast(`Harvested ${cropItem.name}!`);
+        this.unlockAchievement('first_crop');
+    },
+
+    addToInventory(item, count = 1) {
+        // Try to stack with existing
+        for (let slot of this.inventory) {
+            if (slot && slot.item.id === item.id) {
+                slot.count += count;
+                this.updateInventoryUI();
+                return;
+            }
+        }
+        // Find empty slot
+        for (let i = 0; i < this.inventory.length; i++) {
+            if (!this.inventory[i]) {
+                this.inventory[i] = { item, count };
+                this.updateInventoryUI();
+                return;
+            }
+        }
+        this.showToast('Inventory full!');
+    },
+
+    selectSlot(index) {
+        this.selectedSlot = index;
+        const slots = document.querySelectorAll('.inv-slot');
+        slots.forEach((s, i) => s.classList.toggle('selected', i === index));
+    },
+
+    updateInventoryUI() {
+        const slots = document.querySelectorAll('.inv-slot');
+        slots.forEach((slot, i) => {
+            const inv = this.inventory[i];
+            const keySpan = slot.querySelector('.key');
+            const keyNum = keySpan ? keySpan.outerHTML : '';
+            if (inv) {
+                const countHtml = inv.count > 1 ? `<span class="count">${inv.count}</span>` : '';
+                slot.innerHTML = keyNum + inv.item.emoji + countHtml;
+            } else {
+                slot.innerHTML = keyNum;
+            }
+        });
+    },
+
+    showItemInfo() {
+        const selectedItem = this.inventory[this.selectedSlot];
+        if (!selectedItem) {
+            this.showToast('No item selected');
+            return;
+        }
+        const item = selectedItem.item;
+        let info = `${item.emoji} ${item.name}`;
+        if (item.desc) info += ` - ${item.desc}`;
+        if (item.sellPrice) info += ` (Sells: $${item.sellPrice})`;
+        this.showToast(info);
+    },
+
+    showNPCDialog(npc) {
+        const dialog = npc.getDialog(this.day);
+        this.completeTutorialAction('talked_npc');
+
+        // Track NPCs talked to for achievement
+        if (!this.npcsTalkedTo.includes(npc.type)) {
+            this.npcsTalkedTo.push(npc.type);
+        }
+
+        let html = `<strong>${npc.sprite} ${npc.name}</strong><br><br>`;
+        html += `"${dialog}"`;
+
+        let options = '';
+
+        // If shopkeeper, offer to shop
+        if (npc.type === 'shopkeeper') {
+            options += `<button onclick="Game.closeDialog(); Game.showMarketDialog();">Shop</button>`;
+        }
+
+        // If we have something to gift
+        const giftableItem = this.inventory.find(slot => {
+            if (!slot) return false;
+            return Object.keys(npc.data.gifts).includes(slot.item.id);
+        });
+
+        if (giftableItem) {
+            options += `<button onclick="Game.giftToNPC('${npc.type}', '${giftableItem.item.id}')">
+                Give ${giftableItem.item.emoji} ${giftableItem.item.name}
+            </button>`;
+        }
+
+        options += `<button onclick="Game.closeDialog()">Goodbye</button>`;
+        this.showDialog(html, options);
+    },
+
+    giftToNPC(npcType, itemId) {
+        const npc = this.npcs.find(n => n.type === npcType);
+        if (!npc) return;
+
+        // Find and remove item from inventory
+        const slotIdx = this.inventory.findIndex(s => s && s.item.id === itemId);
+        if (slotIdx === -1) return;
+
+        const slot = this.inventory[slotIdx];
+        slot.count--;
+        if (slot.count <= 0) {
+            this.inventory[slotIdx] = null;
+        }
+        this.updateInventoryUI();
+
+        // Show gift response
+        const response = npc.data.gifts[itemId] || "Thank you!";
+        let html = `<strong>${npc.sprite} ${npc.name}</strong><br><br>`;
+        html += `"${response}"`;
+
+        Audio.play('sell');
+        this.showDialog(html, `<button onclick="Game.closeDialog()">You're welcome!</button>`);
+    },
+
+    showShippingBinDialog() {
+        let html = '<strong>📦 Shipping Bin</strong><br><br>';
+        html += 'Items placed here sell automatically at end of day!<br><br>';
+
+        if (this.shippingBin.length > 0) {
+            const total = this.shippingBin.reduce((sum, item) => sum + (item.item.sellPrice || 0) * item.count, 0);
+            html += `<b>Today's shipment:</b><br>`;
+            this.shippingBin.forEach(s => {
+                html += `${s.item.emoji} ${s.item.name} x${s.count} ($${s.item.sellPrice * s.count})<br>`;
+            });
+            html += `<br><b>Total value: $${total}</b>`;
+        } else {
+            html += '<em>Bin is empty</em>';
+        }
+
+        let options = '';
+
+        // Find sellable items in inventory
+        const sellables = this.inventory.filter(s => s && s.item.sellPrice);
+        if (sellables.length > 0) {
+            options += `<button onclick="Game.showAddToShipmentDialog()">Add Items</button>`;
+        }
+
+        options += `<button onclick="Game.closeDialog()">Close</button>`;
+        this.showDialog(html, options);
+    },
+
+    showAddToShipmentDialog() {
+        let html = '<strong>Add to Shipment</strong><br><br>';
+        let options = '';
+
+        const sellables = this.inventory.filter(s => s && s.item.sellPrice);
+        sellables.forEach(slot => {
+            const idx = this.inventory.indexOf(slot);
+            options += `<button onclick="Game.addToShipment(${idx})">
+                ${slot.item.emoji} ${slot.item.name} x${slot.count} ($${slot.item.sellPrice * slot.count})
+            </button>`;
+        });
+
+        options += `<button onclick="Game.showShippingBinDialog()">Back</button>`;
+        this.showDialog(html, options);
+    },
+
+    addToShipment(inventoryIndex) {
+        const slot = this.inventory[inventoryIndex];
+        if (!slot || !slot.item.sellPrice) return;
+
+        // Add to shipping bin
+        const existing = this.shippingBin.find(s => s.item.id === slot.item.id);
+        if (existing) {
+            existing.count += slot.count;
+        } else {
+            this.shippingBin.push({ item: slot.item, count: slot.count });
+        }
+
+        // Remove from inventory
+        this.inventory[inventoryIndex] = null;
+        this.updateInventoryUI();
+
+        Audio.play('pickup');
+        this.showToast(`Added ${slot.item.name} to shipment!`);
+        this.showShippingBinDialog();
+    },
+
+    forageBerryBush(tileX, tileY) {
+        const key = `${tileX},${tileY}`;
+        const cooldown = this.forageCooldowns[key];
+
+        if (cooldown && cooldown > this.day) {
+            this.showToast('This bush needs time to regrow...');
+            return;
+        }
+
+        // Random forage item
+        const roll = Math.random();
+        let item;
+        if (roll < 0.6) {
+            item = ITEMS.WILD_BERRIES;
+        } else if (roll < 0.9) {
+            item = ITEMS.MUSHROOM;
+        } else {
+            item = ITEMS.WILD_HONEY;
+        }
+
+        this.addToInventory(item, 1 + Math.floor(Math.random() * 2));
+        Audio.play('harvest');
+        this.showToast(`Found ${item.emoji} ${item.name}!`);
+
+        // Set cooldown for 3 days
+        this.forageCooldowns[key] = this.day + 3;
+    },
+
+    showMarketDialog() {
+        this.completeTutorialAction('visited_market');
         let html = '<strong>Market Stall</strong><br><br>';
         html += 'What would you like to do?';
 
         let options = '';
-        if (this.money >= pigPrice) {
-            options += `<button onclick="Game.buyAnimal('pig')">Buy Pig ($${pigPrice})</button>`;
-        }
-        if (this.money >= rabbitPrice) {
-            options += `<button onclick="Game.buyAnimal('rabbit')">Buy Rabbit ($${rabbitPrice})</button>`;
-        }
+        options += `<button onclick="Game.showBuyAnimalsDialog()">Buy Animals</button>`;
+        options += `<button onclick="Game.showBuySeedsDialog()">Buy Seeds</button>`;
 
-        // Sell options
+        // Sell options - check if we have sellable items
+        const sellableItems = this.inventory.filter(s => s && s.item.sellPrice);
         const matureAnimals = this.animals.filter(a => a.age >= a.maturityAge);
+
+        if (sellableItems.length > 0) {
+            options += `<button onclick="Game.showSellCropsDialog()">Sell Crops/Items</button>`;
+        }
         if (matureAnimals.length > 0) {
-            options += `<button onclick="Game.showSellDialog()">Sell Animals (${matureAnimals.length} ready)</button>`;
+            options += `<button onclick="Game.showSellDialog()">Sell Animals (${matureAnimals.length})</button>`;
         }
 
         options += `<button onclick="Game.closeDialog()">Leave</button>`;
 
         this.showDialog(html, options);
+    },
+
+    showBuyAnimalsDialog() {
+        const pigPrice = 200;
+        const rabbitPrice = 50;
+
+        let html = '<strong>Buy Animals</strong><br><br>';
+        let options = '';
+
+        if (this.money >= pigPrice) {
+            options += `<button onclick="Game.buyAnimal('pig')">Pig - $${pigPrice}</button>`;
+        } else {
+            html += `<span style="color:#888">Pig - $${pigPrice} (need $${pigPrice - this.money} more)</span><br>`;
+        }
+        if (this.money >= rabbitPrice) {
+            options += `<button onclick="Game.buyAnimal('rabbit')">Rabbit - $${rabbitPrice}</button>`;
+        } else {
+            html += `<span style="color:#888">Rabbit - $${rabbitPrice} (need $${rabbitPrice - this.money} more)</span><br>`;
+        }
+
+        options += `<button onclick="Game.showMarketDialog()">Back</button>`;
+        this.showDialog(html, options);
+    },
+
+    showBuySeedsDialog() {
+        let html = '<strong>Buy Seeds</strong><br><br>';
+        let options = '';
+
+        const seeds = [ITEMS.TURNIP_SEEDS, ITEMS.CARROT_SEEDS, ITEMS.TOMATO_SEEDS, ITEMS.CORN_SEEDS];
+        seeds.forEach(seed => {
+            if (this.money >= seed.price) {
+                options += `<button onclick="Game.buySeed('${seed.id}')">
+                    ${seed.emoji} ${seed.name} - $${seed.price} (${seed.growDays} days)
+                </button>`;
+            } else {
+                html += `<span style="color:#888">${seed.emoji} ${seed.name} - $${seed.price}</span><br>`;
+            }
+        });
+
+        options += `<button onclick="Game.showMarketDialog()">Back</button>`;
+        this.showDialog(html, options);
+    },
+
+    buySeed(seedId) {
+        const seed = Object.values(ITEMS).find(i => i.id === seedId);
+        if (!seed || this.money < seed.price) {
+            this.showToast("Can't afford that!");
+            return;
+        }
+
+        this.money -= seed.price;
+        this.addToInventory(seed, 5);
+        Audio.play('sell');
+        this.showToast(`Bought 5 ${seed.name}!`);
+        this.showBuySeedsDialog(); // Stay in menu
+    },
+
+    showSellCropsDialog() {
+        let html = '<strong>Sell Crops & Items</strong><br><br>';
+        let options = '';
+
+        const sellableItems = this.inventory.filter(s => s && s.item.sellPrice);
+        sellableItems.forEach((slot, idx) => {
+            const total = slot.item.sellPrice * slot.count;
+            const invIdx = this.inventory.indexOf(slot);
+            options += `<button onclick="Game.sellItem(${invIdx})">
+                ${slot.item.emoji} ${slot.item.name} x${slot.count} - $${total}
+            </button>`;
+        });
+
+        if (sellableItems.length === 0) {
+            html += 'No items to sell!<br>';
+        }
+
+        options += `<button onclick="Game.showMarketDialog()">Back</button>`;
+        this.showDialog(html, options);
+    },
+
+    sellItem(inventoryIndex) {
+        const slot = this.inventory[inventoryIndex];
+        if (!slot || !slot.item.sellPrice) return;
+
+        const total = slot.item.sellPrice * slot.count;
+        this.money += total;
+        this.inventory[inventoryIndex] = null;
+        this.updateInventoryUI();
+
+        Audio.play('sell');
+        this.showToast(`Sold ${slot.item.name} for $${total}!`);
+        this.unlockAchievement('first_sale');
+        this.showSellCropsDialog();
     },
 
     showSellDialog() {
@@ -866,6 +2477,7 @@ const Game = {
         this.animals.push(animal);
 
         this.showToast(`Welcome ${animal.name} to the farm!`);
+        this.unlockAchievement('first_animal');
         this.closeDialog();
     },
 
@@ -878,6 +2490,7 @@ const Game = {
         this.animals.splice(idx, 1);
 
         this.showToast(`Sold ${animal.name} for $${animal.value}!`);
+        this.unlockAchievement('first_sale');
         this.closeDialog();
     },
 
@@ -912,6 +2525,7 @@ const Game = {
     sleep() {
         this.dayTimer = this.DAY_LENGTH - 1;
         this.showToast('Slept through the night...');
+        this.completeTutorialAction('slept');
         this.closeDialog();
     },
 
@@ -962,6 +2576,15 @@ const Game = {
         document.getElementById('money-display').textContent = `$${this.money}`;
         document.getElementById('time-display').textContent = `Day ${this.day}, ${this.season} Y${this.year}`;
         document.getElementById('animal-count').textContent = `${this.animals.length} animals`;
+
+        // Weather icon
+        const weatherIcons = {
+            sunny: '☀️',
+            cloudy: '⛅',
+            rainy: '🌧️',
+            stormy: '⛈️'
+        };
+        document.getElementById('weather-display').textContent = weatherIcons[this.weather.type] || '☀️';
     },
 
     render() {
@@ -999,16 +2622,106 @@ const Game = {
                     ctx.fillText('🏪', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
                 } else if (tile === TILES.HAY) {
                     ctx.fillText('🌾', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.STONE) {
+                    ctx.fillText('🪨', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.WOOD) {
+                    ctx.fillText('🪵', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.TILLED) {
+                    // Draw tilled soil pattern
+                    ctx.fillStyle = '#5a3d1a';
+                    for (let i = 0; i < 3; i++) {
+                        ctx.fillRect(screenX + 8 + i * 12, screenY + 10, 8, 28);
+                    }
+                } else if (tile === TILES.WATERED) {
+                    // Draw watered soil (darker with shine)
+                    ctx.fillStyle = '#3a2d15';
+                    for (let i = 0; i < 3; i++) {
+                        ctx.fillRect(screenX + 8 + i * 12, screenY + 10, 8, 28);
+                    }
+                    ctx.fillStyle = 'rgba(100,150,255,0.3)';
+                    ctx.fillRect(screenX + 4, screenY + 4, TILE_SIZE - 8, TILE_SIZE - 8);
+                } else if (tile === TILES.SHIPPING_BIN) {
+                    ctx.fillText('📦', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.BERRY_BUSH) {
+                    // Check if on cooldown
+                    const key = `${x},${y}`;
+                    const onCooldown = this.forageCooldowns[key] && this.forageCooldowns[key] > this.day;
+                    ctx.fillText(onCooldown ? '🌿' : '🫐', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+                } else if (tile === TILES.SPRINKLER) {
+                    ctx.fillText('💧', screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
                 }
             }
         }
 
-        // Draw animals (sorted by Y for depth)
-        const sortedAnimals = [...this.animals].sort((a, b) => a.y - b.y);
-        sortedAnimals.forEach(a => a.draw(ctx, this.camera));
+        // Draw crops
+        this.crops.forEach(crop => {
+            const screenX = crop.x * TILE_SIZE - this.camera.x;
+            const screenY = crop.y * TILE_SIZE - this.camera.y;
+
+            if (screenX < -TILE_SIZE || screenX > this.canvas.width ||
+                screenY < -TILE_SIZE || screenY > this.canvas.height) return;
+
+            // Get crop stage
+            const stages = CROP_STAGES[crop.type];
+            const seedItem = Object.values(ITEMS).find(i => i.crop === crop.type);
+            const progress = Math.min(crop.age / seedItem.growDays, 1);
+            const stageIdx = Math.min(Math.floor(progress * stages.length), stages.length - 1);
+            const sprite = stages[stageIdx];
+
+            ctx.font = `${TILE_SIZE - 12}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(sprite, screenX + TILE_SIZE/2, screenY + TILE_SIZE/2);
+
+            // Draw "ready" sparkle
+            if (crop.age >= seedItem.growDays) {
+                ctx.font = '16px serif';
+                ctx.fillText('✨', screenX + TILE_SIZE - 10, screenY + 10);
+            }
+
+            // Draw water droplet if not watered today
+            if (!crop.watered && crop.age < seedItem.growDays) {
+                ctx.font = '14px serif';
+                ctx.fillText('💧', screenX + 8, screenY + 8);
+            }
+        });
+
+        // Draw animals and NPCs (sorted by Y for depth)
+        const entities = [...this.animals, ...this.npcs].sort((a, b) => a.y - b.y);
+        entities.forEach(e => e.draw(ctx, this.camera));
 
         // Draw player
         this.player.draw(ctx, this.camera);
+
+        // Draw fishing visuals
+        if (this.fishing.active && this.fishing.waterX !== undefined) {
+            const bobberX = this.fishing.waterX * TILE_SIZE - this.camera.x + TILE_SIZE / 2;
+            const bobberY = this.fishing.waterY * TILE_SIZE - this.camera.y + TILE_SIZE / 2;
+            const playerScreenX = this.player.x - this.camera.x + TILE_SIZE / 2;
+            const playerScreenY = this.player.y - this.camera.y + TILE_SIZE / 2;
+
+            // Draw fishing line
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(playerScreenX, playerScreenY - 10);
+            ctx.lineTo(bobberX, bobberY);
+            ctx.stroke();
+
+            // Draw bobber
+            ctx.fillStyle = this.fishing.phase === 'bite' ? '#ff0000' : '#ff6600';
+            ctx.beginPath();
+            ctx.arc(bobberX, bobberY + (this.fishing.phase === 'bite' ? Math.sin(Date.now() / 50) * 5 : 0), 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Exclamation when bite
+            if (this.fishing.phase === 'bite') {
+                ctx.font = 'bold 24px sans-serif';
+                ctx.fillStyle = '#ff0000';
+                ctx.textAlign = 'center';
+                ctx.fillText('!', bobberX, bobberY - 20);
+            }
+        }
 
         // Draw interaction hint
         const point = this.player.getInteractionPoint();
@@ -1017,8 +2730,11 @@ const Game = {
 
         if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
             const tile = this.world[tileY][tileX];
-            if (tile === TILES.MARKET_STALL || tile === TILES.TROUGH || tile === TILES.DOOR) {
-                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            // Highlight interactable tiles
+            const interactable = [TILES.MARKET_STALL, TILES.TROUGH, TILES.DOOR, TILES.GRASS,
+                                  TILES.FLOWERS, TILES.TILLED, TILES.WATERED, TILES.STONE, TILES.WOOD];
+            if (interactable.includes(tile)) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.4)';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(
                     tileX * TILE_SIZE - this.camera.x + 2,
@@ -1029,7 +2745,25 @@ const Game = {
             }
         }
 
-        // Check for nearby animals
+        // Check for nearby NPCs and highlight
+        const nearbyNPC = this.npcs.find(npc => {
+            const nx = Math.floor(npc.x / TILE_SIZE);
+            const ny = Math.floor(npc.y / TILE_SIZE);
+            return Math.abs(nx - tileX) <= 1 && Math.abs(ny - tileY) <= 1;
+        });
+
+        if (nearbyNPC) {
+            ctx.strokeStyle = 'rgba(0,255,255,0.6)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+                Math.floor(nearbyNPC.x / TILE_SIZE) * TILE_SIZE - this.camera.x + 2,
+                Math.floor(nearbyNPC.y / TILE_SIZE) * TILE_SIZE - this.camera.y + 2,
+                TILE_SIZE - 4,
+                TILE_SIZE - 4
+            );
+        }
+
+        // Check for nearby animals and highlight
         const nearbyAnimal = this.animals.find(a => {
             const ax = Math.floor(a.x / TILE_SIZE);
             const ay = Math.floor(a.y / TILE_SIZE);
@@ -1045,6 +2779,77 @@ const Game = {
                 TILE_SIZE - 4,
                 TILE_SIZE - 4
             );
+        }
+
+        // Day/night overlay
+        this.renderDayNight(ctx);
+
+        // Weather overlay
+        this.renderWeather(ctx);
+    },
+
+    renderDayNight(ctx) {
+        // timeOfDay: 0 = midnight, 0.25 = 6am, 0.5 = noon, 0.75 = 6pm, 1 = midnight
+        let darkness = 0;
+        let tint = { r: 0, g: 0, b: 0 };
+
+        if (this.timeOfDay < 0.25) {
+            // Night to dawn (midnight to 6am)
+            darkness = 0.5 - this.timeOfDay * 2;
+            tint = { r: 20, g: 30, b: 60 };
+        } else if (this.timeOfDay < 0.35) {
+            // Dawn (6am to ~8am) - golden hour
+            const t = (this.timeOfDay - 0.25) / 0.1;
+            tint = { r: 255 * (1-t), g: 180 * (1-t), b: 100 * (1-t) };
+            darkness = 0;
+        } else if (this.timeOfDay < 0.7) {
+            // Day (8am to 5pm)
+            darkness = 0;
+        } else if (this.timeOfDay < 0.8) {
+            // Sunset (5pm to ~7pm) - golden hour
+            const t = (this.timeOfDay - 0.7) / 0.1;
+            tint = { r: 255 * t, g: 150 * t, b: 50 * t };
+            darkness = t * 0.1;
+        } else {
+            // Night (7pm to midnight)
+            const t = (this.timeOfDay - 0.8) / 0.2;
+            darkness = 0.1 + t * 0.4;
+            tint = { r: 20, g: 30, b: 60 };
+        }
+
+        if (darkness > 0 || tint.r > 0 || tint.g > 0 || tint.b > 0) {
+            ctx.fillStyle = `rgba(${tint.r}, ${tint.g}, ${tint.b}, ${Math.max(darkness, 0.1)})`;
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    },
+
+    renderWeather(ctx) {
+        // Cloud overlay for cloudy/rainy/stormy
+        if (this.weather.type !== 'sunny') {
+            const alpha = this.weather.type === 'stormy' ? 0.4 : this.weather.type === 'rainy' ? 0.25 : 0.15;
+            ctx.fillStyle = `rgba(100, 100, 120, ${alpha})`;
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        // Draw rain particles
+        if (this.weather.particles.length > 0) {
+            ctx.strokeStyle = this.weather.type === 'stormy' ? 'rgba(200,200,255,0.6)' : 'rgba(150,150,200,0.5)';
+            ctx.lineWidth = this.weather.type === 'stormy' ? 2 : 1;
+            ctx.beginPath();
+
+            this.weather.particles.forEach(p => {
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x - p.length * 0.3, p.y + p.length);
+            });
+
+            ctx.stroke();
+        }
+
+        // Lightning flash for storms
+        if (this.weather.type === 'stormy' && Math.random() < 0.002) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            Audio.play('error'); // Thunder-like sound
         }
     }
 };
