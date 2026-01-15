@@ -277,14 +277,17 @@ canvas {
         <h1>🌾</h1>
         <h2>Texas Farms</h2>
         <p>A Vermont Farming Adventure</p>
-        <button onclick="Game.start()">Start Game</button>
+        <div id="title-buttons">
+            <button onclick="Game.start()">New Game</button>
+            <button id="continue-btn" onclick="Game.continueGame()" style="display:none">Continue</button>
+        </div>
     </div>
 </div>
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v1.1.0
-// Seasonal farming simulation!
+// TEXAS FARMS - THE GAME v1.2.0
+// Save your progress!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -1159,6 +1162,11 @@ const Game = {
 
         // Touch controls for mobile
         this.setupTouchControls();
+
+        // Show continue button if save exists
+        if (this.hasSaveGame()) {
+            document.getElementById('continue-btn').style.display = 'inline-block';
+        }
     },
 
     resize() {
@@ -2581,10 +2589,14 @@ const Game = {
 
     saveGame() {
         const save = {
+            version: '1.1.0',
             money: this.money,
             day: this.day,
             season: this.season,
             year: this.year,
+            energy: this.energy,
+            timeOfDay: this.timeOfDay,
+            dayTimer: this.dayTimer,
             animals: this.animals.map(a => ({
                 type: a.type,
                 x: a.x,
@@ -2596,10 +2608,143 @@ const Game = {
                 weight: a.weight,
                 name: a.name,
                 genetics: a.genetics
-            }))
+            })),
+            crops: this.crops.map(c => ({
+                x: c.x,
+                y: c.y,
+                type: c.type,
+                age: c.age,
+                watered: c.watered
+            })),
+            inventory: this.inventory.map(slot => slot ? {
+                itemId: slot.item.id,
+                count: slot.count
+            } : null),
+            sprinklers: this.sprinklers,
+            shippingBin: this.shippingBin.map(s => ({
+                itemId: s.item.id,
+                count: s.count
+            })),
+            clearedResources: this.clearedResources,
+            forageCooldowns: this.forageCooldowns,
+            achievements: this.achievements,
+            npcsTalkedTo: this.npcsTalkedTo,
+            playerX: this.player.x,
+            playerY: this.player.y
         };
         localStorage.setItem('texasfarms_save', JSON.stringify(save));
         this.showToast('Game saved!');
+    },
+
+    loadGame() {
+        const saveData = localStorage.getItem('texasfarms_save');
+        if (!saveData) {
+            this.showToast('No save found!');
+            return false;
+        }
+
+        try {
+            const save = JSON.parse(saveData);
+
+            // Start with fresh world
+            this.world = generateWorld();
+            this.player = new Player(save.playerX || 10 * TILE_SIZE, save.playerY || 10 * TILE_SIZE);
+
+            // Restore basic stats
+            this.money = save.money || 500;
+            this.day = save.day || 1;
+            this.season = save.season || 'Spring';
+            this.year = save.year || 1;
+            this.energy = save.energy || 100;
+            this.timeOfDay = save.timeOfDay || 0.25;
+            this.dayTimer = save.dayTimer || 0;
+
+            // Restore animals
+            this.animals = (save.animals || []).map(a => {
+                const animal = new Animal(a.x, a.y, a.type);
+                animal.age = a.age;
+                animal.health = a.health;
+                animal.happiness = a.happiness;
+                animal.hunger = a.hunger;
+                animal.weight = a.weight;
+                animal.name = a.name;
+                animal.genetics = a.genetics;
+                return animal;
+            });
+
+            // Restore crops
+            this.crops = save.crops || [];
+            this.crops.forEach(crop => {
+                this.world[crop.y][crop.x] = crop.watered ? TILES.WATERED : TILES.TILLED;
+            });
+
+            // Restore inventory
+            this.inventory = (save.inventory || []).map(slot => {
+                if (!slot) return null;
+                const item = Object.values(ITEMS).find(i => i.id === slot.itemId);
+                return item ? { item, count: slot.count } : null;
+            });
+            while (this.inventory.length < 8) this.inventory.push(null);
+
+            // Restore sprinklers
+            this.sprinklers = save.sprinklers || [];
+            this.sprinklers.forEach(s => {
+                this.world[s.y][s.x] = TILES.SPRINKLER;
+            });
+
+            // Restore shipping bin
+            this.shippingBin = (save.shippingBin || []).map(s => {
+                const item = Object.values(ITEMS).find(i => i.id === s.itemId);
+                return item ? { item, count: s.count } : null;
+            }).filter(s => s);
+
+            // Restore misc state
+            this.clearedResources = save.clearedResources || [];
+            this.forageCooldowns = save.forageCooldowns || {};
+            this.achievements = save.achievements || [];
+            this.npcsTalkedTo = save.npcsTalkedTo || [];
+
+            // Create NPCs
+            this.npcs = [
+                new NPC(11 * TILE_SIZE, 16 * TILE_SIZE, 'shopkeeper'),
+                new NPC(9 * TILE_SIZE, 8 * TILE_SIZE, 'mayor'),
+                new NPC(14 * TILE_SIZE, 12 * TILE_SIZE, 'wanderer'),
+            ];
+
+            // Reset fishing state
+            this.fishing = {
+                active: false,
+                phase: 'idle',
+                timer: 0,
+                biteWindow: 0,
+                targetFish: null
+            };
+
+            // Disable tutorial for loaded games
+            this.tutorial.active = false;
+
+            this.updateInventoryUI();
+            return true;
+        } catch (e) {
+            console.error('Failed to load save:', e);
+            this.showToast('Save data corrupted!');
+            return false;
+        }
+    },
+
+    hasSaveGame() {
+        return localStorage.getItem('texasfarms_save') !== null;
+    },
+
+    continueGame() {
+        document.getElementById('title-screen').style.display = 'none';
+        if (this.loadGame()) {
+            this.running = true;
+            this.gameLoop();
+            this.showToast('Welcome back to Texas Farms!');
+        } else {
+            this.start(); // Fall back to new game if load fails
+        }
     },
 
     showDialog(text, optionsHTML) {

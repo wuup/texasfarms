@@ -4,6 +4,31 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.2.0] - 2026-01-15
+
+### Added
+- **Complete Save/Load System**
+  - Save game from farmhouse dialog
+  - Continue button on title screen when save exists
+  - Saves ALL game state:
+    - Player position, money, energy
+    - Day, season, year, time of day
+    - All animals with stats and genetics
+    - All crops with growth progress
+    - Complete inventory
+    - Placed sprinklers
+    - Shipping bin contents
+    - Resource respawn timers
+    - Forage bush cooldowns
+    - Achievements and NPC relationships
+
+### Changed
+- Title screen now shows "New Game" and "Continue" options
+- Tutorial disabled for loaded games
+- Version bumped to 1.2.0
+
+---
+
 ## [1.1.0] - 2026-01-15
 
 ### Added
