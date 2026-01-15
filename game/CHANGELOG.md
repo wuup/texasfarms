@@ -4,6 +4,22 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [2.5.0] - 2026-01-15
+
+### Fixed
+- **Resource Scarcity Balance** 🪨🪵
+  - Added more rocks and stumps to the map (6 → 14 total)
+  - 7 rocks and 7 stumps now scattered around the farm
+  - Increased stone yield per rock: 1-2 → 2-4 base
+  - Increased wood yield per stump: 2-3 → 3-5 base
+  - Reduced respawn time from 7 days to 4 days
+  - Now possible to gather enough materials for crafting!
+
+### Changed
+- Version bumped to 2.5.0
+
+---
+
 ## [2.4.0] - 2026-01-15
 
 ### Improved

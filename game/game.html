@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v2.4.0
-// Improved animal dialog!
+// TEXAS FARMS - THE GAME v2.5.0
+// Resource balance fix!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -842,14 +842,25 @@ function generateWorld() {
         map[y][7] = TILES.DIRT_PATH;
     }
 
-    // Add some rocks and stumps to clear
+    // Add rocks and stumps to clear (more resources for crafting!)
     const resourcePositions = [
+        // Upper area rocks
         {x: 14, y: 3, type: TILES.STONE},
         {x: 16, y: 5, type: TILES.STONE},
+        {x: 18, y: 4, type: TILES.STONE},
+        {x: 13, y: 6, type: TILES.STONE},
+        // Lower area rocks
+        {x: 8, y: 15, type: TILES.STONE},
+        {x: 6, y: 17, type: TILES.STONE},
+        {x: 10, y: 16, type: TILES.STONE},
+        // Stumps scattered around
         {x: 12, y: 14, type: TILES.WOOD},
         {x: 17, y: 16, type: TILES.WOOD},
-        {x: 8, y: 15, type: TILES.STONE},
         {x: 5, y: 14, type: TILES.WOOD},
+        {x: 15, y: 7, type: TILES.WOOD},
+        {x: 7, y: 13, type: TILES.WOOD},
+        {x: 19, y: 6, type: TILES.WOOD},
+        {x: 4, y: 16, type: TILES.WOOD},
     ];
     resourcePositions.forEach(r => {
         if (map[r.y][r.x] === TILES.GRASS) {
@@ -2677,10 +2688,10 @@ const Game = {
                 // Break rocks
                 if (tile === TILES.STONE) {
                     this.world[tileY][tileX] = TILES.GRASS;
-                    this.clearedResources.push({ x: tileX, y: tileY, type: TILES.STONE, respawnDay: this.day + 7 });
+                    this.clearedResources.push({ x: tileX, y: tileY, type: TILES.STONE, respawnDay: this.day + 4 });
                     this.energy -= Math.ceil(8 * this.getToolEnergyMultiplier('pickaxe'));
-                    // Apply mining skill bonus + tool yield bonus
-                    const stoneBase = 1 + Math.floor(Math.random() * 2);
+                    // Apply mining skill bonus + tool yield bonus (base 2-4 stone)
+                    const stoneBase = 2 + Math.floor(Math.random() * 3);
                     const stoneYield = Math.floor(stoneBase * this.getSkillBonus('mining') * this.getToolYieldMultiplier('pickaxe'));
                     this.addToInventory(ITEMS.STONE, stoneYield);
                     this.addSkillXP('mining', 5);
@@ -2699,10 +2710,10 @@ const Game = {
                 // Chop wood
                 if (tile === TILES.WOOD) {
                     this.world[tileY][tileX] = TILES.GRASS;
-                    this.clearedResources.push({ x: tileX, y: tileY, type: TILES.WOOD, respawnDay: this.day + 7 });
+                    this.clearedResources.push({ x: tileX, y: tileY, type: TILES.WOOD, respawnDay: this.day + 4 });
                     this.energy -= Math.ceil(8 * this.getToolEnergyMultiplier('axe'));
-                    // Apply mining skill bonus + tool yield bonus
-                    const woodBase = 2 + Math.floor(Math.random() * 2);
+                    // Apply mining skill bonus + tool yield bonus (base 3-5 wood)
+                    const woodBase = 3 + Math.floor(Math.random() * 3);
                     const woodYield = Math.floor(woodBase * this.getSkillBonus('mining') * this.getToolYieldMultiplier('axe'));
                     this.addToInventory(ITEMS.WOOD, woodYield);
                     this.addSkillXP('mining', 5);
@@ -3480,7 +3491,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '2.4.0',
+            version: '2.5.0',
             money: this.money,
             day: this.day,
             season: this.season,
