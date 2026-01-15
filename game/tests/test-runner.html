@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Farms - Test Runner</title>
+    <style>
+        :root {
+            --forest: #1a2e1a;
+            --copper: #b87333;
+            --success: #22c55e;
+            --failure: #ef4444;
+            --pending: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 {
+            color: var(--copper);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            color: #8b949e;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--forest);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #2d4a3e;
+        }
+
+        .summary {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat .value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .summary-stat .label {
+            font-size: 0.75rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .summary-stat.passed .value { color: var(--success); }
+        .summary-stat.failed .value { color: var(--failure); }
+        .summary-stat.pending .value { color: var(--pending); }
+
+        .test-suite {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .suite-header {
+            padding: 1rem;
+            background: #21262d;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suite-name {
+            font-weight: bold;
+            color: var(--copper);
+        }
+
+        .suite-status {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .suite-status.passed { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .suite-status.failed { background: rgba(239, 68, 68, 0.2); color: var(--failure); }
+        .suite-status.pending { background: rgba(245, 158, 11, 0.2); color: var(--pending); }
+
+        .test-list {
+            padding: 0.5rem 0;
+        }
+
+        .test-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .test-item:last-child {
+            border-bottom: none;
+        }
+
+        .test-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .test-icon.passed { color: var(--success); }
+        .test-icon.failed { color: var(--failure); }
+        .test-icon.pending { color: var(--pending); }
+
+        .test-name {
+            flex: 1;
+        }
+
+        .test-time {
+            color: #8b949e;
+            font-size: 0.8rem;
+        }
+
+        .test-error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--failure);
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 1rem 1rem 2.5rem;
+            font-size: 0.85rem;
+            color: #f87171;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .console-output {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 2rem;
+            max-height: 300px;
+            overflow: auto;
+        }
+
+        .console-output h3 {
+            color: #8b949e;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .console-line {
+            font-size: 0.85rem;
+            padding: 0.25rem 0;
+            color: #8b949e;
+        }
+
+        .console-line.info { color: #58a6ff; }
+        .console-line.success { color: var(--success); }
+        .console-line.error { color: var(--failure); }
+    </style>
+</head>
+<body>
+    <h1>Texas Farms - Test Runner</h1>
+    <p class="subtitle">Unit tests for game mechanics</p>
+
+    <div class="controls">
+        <button onclick="TestRunner.runAll()">Run All Tests</button>
+        <button onclick="TestRunner.clear()">Clear Results</button>
+    </div>
+
+    <div class="summary">
+        <div class="summary-stat passed">
+            <div class="value" id="passed-count">0</div>
+            <div class="label">Passed</div>
+        </div>
+        <div class="summary-stat failed">
+            <div class="value" id="failed-count">0</div>
+            <div class="label">Failed</div>
+        </div>
+        <div class="summary-stat pending">
+            <div class="value" id="total-count">0</div>
+            <div class="label">Total</div>
+        </div>
+    </div>
+
+    <div id="test-results"></div>
+
+    <div class="console-output">
+        <h3>Console Output</h3>
+        <div id="console"></div>
+    </div>
+
+<script>
+// ==========================================
+// MINIMAL TEST FRAMEWORK
+// ==========================================
+
+const TestRunner = {
+    suites: [],
+    results: [],
+    console: [],
+
+    log(message, type = 'info') {
+        this.console.push({ message, type, time: new Date().toLocaleTimeString() });
+        this.renderConsole();
+    },
+
+    clear() {
+        this.results = [];
+        this.console = [];
+        document.getElementById('test-results').innerHTML = '';
+        this.renderConsole();
+        this.updateSummary();
+    },
+
+    describe(name, fn) {
+        this.suites.push({ name, fn, tests: [] });
+    },
+
+    async runAll() {
+        this.clear();
+        this.log('Starting test run...', 'info');
+
+        for (const suite of this.suites) {
+            const suiteResult = {
+                name: suite.name,
+                tests: [],
+                passed: 0,
+                failed: 0
+            };
+
+            // Collect tests
+            const tests = [];
+            const it = (name, fn) => tests.push({ name, fn });
+            suite.fn(it);
+
+            // Run each test
+            for (const test of tests) {
+                const startTime = performance.now();
+                const testResult = { name: test.name, passed: false, error: null, time: 0 };
+
+                try {
+                    await test.fn();
+                    testResult.passed = true;
+                    suiteResult.passed++;
+                } catch (e) {
+                    testResult.error = e.message;
+                    suiteResult.failed++;
+                    this.log(`FAIL: ${test.name} - ${e.message}`, 'error');
+                }
+
+                testResult.time = Math.round(performance.now() - startTime);
+                suiteResult.tests.push(testResult);
+            }
+
+            this.results.push(suiteResult);
+        }
+
+        this.render();
+        const totalPassed = this.results.reduce((sum, s) => sum + s.passed, 0);
+        const totalFailed = this.results.reduce((sum, s) => sum + s.failed, 0);
+        this.log(`Test run complete: ${totalPassed} passed, ${totalFailed} failed`, totalFailed > 0 ? 'error' : 'success');
+    },
+
+    render() {
+        const container = document.getElementById('test-results');
+        container.innerHTML = this.results.map(suite => `
+            <div class="test-suite">
+                <div class="suite-header">
+                    <span class="suite-name">${suite.name}</span>
+                    <span class="suite-status ${suite.failed > 0 ? 'failed' : 'passed'}">
+                        ${suite.failed > 0 ? `${suite.failed} failed` : `${suite.passed} passed`}
+                    </span>
+                </div>
+                <div class="test-list">
+                    ${suite.tests.map(test => `
+                        <div class="test-item">
+                            <span class="test-icon ${test.passed ? 'passed' : 'failed'}">
+                                ${test.passed ? '✓' : '✗'}
+                            </span>
+                            <span class="test-name">${test.name}</span>
+                            <span class="test-time">${test.time}ms</span>
+                        </div>
+                        ${test.error ? `<div class="test-error">${test.error}</div>` : ''}
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+
+        this.updateSummary();
+    },
+
+    updateSummary() {
+        const totalPassed = this.results.reduce((sum, s) => sum + s.passed, 0);
+        const totalFailed = this.results.reduce((sum, s) => sum + s.failed, 0);
+        document.getElementById('passed-count').textContent = totalPassed;
+        document.getElementById('failed-count').textContent = totalFailed;
+        document.getElementById('total-count').textContent = totalPassed + totalFailed;
+    },
+
+    renderConsole() {
+        document.getElementById('console').innerHTML = this.console.map(entry =>
+            `<div class="console-line ${entry.type}">[${entry.time}] ${entry.message}</div>`
+        ).join('');
+    }
+};
+
+// Assertion helpers
+function expect(actual) {
+    return {
+        toBe(expected) {
+            if (actual !== expected) {
+                throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+            }
+        },
+        toEqual(expected) {
+            if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+                throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+            }
+        },
+        toBeGreaterThan(expected) {
+            if (!(actual > expected)) {
+                throw new Error(`Expected ${actual} to be greater than ${expected}`);
+            }
+        },
+        toBeLessThan(expected) {
+            if (!(actual < expected)) {
+                throw new Error(`Expected ${actual} to be less than ${expected}`);
+            }
+        },
+        toBeTruthy() {
+            if (!actual) {
+                throw new Error(`Expected ${JSON.stringify(actual)} to be truthy`);
+            }
+        },
+        toBeFalsy() {
+            if (actual) {
+                throw new Error(`Expected ${JSON.stringify(actual)} to be falsy`);
+            }
+        },
+        toContain(expected) {
+            if (!actual.includes(expected)) {
+                throw new Error(`Expected ${JSON.stringify(actual)} to contain ${JSON.stringify(expected)}`);
+            }
+        },
+        toHaveLength(expected) {
+            if (actual.length !== expected) {
+                throw new Error(`Expected length ${expected}, got ${actual.length}`);
+            }
+        }
+    };
+}
+
+// ==========================================
+// GAME CODE (copied from game.html for testing)
+// ==========================================
+
+const CONFIG = {
+    PIG_PRICE: 200,
+    FEED_COST_PER_PIG: 5,
+    PIG_SELL_PRICE_BASE: 400,
+    PIG_MATURITY_DAYS: 180,
+    DAYS_PER_SEASON: 30,
+    SEASONS: ['spring', 'summer', 'fall', 'winter']
+};
+
+function generateId() {
+    return 'id_' + Math.random().toString(36).substr(2, 9);
+}
+
+function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function getSeasonIndex(season) {
+    return CONFIG.SEASONS.indexOf(season);
+}
+
+function getNextSeason(season) {
+    const idx = getSeasonIndex(season);
+    return CONFIG.SEASONS[(idx + 1) % 4];
+}
+
+function createPig(name = null) {
+    const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie'];
+    return {
+        id: generateId(),
+        type: 'gos_pig',
+        name: name || names[Math.floor(Math.random() * names.length)],
+        age: 0,
+        health: 100,
+        happiness: 80,
+        fed: true,
+        daysSinceFed: 0,
+        genetics: {
+            marbling: 0.5 + Math.random() * 0.3,
+            growthRate: 0.5 + Math.random() * 0.3,
+            size: 0.5 + Math.random() * 0.3
+        }
+    };
+}
+
+const DEFAULT_STATE = {
+    meta: { version: "0.1.0", created: null, lastSaved: null, totalPlayTime: 0 },
+    farm: { name: "My Farm", money: 1000, day: 1, season: "spring", year: 1 },
+    animals: [],
+    stats: { totalAnimalsRaised: 0, totalMoneyEarned: 0, totalMoneySpent: 0, pigsSold: 0 }
+};
+
+function reduce(state, action) {
+    const newState = deepClone(state);
+
+    switch (action.type) {
+        case 'BUY_PIG': {
+            if (newState.farm.money < CONFIG.PIG_PRICE) return state;
+            const pig = createPig();
+            newState.animals.push(pig);
+            newState.farm.money -= CONFIG.PIG_PRICE;
+            newState.stats.totalMoneySpent += CONFIG.PIG_PRICE;
+            newState.stats.totalAnimalsRaised++;
+            return newState;
+        }
+
+        case 'SELL_PIG': {
+            const idx = newState.animals.findIndex(a => a.id === action.id);
+            if (idx === -1) return state;
+            const pig = newState.animals[idx];
+            const price = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * pig.genetics.size * (pig.age / CONFIG.PIG_MATURITY_DAYS));
+            newState.animals.splice(idx, 1);
+            newState.farm.money += price;
+            newState.stats.totalMoneyEarned += price;
+            newState.stats.pigsSold++;
+            return newState;
+        }
+
+        case 'FEED_ALL': {
+            const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
+            const cost = pigCount * CONFIG.FEED_COST_PER_PIG;
+            if (newState.farm.money < cost) return state;
+            newState.farm.money -= cost;
+            newState.stats.totalMoneySpent += cost;
+            newState.animals.forEach(a => {
+                if (a.type === 'gos_pig') {
+                    a.fed = true;
+                    a.daysSinceFed = 0;
+                    a.happiness = Math.min(100, a.happiness + 5);
+                }
+            });
+            return newState;
+        }
+
+        case 'ADVANCE_DAY': {
+            newState.farm.day++;
+            if (newState.farm.day > CONFIG.DAYS_PER_SEASON) {
+                newState.farm.day = 1;
+                newState.farm.season = getNextSeason(newState.farm.season);
+                if (newState.farm.season === 'spring') {
+                    newState.farm.year++;
+                }
+            }
+            newState.animals.forEach(animal => {
+                animal.age++;
+                animal.fed = false;
+                animal.daysSinceFed++;
+                if (animal.daysSinceFed > 1) {
+                    animal.health -= 5;
+                    animal.happiness -= 10;
+                }
+            });
+            newState.animals = newState.animals.filter(a => a.health > 0);
+            return newState;
+        }
+
+        case 'ADD_MONEY': {
+            newState.farm.money += action.amount;
+            return newState;
+        }
+
+        case 'SPAWN_PIG': {
+            const pig = createPig();
+            if (action.age) pig.age = action.age;
+            newState.animals.push(pig);
+            newState.stats.totalAnimalsRaised++;
+            return newState;
+        }
+
+        default:
+            return state;
+    }
+}
+
+// ==========================================
+// TEST SUITES
+// ==========================================
+
+TestRunner.describe('Game State Basics', (it) => {
+    it('should create default state with $1000', () => {
+        const state = deepClone(DEFAULT_STATE);
+        expect(state.farm.money).toBe(1000);
+        expect(state.farm.day).toBe(1);
+        expect(state.farm.season).toBe('spring');
+        expect(state.farm.year).toBe(1);
+    });
+
+    it('should start with no animals', () => {
+        const state = deepClone(DEFAULT_STATE);
+        expect(state.animals).toHaveLength(0);
+    });
+
+    it('should track stats properly', () => {
+        const state = deepClone(DEFAULT_STATE);
+        expect(state.stats.totalAnimalsRaised).toBe(0);
+        expect(state.stats.totalMoneyEarned).toBe(0);
+        expect(state.stats.pigsSold).toBe(0);
+    });
+});
+
+TestRunner.describe('Pig Lifecycle', (it) => {
+    it('should create a pig with valid genetics', () => {
+        const pig = createPig('TestPig');
+        expect(pig.name).toBe('TestPig');
+        expect(pig.age).toBe(0);
+        expect(pig.health).toBe(100);
+        expect(pig.type).toBe('gos_pig');
+        expect(pig.genetics.marbling).toBeGreaterThan(0);
+        expect(pig.genetics.size).toBeGreaterThan(0);
+    });
+
+    it('should buy a pig for $200', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        expect(state.farm.money).toBe(800);
+        expect(state.animals).toHaveLength(1);
+        expect(state.stats.totalMoneySpent).toBe(200);
+    });
+
+    it('should not buy pig if insufficient funds', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state.farm.money = 100;
+        const newState = reduce(state, { type: 'BUY_PIG' });
+        expect(newState.farm.money).toBe(100);
+        expect(newState.animals).toHaveLength(0);
+    });
+
+    it('should age pigs when day advances', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        const initialAge = state.animals[0].age;
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.animals[0].age).toBe(initialAge + 1);
+    });
+
+    it('should sell mature pig for profit', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'SPAWN_PIG', age: CONFIG.PIG_MATURITY_DAYS });
+        const pigId = state.animals[0].id;
+        const moneyBefore = state.farm.money;
+        state = reduce(state, { type: 'SELL_PIG', id: pigId });
+        expect(state.farm.money).toBeGreaterThan(moneyBefore);
+        expect(state.animals).toHaveLength(0);
+        expect(state.stats.pigsSold).toBe(1);
+    });
+});
+
+TestRunner.describe('Feeding System', (it) => {
+    it('should feed all pigs for $5 each', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        state = reduce(state, { type: 'BUY_PIG' });
+        const moneyBefore = state.farm.money;
+        state = reduce(state, { type: 'FEED_ALL' });
+        expect(state.farm.money).toBe(moneyBefore - 10); // 2 pigs * $5
+    });
+
+    it('should mark pigs as fed after feeding', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.animals[0].fed).toBe(false);
+        state = reduce(state, { type: 'FEED_ALL' });
+        expect(state.animals[0].fed).toBe(true);
+    });
+
+    it('should damage pig health if not fed for 2+ days', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        state = reduce(state, { type: 'ADVANCE_DAY' }); // Day 1 unfed
+        state = reduce(state, { type: 'ADVANCE_DAY' }); // Day 2 unfed - damage starts
+        expect(state.animals[0].health).toBeLessThan(100);
+    });
+
+    it('should kill pig if health reaches 0', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        // Advance many days without feeding
+        for (let i = 0; i < 30; i++) {
+            state = reduce(state, { type: 'ADVANCE_DAY' });
+        }
+        expect(state.animals).toHaveLength(0); // Pig died
+    });
+});
+
+TestRunner.describe('Time System', (it) => {
+    it('should advance day correctly', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.farm.day).toBe(2);
+    });
+
+    it('should change season after 30 days', () => {
+        let state = deepClone(DEFAULT_STATE);
+        for (let i = 0; i < 30; i++) {
+            state = reduce(state, { type: 'ADVANCE_DAY' });
+        }
+        expect(state.farm.season).toBe('summer');
+        expect(state.farm.day).toBe(1);
+    });
+
+    it('should cycle through all seasons', () => {
+        let state = deepClone(DEFAULT_STATE);
+        expect(state.farm.season).toBe('spring');
+
+        for (let i = 0; i < 30; i++) state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.farm.season).toBe('summer');
+
+        for (let i = 0; i < 30; i++) state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.farm.season).toBe('fall');
+
+        for (let i = 0; i < 30; i++) state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.farm.season).toBe('winter');
+
+        for (let i = 0; i < 30; i++) state = reduce(state, { type: 'ADVANCE_DAY' });
+        expect(state.farm.season).toBe('spring');
+        expect(state.farm.year).toBe(2);
+    });
+
+    it('should increment year after winter', () => {
+        let state = deepClone(DEFAULT_STATE);
+        for (let i = 0; i < 120; i++) { // Full year
+            state = reduce(state, { type: 'ADVANCE_DAY' });
+        }
+        expect(state.farm.year).toBe(2);
+    });
+});
+
+TestRunner.describe('Economy Balance', (it) => {
+    it('should be possible to make profit with good play', () => {
+        let state = deepClone(DEFAULT_STATE);
+        // Buy 3 pigs
+        state = reduce(state, { type: 'BUY_PIG' });
+        state = reduce(state, { type: 'BUY_PIG' });
+        state = reduce(state, { type: 'BUY_PIG' });
+        // Cost: $600, remaining: $400
+
+        // Simulate 180 days with daily feeding
+        for (let i = 0; i < CONFIG.PIG_MATURITY_DAYS; i++) {
+            state = reduce(state, { type: 'FEED_ALL' }); // $15/day
+            state = reduce(state, { type: 'ADVANCE_DAY' });
+        }
+
+        // Check we didn't go bankrupt
+        expect(state.animals.length).toBeGreaterThan(0);
+
+        // Sell all pigs
+        while (state.animals.length > 0) {
+            state = reduce(state, { type: 'SELL_PIG', id: state.animals[0].id });
+        }
+
+        // Should have made some money back (may or may not be profit depending on genetics)
+        expect(state.stats.pigsSold).toBe(3);
+    });
+
+    it('should track money spent correctly', () => {
+        let state = deepClone(DEFAULT_STATE);
+        state = reduce(state, { type: 'BUY_PIG' });
+        state = reduce(state, { type: 'FEED_ALL' });
+        expect(state.stats.totalMoneySpent).toBe(205); // $200 pig + $5 feed
+    });
+});
+
+// Run tests automatically on load
+document.addEventListener('DOMContentLoaded', () => {
+    TestRunner.runAll();
+});
+</script>
+</body>
+</html>

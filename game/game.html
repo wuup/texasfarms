@@ -457,6 +457,263 @@ body {
 }
 
 /* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+
+#toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    min-width: 200px;
+    max-width: 350px;
+}
+
+.toast.success { border-left: 4px solid var(--success); }
+.toast.warning { border-left: 4px solid var(--warning); }
+.toast.error { border-left: 4px solid var(--danger); }
+.toast.achievement {
+    background: linear-gradient(135deg, #1a2e1a 0%, #2d4a3e 100%);
+    border-left: 4px solid gold;
+}
+
+.toast-icon { font-size: 1.25rem; }
+.toast-message { flex: 1; font-size: 0.9rem; }
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; transform: translateX(50%); }
+}
+
+/* ========================================
+   ACHIEVEMENTS PANEL
+   ======================================== */
+
+#achievements-btn {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    z-index: 1000;
+}
+
+.achievements-modal {
+    max-width: 500px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: transform 0.2s;
+}
+
+.achievement-item:hover {
+    transform: translateX(4px);
+}
+
+.achievement-item.locked {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.achievement-icon {
+    font-size: 2rem;
+    width: 50px;
+    text-align: center;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-name {
+    font-weight: 600;
+    color: var(--forest);
+}
+
+.achievement-desc {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.achievement-unlocked {
+    color: var(--success);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ========================================
+   MONEY ANIMATION
+   ======================================== */
+
+.money-change {
+    position: absolute;
+    font-weight: bold;
+    font-size: 1rem;
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.money-change.positive { color: var(--success); }
+.money-change.negative { color: var(--danger); }
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-30px); opacity: 0; }
+}
+
+/* ========================================
+   SEASON BACKGROUNDS
+   ======================================== */
+
+#farm-view.spring { background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%); }
+#farm-view.summer { background: linear-gradient(180deg, #fff8e1 0%, #ffecb3 100%); }
+#farm-view.fall { background: linear-gradient(180deg, #fff3e0 0%, #ffe0b2 100%); }
+#farm-view.winter { background: linear-gradient(180deg, #eceff1 0%, #cfd8dc 100%); }
+
+/* ========================================
+   ANIMAL ANIMATIONS
+   ======================================== */
+
+.animal-card.new {
+    animation: pop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.animal-card.mature {
+    box-shadow: 0 0 0 3px var(--success), 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.animal-card.hungry {
+    animation: shake 0.5s ease-in-out;
+    box-shadow: 0 0 0 2px var(--warning);
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* ========================================
+   PROGRESS BAR (in HUD)
+   ======================================== */
+
+.hud-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-bar {
+    width: 60px;
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--copper-light);
+    transition: width 0.3s;
+}
+
+/* ========================================
+   EVENT BANNER
+   ======================================== */
+
+#event-banner {
+    display: none;
+    background: linear-gradient(90deg, var(--copper), var(--copper-light));
+    color: white;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+#event-banner.active {
+    display: block;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* ========================================
+   TIPS/HINTS
+   ======================================== */
+
+.tip-bubble {
+    position: absolute;
+    background: var(--forest);
+    color: var(--cream);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    max-width: 250px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: bounce 0.5s ease;
+    z-index: 50;
+}
+
+.tip-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 20px;
+    border-width: 8px 8px 0;
+    border-style: solid;
+    border-color: var(--forest) transparent transparent;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* ========================================
    RESPONSIVE
    ======================================== */
 
@@ -467,14 +724,137 @@ body {
 
     #hud {
         font-size: 0.8rem;
+        padding: 0.5rem;
+    }
+
+    .hud-stat {
+        gap: 0.25rem;
     }
 
     .animal-card {
         min-width: 100px;
+        padding: 0.75rem;
+    }
+
+    .animal-emoji {
+        font-size: 2rem;
+    }
+
+    #actions-bar {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    /* Larger touch targets for mobile */
+    .action-btn {
+        padding: 1rem;
+        font-size: 0.9rem;
+        min-height: 48px;
+        flex: 1 1 calc(50% - 0.5rem);
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        min-height: 48px;
     }
 
     #debug-panel {
         width: 100vw;
+    }
+
+    .toast {
+        min-width: 150px;
+        max-width: 280px;
+        font-size: 0.8rem;
+    }
+
+    #toast-container {
+        left: 1rem;
+        right: 1rem;
+    }
+
+    /* Hide debug by default on mobile, show achievements */
+    #debug-toggle {
+        display: none;
+    }
+
+    #achievements-btn {
+        bottom: auto;
+        top: auto;
+        right: 1rem;
+        left: auto;
+    }
+
+    /* Better modal on mobile */
+    .modal {
+        padding: 1.5rem;
+        border-radius: 12px 12px 0 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        width: 100%;
+        max-height: 70vh;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .modal-overlay {
+        align-items: flex-end;
+    }
+
+    /* Farm view improvements */
+    #farm-view {
+        padding: 0.75rem;
+    }
+
+    #animals-area {
+        padding: 0.75rem;
+    }
+
+    .animals-grid {
+        gap: 0.5rem;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Styles for touch devices */
+    .action-btn:active,
+    .btn:active,
+    .animal-card:active {
+        transform: scale(0.95);
+        transition: transform 0.1s;
+    }
+
+    .debug-btn {
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+    }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    #hud {
+        padding: 0.5rem 1rem;
+    }
+
+    #actions-bar {
+        padding: 0.5rem;
+    }
+
+    .action-btn {
+        padding: 0.5rem 1rem;
+    }
+
+    #farm-view {
+        padding: 0.5rem;
     }
 }
     </style>
@@ -541,6 +921,15 @@ body {
             </div>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Event Banner -->
+    <div id="event-banner"></div>
+
+    <!-- Achievements Button -->
+    <button id="achievements-btn" onclick="Achievements.showModal()">🏆 Achievements</button>
 
     <!-- Debug Toggle -->
     <button id="debug-toggle" onclick="Debug.toggle()">🔧 Debug</button>
@@ -686,6 +1075,192 @@ function getNextSeason(season) {
     return CONFIG.SEASONS[(idx + 1) % 4];
 }
 
+function getSeasonIcon(season) {
+    const icons = { spring: '🌸', summer: '☀️', fall: '🍂', winter: '❄️' };
+    return icons[season] || '📅';
+}
+
+// ==========================================
+// TOAST NOTIFICATION SYSTEM
+// ==========================================
+
+const Toast = {
+    show(message, type = 'info', icon = null) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+
+        const icons = {
+            success: '✅',
+            warning: '⚠️',
+            error: '❌',
+            achievement: '🏆',
+            info: 'ℹ️',
+            money: '💰',
+            pig: '🐷'
+        };
+
+        toast.innerHTML = `
+            <span class="toast-icon">${icon || icons[type] || icons.info}</span>
+            <span class="toast-message">${message}</span>
+        `;
+
+        container.appendChild(toast);
+        Sound.play(type === 'achievement' ? 'achievement' : type === 'success' ? 'success' : 'click');
+
+        // Remove after animation
+        setTimeout(() => toast.remove(), 3000);
+    },
+
+    success(message) { this.show(message, 'success'); },
+    warning(message) { this.show(message, 'warning'); },
+    error(message) { this.show(message, 'error'); },
+    achievement(message) { this.show(message, 'achievement', '🏆'); }
+};
+
+// ==========================================
+// SOUND SYSTEM (Web Audio API)
+// ==========================================
+
+const Sound = {
+    ctx: null,
+    enabled: true,
+
+    init() {
+        try {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.log('Web Audio not supported');
+        }
+    },
+
+    play(type) {
+        if (!this.enabled || !this.ctx) return;
+
+        // Resume context if suspended (required by browsers)
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+
+        const sounds = {
+            click: { freq: 800, duration: 0.05, type: 'sine' },
+            success: { freq: 523, duration: 0.15, type: 'sine', seq: [523, 659, 784] },
+            warning: { freq: 220, duration: 0.2, type: 'sawtooth' },
+            error: { freq: 150, duration: 0.3, type: 'square' },
+            achievement: { freq: 440, duration: 0.1, type: 'sine', seq: [440, 554, 659, 880] },
+            buy: { freq: 300, duration: 0.1, type: 'triangle' },
+            sell: { freq: 600, duration: 0.15, type: 'sine', seq: [400, 500, 600] },
+            feed: { freq: 350, duration: 0.08, type: 'sine' },
+            day: { freq: 440, duration: 0.1, type: 'sine' }
+        };
+
+        const sound = sounds[type] || sounds.click;
+
+        if (sound.seq) {
+            // Play sequence
+            sound.seq.forEach((freq, i) => {
+                this.playTone(freq, sound.duration, sound.type, i * sound.duration);
+            });
+        } else {
+            this.playTone(sound.freq, sound.duration, sound.type);
+        }
+    },
+
+    playTone(freq, duration, type = 'sine', delay = 0) {
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + delay + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(this.ctx.currentTime + delay);
+        osc.stop(this.ctx.currentTime + delay + duration);
+    }
+};
+
+// ==========================================
+// ACHIEVEMENTS SYSTEM
+// ==========================================
+
+const ACHIEVEMENTS = [
+    { id: 'first_pig', name: 'Humble Beginnings', desc: 'Buy your first pig', icon: '🐷', check: s => s.stats.totalAnimalsRaised >= 1 },
+    { id: 'first_sale', name: 'First Sale!', desc: 'Sell your first pig', icon: '💰', check: s => s.stats.pigsSold >= 1 },
+    { id: 'pig_farmer', name: 'Pig Farmer', desc: 'Own 5 pigs at once', icon: '🐖', check: s => s.animals.length >= 5 },
+    { id: 'survivor', name: 'Survivor', desc: 'Survive your first winter', icon: '❄️', check: s => s.farm.year >= 1 && s.farm.season !== 'winter' || s.farm.year >= 2 },
+    { id: 'thousand_dollar', name: 'Thousandaire', desc: 'Have $1,000 at once', icon: '💵', check: s => s.farm.money >= 1000 },
+    { id: 'five_thousand', name: 'High Roller', desc: 'Have $5,000 at once', icon: '💎', check: s => s.farm.money >= 5000 },
+    { id: 'ten_pigs_sold', name: 'Experienced Farmer', desc: 'Sell 10 pigs total', icon: '🌟', check: s => s.stats.pigsSold >= 10 },
+    { id: 'year_one', name: 'Year One Complete', desc: 'Complete your first full year', icon: '📅', check: s => s.farm.year >= 2 },
+    { id: 'heritage_breeder', name: 'Heritage Breeder', desc: 'Raise 20 pigs total', icon: '🏆', check: s => s.stats.totalAnimalsRaised >= 20 },
+    { id: 'wealthy_farmer', name: 'Wealthy Farmer', desc: 'Earn $10,000 total', icon: '👑', check: s => s.stats.totalMoneyEarned >= 10000 }
+];
+
+const Achievements = {
+    unlocked: new Set(),
+
+    init() {
+        // Load from localStorage
+        const saved = localStorage.getItem('texasfarms_achievements');
+        if (saved) {
+            this.unlocked = new Set(JSON.parse(saved));
+        }
+    },
+
+    check(state) {
+        if (!state) return;
+
+        ACHIEVEMENTS.forEach(achievement => {
+            if (!this.unlocked.has(achievement.id) && achievement.check(state)) {
+                this.unlock(achievement);
+            }
+        });
+    },
+
+    unlock(achievement) {
+        this.unlocked.add(achievement.id);
+        this.save();
+        Toast.achievement(`Achievement Unlocked: ${achievement.name}!`);
+        Sound.play('achievement');
+    },
+
+    save() {
+        localStorage.setItem('texasfarms_achievements', JSON.stringify([...this.unlocked]));
+    },
+
+    showModal() {
+        const modal = document.getElementById('modal-content');
+        modal.innerHTML = `
+            <h2>🏆 Achievements</h2>
+            <p style="color: var(--text-light); margin-bottom: 1rem;">
+                ${this.unlocked.size} / ${ACHIEVEMENTS.length} unlocked
+            </p>
+            <div class="achievements-list">
+                ${ACHIEVEMENTS.map(a => `
+                    <div class="achievement-item ${this.unlocked.has(a.id) ? '' : 'locked'}">
+                        <div class="achievement-icon">${a.icon}</div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">${a.name}</div>
+                            <div class="achievement-desc">${a.desc}</div>
+                            ${this.unlocked.has(a.id) ? '<div class="achievement-unlocked">✓ Unlocked</div>' : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
+            </div>
+        `;
+        document.getElementById('modal-overlay').classList.add('open');
+    }
+};
+
 // ==========================================
 // ANIMAL FACTORY
 // ==========================================
@@ -719,14 +1294,19 @@ function reduce(state, action) {
     switch (action.type) {
         case 'BUY_PIG': {
             if (newState.farm.money < CONFIG.PIG_PRICE) {
+                Toast.warning("Can't afford a pig! Need $200");
+                Sound.play('error');
                 Debug.log('Cannot afford pig!', 'warning');
                 return state;
             }
             const pig = createPig();
+            pig.isNew = true; // Flag for animation
             newState.animals.push(pig);
             newState.farm.money -= CONFIG.PIG_PRICE;
             newState.stats.totalMoneySpent += CONFIG.PIG_PRICE;
             newState.stats.totalAnimalsRaised++;
+            Toast.show(`Welcome ${pig.name} to the farm!`, 'success', '🐷');
+            Sound.play('buy');
             Debug.log(`Bought pig: ${pig.name}`, 'action');
             return newState;
         }
@@ -742,6 +1322,8 @@ function reduce(state, action) {
             newState.farm.money += price;
             newState.stats.totalMoneyEarned += price;
             newState.stats.pigsSold++;
+            Toast.success(`Sold ${pig.name} for ${formatMoney(price)}!`);
+            Sound.play('sell');
             Debug.log(`Sold ${pig.name} for ${formatMoney(price)}`, 'action');
             return newState;
         }
@@ -750,7 +1332,14 @@ function reduce(state, action) {
             const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
             const cost = pigCount * CONFIG.FEED_COST_PER_PIG;
 
+            if (pigCount === 0) {
+                Toast.show("No pigs to feed!", 'info', '🌾');
+                return state;
+            }
+
             if (newState.farm.money < cost) {
+                Toast.warning(`Need ${formatMoney(cost)} to feed all pigs!`);
+                Sound.play('error');
                 Debug.log('Cannot afford to feed all pigs!', 'warning');
                 return state;
             }
@@ -764,11 +1353,14 @@ function reduce(state, action) {
                     a.happiness = Math.min(100, a.happiness + 5);
                 }
             });
+            Toast.show(`Fed ${pigCount} pig${pigCount > 1 ? 's' : ''} (${formatMoney(cost)})`, 'success', '🌾');
+            Sound.play('feed');
             Debug.log(`Fed ${pigCount} pigs for ${formatMoney(cost)}`, 'action');
             return newState;
         }
 
         case 'ADVANCE_DAY': {
+            const prevSeason = newState.farm.season;
             newState.farm.day++;
 
             // Check season change
@@ -777,15 +1369,26 @@ function reduce(state, action) {
                 newState.farm.season = getNextSeason(newState.farm.season);
                 if (newState.farm.season === 'spring') {
                     newState.farm.year++;
+                    Toast.achievement(`Year ${newState.farm.year - 1} Complete!`);
                 }
+                Toast.show(`${newState.farm.season.charAt(0).toUpperCase() + newState.farm.season.slice(1)} has arrived!`, 'info', getSeasonIcon(newState.farm.season));
                 Debug.log(`Season changed to ${newState.farm.season}`, 'action');
             }
+
+            // Track deaths for notification
+            const deathList = [];
 
             // Age and process animals
             newState.animals.forEach(animal => {
                 animal.age++;
+                animal.isNew = false; // Clear new flag
                 animal.fed = false;
                 animal.daysSinceFed++;
+
+                // Check for maturity milestone
+                if (animal.age === CONFIG.PIG_MATURITY_DAYS) {
+                    Toast.success(`${animal.name} is now ready to sell!`);
+                }
 
                 // Hunger effects
                 if (animal.daysSinceFed > 1) {
@@ -795,13 +1398,27 @@ function reduce(state, action) {
 
                 // Death check
                 if (animal.health <= 0) {
+                    deathList.push(animal.name);
                     Debug.log(`${animal.name} died from neglect!`, 'error');
                 }
             });
 
+            // Notify about deaths
+            if (deathList.length > 0) {
+                Toast.error(`${deathList.join(', ')} died from neglect!`);
+                Sound.play('error');
+            }
+
             // Remove dead animals
             newState.animals = newState.animals.filter(a => a.health > 0);
 
+            // Check for hungry pigs warning
+            const hungryPigs = newState.animals.filter(a => a.daysSinceFed > 0 && a.health < 80);
+            if (hungryPigs.length > 0 && newState.farm.day % 3 === 0) {
+                Toast.warning(`${hungryPigs.length} pig${hungryPigs.length > 1 ? 's are' : ' is'} getting hungry!`);
+            }
+
+            Sound.play('day');
             Debug.log(`Advanced to Day ${newState.farm.day}`, 'action');
             return newState;
         }
@@ -837,6 +1454,10 @@ const Game = {
     state: null,
 
     init() {
+        // Initialize subsystems
+        Sound.init();
+        Achievements.init();
+
         // Check for saved game
         const saved = localStorage.getItem('texasfarms_save');
         if (saved) {
@@ -849,6 +1470,7 @@ const Game = {
         this.state.meta.created = Date.now();
         this.showScreen('game-screen');
         this.render();
+        Toast.show('Welcome to Texas Farms! Buy your first pig to get started.', 'info', '🏠');
         Debug.log('New game started', 'action');
     },
 
@@ -859,6 +1481,7 @@ const Game = {
                 this.state = JSON.parse(saved);
                 this.showScreen('game-screen');
                 this.render();
+                Toast.success('Game loaded!');
                 Debug.log('Game loaded', 'action');
             } catch (e) {
                 Debug.log('Failed to load save', 'error');
@@ -871,14 +1494,36 @@ const Game = {
         if (!this.state) return;
         this.state.meta.lastSaved = Date.now();
         localStorage.setItem('texasfarms_save', JSON.stringify(this.state));
+        Toast.show('Game saved!', 'success', '💾');
         Debug.log('Game saved', 'action');
     },
 
     dispatch(action) {
         if (!this.state) return;
+        const prevMoney = this.state.farm.money;
         this.state = reduce(this.state, action);
         this.render();
+
+        // Show money change animation
+        const moneyDiff = this.state.farm.money - prevMoney;
+        if (moneyDiff !== 0) {
+            this.showMoneyChange(moneyDiff);
+        }
+
+        // Check achievements after every action
+        Achievements.check(this.state);
+
         Debug.updateStateView();
+    },
+
+    showMoneyChange(amount) {
+        const el = document.createElement('div');
+        el.className = `money-change ${amount > 0 ? 'positive' : 'negative'}`;
+        el.textContent = `${amount > 0 ? '+' : ''}${formatMoney(amount)}`;
+        el.style.left = '50%';
+        el.style.top = '60px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
     },
 
     showScreen(screenId) {
@@ -895,6 +1540,11 @@ const Game = {
             `Day ${this.state.farm.day}, ${this.state.farm.season.charAt(0).toUpperCase() + this.state.farm.season.slice(1)} Y${this.state.farm.year}`;
         document.getElementById('hud-animals').textContent = this.state.animals.length;
 
+        // Apply season background
+        const farmView = document.getElementById('farm-view');
+        farmView.className = '';
+        farmView.classList.add(this.state.farm.season);
+
         // Render animals
         const grid = document.getElementById('animals-grid');
         grid.innerHTML = '';
@@ -904,14 +1554,23 @@ const Game = {
         } else {
             this.state.animals.forEach(animal => {
                 const card = document.createElement('div');
-                card.className = 'animal-card';
+                const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+                const isHungry = animal.daysSinceFed > 1;
+
+                // Build class list
+                let cardClasses = 'animal-card';
+                if (animal.isNew) cardClasses += ' new';
+                if (isMature) cardClasses += ' mature';
+                if (isHungry) cardClasses += ' hungry';
+                card.className = cardClasses;
+
                 card.onclick = () => this.showAnimalModal(animal);
 
-                const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
                 const status = isMature ? '✅ Ready to sell' : `${animal.age}/${CONFIG.PIG_MATURITY_DAYS} days`;
+                const emoji = animal.fed ? '🐷' : (isHungry ? '🐷😫' : '🐷💤');
 
                 card.innerHTML = `
-                    <div class="animal-emoji">${animal.fed ? '🐷' : '🐷💤'}</div>
+                    <div class="animal-emoji">${emoji}</div>
                     <div class="animal-name">${animal.name}</div>
                     <div class="animal-status">${status}</div>
                     <div class="animal-health-bar">

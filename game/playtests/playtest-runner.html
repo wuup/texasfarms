@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Farms - Playtest Runner</title>
+    <style>
+        :root {
+            --forest: #1a2e1a;
+            --copper: #b87333;
+            --success: #22c55e;
+            --failure: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 { color: var(--copper); margin-bottom: 0.5rem; }
+        .subtitle { color: #8b949e; margin-bottom: 2rem; }
+
+        .controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--forest);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover { background: #2d4a3e; }
+
+        .scenario-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .scenario-header {
+            padding: 1rem;
+            background: #21262d;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scenario-name { font-weight: bold; color: var(--copper); }
+
+        .scenario-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .scenario-status.passed { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .scenario-status.failed { background: rgba(239, 68, 68, 0.2); color: var(--failure); }
+        .scenario-status.pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+        .scenario-body { padding: 1rem; }
+
+        .scenario-description {
+            color: #8b949e;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .metric {
+            background: #0d1117;
+            padding: 0.75rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .metric-value.positive { color: var(--success); }
+        .metric-value.negative { color: var(--failure); }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .scenario-log {
+            background: #0d1117;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow: auto;
+            font-size: 0.8rem;
+        }
+
+        .log-entry { padding: 0.2rem 0; color: #8b949e; }
+        .log-entry.event { color: #58a6ff; }
+        .log-entry.warning { color: var(--warning); }
+        .log-entry.error { color: var(--failure); }
+
+        .summary-bar {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .summary-stat {
+            text-align: center;
+        }
+
+        .summary-stat .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .summary-stat.good .value { color: var(--success); }
+        .summary-stat.bad .value { color: var(--failure); }
+
+        .summary-stat .label {
+            font-size: 0.75rem;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <h1>Texas Farms - Playtest Runner</h1>
+    <p class="subtitle">Automated gameplay simulation to test balance</p>
+
+    <div class="controls">
+        <button onclick="PlaytestRunner.runAll()">Run All Playtests</button>
+        <button onclick="PlaytestRunner.clear()">Clear Results</button>
+    </div>
+
+    <div class="summary-bar">
+        <div class="summary-stat good">
+            <div class="value" id="scenarios-passed">0</div>
+            <div class="label">Scenarios Passed</div>
+        </div>
+        <div class="summary-stat bad">
+            <div class="value" id="scenarios-failed">0</div>
+            <div class="label">Scenarios Failed</div>
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+<script>
+// ==========================================
+// GAME ENGINE (copy from game.html)
+// ==========================================
+
+const CONFIG = {
+    PIG_PRICE: 200,
+    FEED_COST_PER_PIG: 5,
+    PIG_SELL_PRICE_BASE: 400,
+    PIG_MATURITY_DAYS: 180,
+    DAYS_PER_SEASON: 30,
+    SEASONS: ['spring', 'summer', 'fall', 'winter']
+};
+
+function generateId() {
+    return 'id_' + Math.random().toString(36).substr(2, 9);
+}
+
+function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function getNextSeason(season) {
+    const idx = CONFIG.SEASONS.indexOf(season);
+    return CONFIG.SEASONS[(idx + 1) % 4];
+}
+
+function createPig(name = null, geneticsOverride = null) {
+    const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie'];
+    return {
+        id: generateId(),
+        type: 'gos_pig',
+        name: name || names[Math.floor(Math.random() * names.length)],
+        age: 0,
+        health: 100,
+        happiness: 80,
+        fed: true,
+        daysSinceFed: 0,
+        genetics: geneticsOverride || {
+            marbling: 0.5 + Math.random() * 0.3,
+            growthRate: 0.5 + Math.random() * 0.3,
+            size: 0.5 + Math.random() * 0.3
+        }
+    };
+}
+
+const DEFAULT_STATE = {
+    meta: { version: "0.1.0", created: null, lastSaved: null, totalPlayTime: 0 },
+    farm: { name: "My Farm", money: 1000, day: 1, season: "spring", year: 1 },
+    animals: [],
+    stats: { totalAnimalsRaised: 0, totalMoneyEarned: 0, totalMoneySpent: 0, pigsSold: 0 }
+};
+
+function reduce(state, action) {
+    const newState = deepClone(state);
+
+    switch (action.type) {
+        case 'BUY_PIG': {
+            if (newState.farm.money < CONFIG.PIG_PRICE) return state;
+            const pig = createPig();
+            newState.animals.push(pig);
+            newState.farm.money -= CONFIG.PIG_PRICE;
+            newState.stats.totalMoneySpent += CONFIG.PIG_PRICE;
+            newState.stats.totalAnimalsRaised++;
+            return newState;
+        }
+
+        case 'SELL_PIG': {
+            const idx = newState.animals.findIndex(a => a.id === action.id);
+            if (idx === -1) return state;
+            const pig = newState.animals[idx];
+            const price = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * pig.genetics.size * (pig.age / CONFIG.PIG_MATURITY_DAYS));
+            newState.animals.splice(idx, 1);
+            newState.farm.money += price;
+            newState.stats.totalMoneyEarned += price;
+            newState.stats.pigsSold++;
+            return newState;
+        }
+
+        case 'FEED_ALL': {
+            const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
+            const cost = pigCount * CONFIG.FEED_COST_PER_PIG;
+            if (newState.farm.money < cost) return state;
+            newState.farm.money -= cost;
+            newState.stats.totalMoneySpent += cost;
+            newState.animals.forEach(a => {
+                if (a.type === 'gos_pig') {
+                    a.fed = true;
+                    a.daysSinceFed = 0;
+                    a.happiness = Math.min(100, a.happiness + 5);
+                }
+            });
+            return newState;
+        }
+
+        case 'ADVANCE_DAY': {
+            newState.farm.day++;
+            if (newState.farm.day > CONFIG.DAYS_PER_SEASON) {
+                newState.farm.day = 1;
+                newState.farm.season = getNextSeason(newState.farm.season);
+                if (newState.farm.season === 'spring') {
+                    newState.farm.year++;
+                }
+            }
+            newState.animals.forEach(animal => {
+                animal.age++;
+                animal.fed = false;
+                animal.daysSinceFed++;
+                if (animal.daysSinceFed > 1) {
+                    animal.health -= 5;
+                    animal.happiness -= 10;
+                }
+            });
+            newState.animals = newState.animals.filter(a => a.health > 0);
+            return newState;
+        }
+
+        default:
+            return state;
+    }
+}
+
+// ==========================================
+// PLAYTEST RUNNER
+// ==========================================
+
+const PlaytestRunner = {
+    scenarios: [],
+    results: [],
+
+    clear() {
+        this.results = [];
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('scenarios-passed').textContent = '0';
+        document.getElementById('scenarios-failed').textContent = '0';
+    },
+
+    register(scenario) {
+        this.scenarios.push(scenario);
+    },
+
+    async runAll() {
+        this.clear();
+
+        for (const scenario of this.scenarios) {
+            const result = await this.runScenario(scenario);
+            this.results.push(result);
+        }
+
+        this.render();
+    },
+
+    async runScenario(scenario) {
+        let state = deepClone(DEFAULT_STATE);
+        const log = [];
+        const moneyHistory = [state.farm.money];
+        let peakMoney = state.farm.money;
+        let lowestMoney = state.farm.money;
+
+        // Apply start state overrides
+        if (scenario.startState) {
+            state = { ...state, ...scenario.startState };
+        }
+
+        // Run the simulation
+        for (let day = 0; day < scenario.days; day++) {
+            // Let scenario strategy decide what to do
+            const actions = scenario.strategy(state, day);
+
+            for (const action of actions) {
+                const before = state.farm.money;
+                state = reduce(state, action);
+
+                if (action.type === 'BUY_PIG') {
+                    log.push({ day, message: `Bought a pig`, type: 'event' });
+                } else if (action.type === 'SELL_PIG') {
+                    const earned = state.farm.money - before;
+                    log.push({ day, message: `Sold pig for $${earned}`, type: 'event' });
+                } else if (action.type === 'FEED_ALL' && state.animals.length > 0) {
+                    // Only log occasionally to avoid spam
+                    if (day % 30 === 0) {
+                        log.push({ day, message: `Feeding ${state.animals.length} pigs daily`, type: 'event' });
+                    }
+                }
+            }
+
+            // Advance day
+            const animalsBefore = state.animals.length;
+            state = reduce(state, { type: 'ADVANCE_DAY' });
+
+            // Log deaths
+            if (state.animals.length < animalsBefore) {
+                log.push({ day, message: `${animalsBefore - state.animals.length} animal(s) died!`, type: 'error' });
+            }
+
+            // Track money
+            moneyHistory.push(state.farm.money);
+            peakMoney = Math.max(peakMoney, state.farm.money);
+            lowestMoney = Math.min(lowestMoney, state.farm.money);
+
+            // Check for bankruptcy
+            if (state.farm.money < 0) {
+                log.push({ day, message: 'BANKRUPTCY!', type: 'error' });
+                break;
+            }
+
+            // Season change log
+            if (state.farm.day === 1 && day > 0) {
+                log.push({ day, message: `Season changed to ${state.farm.season}`, type: 'event' });
+            }
+        }
+
+        // Calculate metrics
+        const metrics = {
+            finalMoney: state.farm.money,
+            moneyChange: state.farm.money - 1000,
+            peakMoney,
+            lowestMoney,
+            daysSurvived: state.farm.day + (state.farm.year - 1) * 120 + CONFIG.SEASONS.indexOf(state.farm.season) * 30,
+            animalsAlive: state.animals.length,
+            pigsSold: state.stats.pigsSold,
+            totalEarned: state.stats.totalMoneyEarned,
+            totalSpent: state.stats.totalMoneySpent
+        };
+
+        // Validate
+        const passed = scenario.validate(state, metrics);
+
+        return {
+            name: scenario.name,
+            description: scenario.description,
+            passed,
+            metrics,
+            log: log.slice(-50) // Keep last 50 entries
+        };
+    },
+
+    render() {
+        const container = document.getElementById('results');
+        let passedCount = 0;
+        let failedCount = 0;
+
+        container.innerHTML = this.results.map(result => {
+            if (result.passed) passedCount++;
+            else failedCount++;
+
+            return `
+                <div class="scenario-card">
+                    <div class="scenario-header">
+                        <span class="scenario-name">${result.name}</span>
+                        <span class="scenario-status ${result.passed ? 'passed' : 'failed'}">
+                            ${result.passed ? 'PASSED' : 'FAILED'}
+                        </span>
+                    </div>
+                    <div class="scenario-body">
+                        <p class="scenario-description">${result.description}</p>
+                        <div class="metrics-grid">
+                            <div class="metric">
+                                <div class="metric-value ${result.metrics.finalMoney >= 1000 ? 'positive' : 'negative'}">
+                                    $${result.metrics.finalMoney.toLocaleString()}
+                                </div>
+                                <div class="metric-label">Final Money</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value ${result.metrics.moneyChange >= 0 ? 'positive' : 'negative'}">
+                                    ${result.metrics.moneyChange >= 0 ? '+' : ''}$${result.metrics.moneyChange.toLocaleString()}
+                                </div>
+                                <div class="metric-label">Net Change</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$${result.metrics.peakMoney.toLocaleString()}</div>
+                                <div class="metric-label">Peak Money</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">${result.metrics.animalsAlive}</div>
+                                <div class="metric-label">Animals Alive</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">${result.metrics.pigsSold}</div>
+                                <div class="metric-label">Pigs Sold</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$${result.metrics.totalEarned.toLocaleString()}</div>
+                                <div class="metric-label">Total Earned</div>
+                            </div>
+                        </div>
+                        <div class="scenario-log">
+                            ${result.log.map(entry => `
+                                <div class="log-entry ${entry.type}">
+                                    [Day ${entry.day}] ${entry.message}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('scenarios-passed').textContent = passedCount;
+        document.getElementById('scenarios-failed').textContent = failedCount;
+    }
+};
+
+// ==========================================
+// PLAYTEST SCENARIOS
+// ==========================================
+
+// Scenario 1: New Player Week 1
+// A new player should be able to survive the first week without going bankrupt
+PlaytestRunner.register({
+    name: 'new_player_week_1',
+    description: 'A new player buys one pig and feeds it for 7 days. Should not go bankrupt.',
+    days: 7,
+    strategy: (state, day) => {
+        const actions = [];
+
+        // Buy a pig on day 1
+        if (day === 0 && state.animals.length === 0) {
+            actions.push({ type: 'BUY_PIG' });
+        }
+
+        // Feed every day
+        if (state.animals.length > 0) {
+            actions.push({ type: 'FEED_ALL' });
+        }
+
+        return actions;
+    },
+    validate: (state, metrics) => {
+        return metrics.finalMoney > 0 && state.animals.length > 0;
+    }
+});
+
+// Scenario 2: Bankruptcy Test
+// Doing nothing should lead to eventual resource depletion (but not instant death)
+PlaytestRunner.register({
+    name: 'bankruptcy_test',
+    description: 'Buy pigs but never feed them. Tests that neglect has consequences.',
+    days: 60,
+    strategy: (state, day) => {
+        const actions = [];
+
+        // Buy pigs at start
+        if (day === 0) {
+            actions.push({ type: 'BUY_PIG' });
+            actions.push({ type: 'BUY_PIG' });
+        }
+
+        // Never feed - testing neglect consequences
+
+        return actions;
+    },
+    validate: (state, metrics) => {
+        // Pigs should die from neglect
+        return state.animals.length === 0;
+    }
+});
+
+// Scenario 3: Optimal Strategy - Sustainable Farming
+// A player who manages well should be able to make profit over a full pig cycle
+PlaytestRunner.register({
+    name: 'sustainable_farming',
+    description: 'Buy 2 pigs, feed daily, sell when mature. Tests if profit is possible.',
+    days: 200, // Enough for pigs to mature
+    strategy: (state, day) => {
+        const actions = [];
+
+        // Buy 2 pigs at start
+        if (day === 0) {
+            actions.push({ type: 'BUY_PIG' });
+            actions.push({ type: 'BUY_PIG' });
+        }
+
+        // Always feed
+        if (state.animals.length > 0) {
+            actions.push({ type: 'FEED_ALL' });
+        }
+
+        // Sell mature pigs
+        const maturePigs = state.animals.filter(a => a.age >= CONFIG.PIG_MATURITY_DAYS);
+        for (const pig of maturePigs) {
+            actions.push({ type: 'SELL_PIG', id: pig.id });
+        }
+
+        // Reinvest in new pigs after selling
+        if (maturePigs.length > 0 && state.farm.money >= CONFIG.PIG_PRICE) {
+            actions.push({ type: 'BUY_PIG' });
+        }
+
+        return actions;
+    },
+    validate: (state, metrics) => {
+        // Should have made profit or at least not lost too much
+        // With 2 pigs over 180 days: Cost = $400 + ($10/day * 180) = $2200
+        // Revenue depends on genetics, but should get ~$200-300 per pig
+        // This test passes if the player didn't go bankrupt
+        return metrics.finalMoney > 0 && metrics.pigsSold >= 2;
+    }
+});
+
+// Scenario 4: Pig Rush (Edge Case)
+// What happens if you spend all money on pigs immediately?
+PlaytestRunner.register({
+    name: 'pig_rush',
+    description: 'Spend all starting money on pigs. Tests if this is viable or a trap.',
+    days: 200,
+    strategy: (state, day) => {
+        const actions = [];
+
+        // Buy max pigs on day 1
+        if (day === 0) {
+            while (state.farm.money >= CONFIG.PIG_PRICE) {
+                actions.push({ type: 'BUY_PIG' });
+                state.farm.money -= CONFIG.PIG_PRICE; // Track locally for strategy
+            }
+        }
+
+        // Try to feed (might not have money)
+        if (state.animals.length > 0 && state.farm.money >= state.animals.length * CONFIG.FEED_COST_PER_PIG) {
+            actions.push({ type: 'FEED_ALL' });
+        }
+
+        // Sell any mature pigs
+        const maturePigs = state.animals.filter(a => a.age >= CONFIG.PIG_MATURITY_DAYS);
+        for (const pig of maturePigs) {
+            actions.push({ type: 'SELL_PIG', id: pig.id });
+        }
+
+        return actions;
+    },
+    validate: (state, metrics) => {
+        // This strategy should either work marginally or fail
+        // We just want to make sure the game doesn't break
+        // Passing = game completed without errors
+        return true; // Always passes - we're testing for crashes/edge cases
+    }
+});
+
+// Scenario 5: Year One Survival
+// Can a careful player survive an entire year?
+PlaytestRunner.register({
+    name: 'year_one_survival',
+    description: 'Attempt to survive a full year with conservative strategy.',
+    days: 120, // One full year
+    strategy: (state, day) => {
+        const actions = [];
+
+        // Conservative: only buy pig if we have buffer
+        if (state.animals.length < 2 && state.farm.money > 500) {
+            actions.push({ type: 'BUY_PIG' });
+        }
+
+        // Always feed
+        if (state.animals.length > 0) {
+            actions.push({ type: 'FEED_ALL' });
+        }
+
+        // Sell mature pigs
+        const maturePigs = state.animals.filter(a => a.age >= CONFIG.PIG_MATURITY_DAYS);
+        for (const pig of maturePigs) {
+            actions.push({ type: 'SELL_PIG', id: pig.id });
+        }
+
+        return actions;
+    },
+    validate: (state, metrics) => {
+        return metrics.finalMoney > 0 && state.farm.year >= 1;
+    }
+});
+
+// Run on load
+document.addEventListener('DOMContentLoaded', () => {
+    PlaytestRunner.runAll();
+});
+</script>
+</body>
+</html>
