@@ -4,6 +4,29 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.3.0] - 2026-01-15
+
+### Added
+- **Skill/Experience System**
+  - Press K to view skills panel
+  - Four skills: Farming, Fishing, Foraging, Mining
+  - Gain XP from relevant activities
+  - 100 XP per level
+  - 5% bonus per level (yield, catch rate, etc.)
+  - Level-up notifications
+
+- **Mouse Click Interaction**
+  - Click on nearby tiles to interact (within 2 tiles)
+  - Yellow hover indicator shows clickable tiles
+  - No more struggling to line up E key interactions!
+  - Click to till, water, plant, harvest, forage, mine
+
+### Changed
+- Skills saved/loaded with game state
+- Version bumped to 1.3.0
+
+---
+
 ## [1.2.0] - 2026-01-15
 
 ### Added

@@ -269,8 +269,8 @@ canvas {
     </div>
 
     <div id="instructions">
-        WASD: Move | E: Interact<br>
-        1-8: Select | C: Craft | H: Help
+        WASD: Move | Click/E: Interact<br>
+        1-8: Select | C: Craft | K: Skills | H: Help
     </div>
 
     <div id="title-screen">
@@ -286,8 +286,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v1.2.0
-// Save your progress!
+// TEXAS FARMS - THE GAME v1.3.0
+// Skills and click-to-interact!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -1011,6 +1011,7 @@ const Game = {
     animals: [],
     camera: { x: 0, y: 0 },
     keys: { up: false, down: false, left: false, right: false, interact: false },
+    hoverTile: null, // {x, y} of tile mouse is hovering over
     money: 500,
     day: 1,
     season: 'Spring',
@@ -1068,6 +1069,15 @@ const Game = {
         { id: 'storm_survivor', name: 'Storm Chaser', desc: 'Experience a storm', emoji: '⛈️' },
     ],
     npcsTalkedTo: [],
+
+    // Skills system
+    skills: {
+        farming: { level: 1, xp: 0 },
+        fishing: { level: 1, xp: 0 },
+        foraging: { level: 1, xp: 0 },
+        mining: { level: 1, xp: 0 }
+    },
+    XP_PER_LEVEL: 100, // XP needed for each level up
 
     // Tutorial steps
     TUTORIAL_STEPS: [
@@ -1163,9 +1173,134 @@ const Game = {
         // Touch controls for mobile
         this.setupTouchControls();
 
+        // Mouse click for interaction
+        this.canvas.addEventListener('click', (e) => this.handleClick(e));
+
+        // Mouse move for hover indicator
+        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.canvas.addEventListener('mouseleave', () => this.hoverTile = null);
+
         // Show continue button if save exists
         if (this.hasSaveGame()) {
             document.getElementById('continue-btn').style.display = 'inline-block';
+        }
+    },
+
+    handleClick(e) {
+        if (!this.running || this.dialogOpen) return;
+
+        // Convert click position to world coordinates
+        const rect = this.canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left + this.camera.x;
+        const clickY = e.clientY - rect.top + this.camera.y;
+
+        // Convert to tile coordinates
+        const tileX = Math.floor(clickX / TILE_SIZE);
+        const tileY = Math.floor(clickY / TILE_SIZE);
+
+        // Check if click is within interaction range of player (2 tiles)
+        const playerTileX = Math.floor(this.player.x / TILE_SIZE);
+        const playerTileY = Math.floor(this.player.y / TILE_SIZE);
+        const dist = Math.abs(tileX - playerTileX) + Math.abs(tileY - playerTileY);
+
+        if (dist <= 2 && dist > 0) {
+            // Face the clicked tile
+            if (tileX > playerTileX) this.player.direction = 'right';
+            else if (tileX < playerTileX) this.player.direction = 'left';
+            else if (tileY > playerTileY) this.player.direction = 'down';
+            else if (tileY < playerTileY) this.player.direction = 'up';
+
+            // Perform interaction at clicked tile
+            this.tryInteractAt(tileX, tileY);
+        }
+    },
+
+    handleMouseMove(e) {
+        if (!this.running) return;
+
+        const rect = this.canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left + this.camera.x;
+        const clickY = e.clientY - rect.top + this.camera.y;
+
+        const tileX = Math.floor(clickX / TILE_SIZE);
+        const tileY = Math.floor(clickY / TILE_SIZE);
+
+        const playerTileX = Math.floor(this.player.x / TILE_SIZE);
+        const playerTileY = Math.floor(this.player.y / TILE_SIZE);
+        const dist = Math.abs(tileX - playerTileX) + Math.abs(tileY - playerTileY);
+
+        if (dist <= 2 && dist > 0) {
+            this.hoverTile = { x: tileX, y: tileY };
+        } else {
+            this.hoverTile = null;
+        }
+    },
+
+    tryInteractAt(tileX, tileY) {
+        // Check for NPCs at clicked tile
+        const nearbyNPC = this.npcs.find(npc => {
+            const nx = Math.floor(npc.x / TILE_SIZE);
+            const ny = Math.floor(npc.y / TILE_SIZE);
+            return nx === tileX && ny === tileY;
+        });
+
+        if (nearbyNPC) {
+            this.showNPCDialog(nearbyNPC);
+            return;
+        }
+
+        // Check for animals at clicked tile
+        const nearbyAnimal = this.animals.find(a => {
+            const ax = Math.floor(a.x / TILE_SIZE);
+            const ay = Math.floor(a.y / TILE_SIZE);
+            return ax === tileX && ay === tileY;
+        });
+
+        if (nearbyAnimal) {
+            this.showAnimalDialog(nearbyAnimal);
+            return;
+        }
+
+        // Check tiles
+        if (tileX >= 0 && tileX < WORLD_WIDTH && tileY >= 0 && tileY < WORLD_HEIGHT) {
+            const tile = this.world[tileY][tileX];
+
+            // Check for building interactions
+            if (tile === TILES.MARKET_STALL) {
+                this.showMarketDialog();
+                return;
+            } else if (tile === TILES.TROUGH) {
+                this.feedAnimals();
+                return;
+            } else if (tile === TILES.DOOR && tileX >= 20) {
+                this.showBarnDialog();
+                return;
+            } else if (tile === TILES.DOOR && tileX < 15) {
+                this.showHouseDialog();
+                return;
+            } else if (tile === TILES.SHIPPING_BIN) {
+                this.showShippingBinDialog();
+                return;
+            } else if (tile === TILES.BERRY_BUSH) {
+                this.forageBerryBush(tileX, tileY);
+                return;
+            }
+
+            // Check for crop harvest
+            const crop = this.crops.find(c => c.x === tileX && c.y === tileY);
+            if (crop) {
+                const seedItem = Object.values(ITEMS).find(i => i.crop === crop.type);
+                if (crop.age >= seedItem.growDays) {
+                    this.harvestCrop(crop);
+                    return;
+                }
+            }
+
+            // Use currently selected tool/item
+            const selectedItem = this.inventory[this.selectedSlot];
+            if (selectedItem) {
+                this.useItem(selectedItem.item, tileX, tileY, tile, crop);
+            }
         }
     },
 
@@ -1210,6 +1345,11 @@ const Game = {
         // C for crafting
         if (e.key === 'c' || e.key === 'C') {
             this.showCraftingDialog();
+        }
+
+        // K for skills
+        if (e.key === 'k' || e.key === 'K') {
+            this.showSkillsDialog();
         }
     },
 
@@ -1373,29 +1513,31 @@ const Game = {
     showHelpDialog() {
         let html = '<strong>Game Controls</strong><br><br>';
         html += '<b>Movement:</b> WASD or Arrow Keys<br>';
-        html += '<b>Interact/Use Tool:</b> E or Spacebar<br>';
+        html += '<b>Interact:</b> Click nearby tiles or press E<br>';
         html += '<b>Select Item:</b> 1-8 keys<br>';
         html += '<b>Item Info:</b> Q key<br>';
-        html += '<b>Help:</b> H key<br>';
+        html += '<b>Skills:</b> K key<br>';
         html += '<b>Crafting:</b> C key<br>';
         html += '<b>Achievements:</b> Tab key<br>';
-        html += '<b>Close Menu:</b> Escape<br><br>';
+        html += '<b>Help:</b> H key<br><br>';
 
         html += '<b>Tools:</b><br>';
         html += '- Hoe: Till grass into farmland<br>';
-        html += '- Watering Can: Water crops (they grow when watered)<br>';
+        html += '- Watering Can: Water crops<br>';
         html += '- Pickaxe: Break rocks for stone<br>';
         html += '- Axe: Chop stumps for wood<br>';
         html += '- Fishing Rod: Fish in the pond<br><br>';
 
+        html += '<b>Skills (K key):</b><br>';
+        html += '- Farming: +5% crop yield per level<br>';
+        html += '- Fishing: +5% rare fish chance per level<br>';
+        html += '- Foraging: +5% forage quantity per level<br>';
+        html += '- Mining: +5% resource yield per level<br><br>';
+
         html += '<b>Tips:</b><br>';
-        html += '- Plant seeds on tilled soil<br>';
-        html += '- Water crops daily for them to grow<br>';
-        html += '- Use the 📦 Shipping Bin to sell overnight<br>';
-        html += '- Forage 🫐 berries from bushes around the map<br>';
-        html += '- Craft sprinklers (C key) to auto-water crops<br>';
-        html += '- Sleep at farmhouse to restore energy<br>';
-        html += '- Day changes every 30 seconds<br>';
+        html += '- Click tiles within 2 tiles to interact!<br>';
+        html += '- Yellow outline shows clickable tiles<br>';
+        html += '- Game auto-saves at the end of each day<br>';
 
         this.showDialog(html, `<button onclick="Game.closeDialog()">Got it!</button>`);
     },
@@ -1499,6 +1641,63 @@ const Game = {
         Audio.play('harvest');
         this.showToast(`Crafted ${recipe.result.emoji} ${recipe.result.name}!`);
         this.showCraftingDialog(); // Refresh
+    },
+
+    showSkillsDialog() {
+        let html = '<strong>📊 Skills</strong><br><br>';
+
+        const skillInfo = {
+            farming: { emoji: '🌾', name: 'Farming', bonus: 'Crop sell price' },
+            fishing: { emoji: '🎣', name: 'Fishing', bonus: 'Rare fish chance' },
+            foraging: { emoji: '🍄', name: 'Foraging', bonus: 'Forage quantity' },
+            mining: { emoji: '⛏️', name: 'Mining', bonus: 'Resource yield' }
+        };
+
+        Object.entries(this.skills).forEach(([key, skill]) => {
+            const info = skillInfo[key];
+            const xpToNext = this.XP_PER_LEVEL - (skill.xp % this.XP_PER_LEVEL);
+            const progress = Math.floor((skill.xp % this.XP_PER_LEVEL) / this.XP_PER_LEVEL * 100);
+            const bonusPercent = (skill.level - 1) * 5;
+
+            html += `<div style="margin-bottom:10px">`;
+            html += `${info.emoji} <b>${info.name}</b> - Level ${skill.level}<br>`;
+            html += `<span style="color:#888">+${bonusPercent}% ${info.bonus}</span><br>`;
+            html += `<div style="background:#333;height:8px;border-radius:4px;width:150px;display:inline-block">`;
+            html += `<div style="background:#4ade80;height:100%;width:${progress}%;border-radius:4px"></div>`;
+            html += `</div> <span style="color:#666;font-size:12px">${xpToNext} XP to next</span>`;
+            html += `</div>`;
+        });
+
+        html += `<br><em style="color:#888">Gain XP by doing activities!</em>`;
+
+        this.showDialog(html, `<button onclick="Game.closeDialog()">Close</button>`);
+    },
+
+    addSkillXP(skillName, amount) {
+        const skill = this.skills[skillName];
+        if (!skill) return;
+
+        const oldLevel = skill.level;
+        skill.xp += amount;
+        skill.level = 1 + Math.floor(skill.xp / this.XP_PER_LEVEL);
+
+        if (skill.level > oldLevel) {
+            const skillNames = {
+                farming: 'Farming',
+                fishing: 'Fishing',
+                foraging: 'Foraging',
+                mining: 'Mining'
+            };
+            this.showToast(`⬆️ ${skillNames[skillName]} leveled up to ${skill.level}!`);
+            Audio.play('catch');
+        }
+    },
+
+    getSkillBonus(skillName) {
+        const skill = this.skills[skillName];
+        if (!skill) return 1;
+        // 5% bonus per level above 1
+        return 1 + (skill.level - 1) * 0.05;
     },
 
     gameLoop() {
@@ -1756,6 +1955,9 @@ const Game = {
             }
         });
         this.clearedResources = this.clearedResources.filter(r => r.respawnDay > this.day);
+
+        // Auto-save at end of each day
+        this.saveGame();
     },
 
     tryInteract() {
@@ -1929,9 +2131,13 @@ const Game = {
                     this.world[tileY][tileX] = TILES.GRASS;
                     this.clearedResources.push({ x: tileX, y: tileY, type: TILES.STONE, respawnDay: this.day + 7 });
                     this.energy -= 8;
-                    this.addToInventory(ITEMS.STONE, 1 + Math.floor(Math.random() * 2));
+                    // Apply mining skill bonus
+                    const stoneBase = 1 + Math.floor(Math.random() * 2);
+                    const stoneYield = Math.floor(stoneBase * this.getSkillBonus('mining'));
+                    this.addToInventory(ITEMS.STONE, stoneYield);
+                    this.addSkillXP('mining', 5);
                     Audio.play('pickup');
-                    this.showToast('Got stone!');
+                    this.showToast(`Got ${stoneYield} stone! (+5 Mining XP)`);
                 } else {
                     this.showToast("Can't mine that!");
                     Audio.play('error');
@@ -1944,9 +2150,13 @@ const Game = {
                     this.world[tileY][tileX] = TILES.GRASS;
                     this.clearedResources.push({ x: tileX, y: tileY, type: TILES.WOOD, respawnDay: this.day + 7 });
                     this.energy -= 8;
-                    this.addToInventory(ITEMS.WOOD, 2 + Math.floor(Math.random() * 2));
+                    // Apply mining skill bonus
+                    const woodBase = 2 + Math.floor(Math.random() * 2);
+                    const woodYield = Math.floor(woodBase * this.getSkillBonus('mining'));
+                    this.addToInventory(ITEMS.WOOD, woodYield);
+                    this.addSkillXP('mining', 5);
                     Audio.play('pickup');
-                    this.showToast('Got wood!');
+                    this.showToast(`Got ${woodYield} wood! (+5 Mining XP)`);
                 } else {
                     this.showToast("Can't chop that!");
                     Audio.play('error');
@@ -2048,13 +2258,18 @@ const Game = {
             Audio.play('catch');
             this.completeTutorialAction('caught_fish');
             this.unlockAchievement('first_fish');
+
+            // Gain fishing XP (more for rare fish)
+            const xpGain = fish.type === 'junk' ? 2 : Math.round(fish.sellPrice / 10);
+            this.addSkillXP('fishing', xpGain);
+
             if (fish.type === 'junk') {
-                this.showToast(`Caught: ${fish.emoji} ${fish.name}... Better luck next time!`);
+                this.showToast(`Caught: ${fish.emoji} ${fish.name}... (+${xpGain} Fishing XP)`);
             } else if (fish.id === 'golden_fish') {
-                this.showToast(`WOW! ${fish.emoji} A GOLDEN FISH! Worth $${fish.sellPrice}!`);
+                this.showToast(`WOW! ${fish.emoji} A GOLDEN FISH! (+${xpGain} Fishing XP)`);
                 this.unlockAchievement('golden_catch');
             } else {
-                this.showToast(`Caught: ${fish.emoji} ${fish.name}! Worth $${fish.sellPrice}`);
+                this.showToast(`Caught: ${fish.emoji} ${fish.name}! (+${xpGain} Fishing XP)`);
             }
         }
     },
@@ -2109,8 +2324,10 @@ const Game = {
         const cropItem = Object.values(ITEMS).find(i => i.id === crop.type);
         if (!cropItem) return;
 
-        // Add to inventory
-        this.addToInventory(cropItem, 1 + Math.floor(Math.random() * 2));
+        // Add to inventory with farming skill bonus
+        const baseYield = 1 + Math.floor(Math.random() * 2);
+        const bonusYield = Math.floor(baseYield * this.getSkillBonus('farming'));
+        this.addToInventory(cropItem, bonusYield);
 
         // Remove crop from list
         this.crops = this.crops.filter(c => c !== crop);
@@ -2118,9 +2335,12 @@ const Game = {
         // Reset tile to tilled
         this.world[crop.y][crop.x] = TILES.TILLED;
 
+        // Gain farming XP
+        this.addSkillXP('farming', 10);
+
         this.energy -= 2;
         Audio.play('harvest');
-        this.showToast(`Harvested ${cropItem.name}!`);
+        this.showToast(`Harvested ${cropItem.name}! (+10 Farming XP)`);
         this.unlockAchievement('first_crop');
     },
 
@@ -2321,9 +2541,16 @@ const Game = {
             item = ITEMS.WILD_HONEY;
         }
 
-        this.addToInventory(item, 1 + Math.floor(Math.random() * 2));
+        // Apply foraging skill bonus to quantity
+        const baseQty = 1 + Math.floor(Math.random() * 2);
+        const bonusQty = Math.floor(baseQty * this.getSkillBonus('foraging'));
+        this.addToInventory(item, bonusQty);
+
+        // Gain foraging XP
+        this.addSkillXP('foraging', 8);
+
         Audio.play('harvest');
-        this.showToast(`Found ${item.emoji} ${item.name}!`);
+        this.showToast(`Found ${item.emoji} ${item.name} x${bonusQty}! (+8 Foraging XP)`);
 
         // Set cooldown for 3 days
         this.forageCooldowns[key] = this.day + 3;
@@ -2629,6 +2856,7 @@ const Game = {
             forageCooldowns: this.forageCooldowns,
             achievements: this.achievements,
             npcsTalkedTo: this.npcsTalkedTo,
+            skills: this.skills,
             playerX: this.player.x,
             playerY: this.player.y
         };
@@ -2703,6 +2931,11 @@ const Game = {
             this.forageCooldowns = save.forageCooldowns || {};
             this.achievements = save.achievements || [];
             this.npcsTalkedTo = save.npcsTalkedTo || [];
+
+            // Restore skills
+            if (save.skills) {
+                this.skills = save.skills;
+            }
 
             // Create NPCs
             this.npcs = [
@@ -2880,6 +3113,15 @@ const Game = {
                 ctx.fillText('💧', screenX + 8, screenY + 8);
             }
         });
+
+        // Draw hover tile indicator
+        if (this.hoverTile) {
+            const hoverX = this.hoverTile.x * TILE_SIZE - this.camera.x;
+            const hoverY = this.hoverTile.y * TILE_SIZE - this.camera.y;
+            ctx.strokeStyle = '#ffcc00';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(hoverX + 2, hoverY + 2, TILE_SIZE - 4, TILE_SIZE - 4);
+        }
 
         // Draw animals and NPCs (sorted by Y for depth)
         const entities = [...this.animals, ...this.npcs].sort((a, b) => a.y - b.y);
