@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Texas Farms - The Game</title>
+    <meta name="description" content="A cozy farming simulator based on Texas Farms Vermont. Raise heritage Gloucestershire Old Spot pigs, breed for genetics, and survive Vermont winters.">
+    <link rel="icon" href="/favicon.ico">
+    <style>
+/* ========================================
+   TEXAS FARMS - THE GAME
+   Base Styles & CSS Reset
+   ======================================== */
+
+:root {
+    --forest: #1a2e1a;
+    --forest-light: #2d4a3e;
+    --cream: #f7f4ed;
+    --cream-dark: #ebe6db;
+    --copper: #b87333;
+    --copper-light: #d4915c;
+    --text: #1a1a1a;
+    --text-light: #555;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--forest);
+    color: var(--cream);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* ========================================
+   GAME CONTAINER
+   ======================================== */
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================================
+   SCREENS
+   ======================================== */
+
+.screen {
+    display: none;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Title Screen */
+#title-screen {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+}
+
+.title-logo {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.title-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--cream);
+}
+
+.title-subtitle {
+    font-size: 1rem;
+    color: var(--copper-light);
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+.title-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.btn-primary {
+    background: var(--copper);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--copper-light);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Game Screen */
+#game-screen {
+    background: var(--cream);
+    color: var(--text);
+}
+
+/* HUD */
+#hud {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.hud-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.hud-stat-icon {
+    font-size: 1.1rem;
+}
+
+.hud-stat-value {
+    font-weight: 600;
+}
+
+/* Farm View */
+#farm-view {
+    flex: 1;
+    padding: 1rem;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Animals Area */
+#animals-area {
+    background: #e8e4db;
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 200px;
+}
+
+.animals-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+}
+
+.animals-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.animal-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.animal-card:hover {
+    transform: translateY(-2px);
+}
+
+.animal-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.animal-name {
+    font-weight: 600;
+    color: var(--forest);
+    font-size: 0.9rem;
+}
+
+.animal-status {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.animal-health-bar {
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.animal-health-fill {
+    height: 100%;
+    background: var(--success);
+    transition: width 0.3s;
+}
+
+/* Actions Bar */
+#actions-bar {
+    background: var(--forest);
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+    background: var(--copper);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn:hover {
+    background: var(--copper-light);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   DEBUG PANEL
+   ======================================== */
+
+#debug-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    z-index: 1000;
+}
+
+#debug-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    max-width: 90vw;
+    height: 100vh;
+    background: #1a1a1a;
+    color: #f0f0f0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.8rem;
+}
+
+#debug-panel.open {
+    transform: translateX(0);
+}
+
+.debug-header {
+    background: #2a2a2a;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+.debug-header h3 {
+    color: var(--copper-light);
+}
+
+.debug-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.debug-tabs {
+    display: flex;
+    background: #222;
+}
+
+.debug-tab {
+    flex: 1;
+    padding: 0.75rem;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.debug-tab.active {
+    color: var(--copper-light);
+    border-bottom-color: var(--copper);
+}
+
+.debug-content {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.debug-section {
+    margin-bottom: 1.5rem;
+}
+
+.debug-section-title {
+    color: var(--copper-light);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.debug-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.debug-btn {
+    padding: 0.5rem 0.75rem;
+    background: #333;
+    border: 1px solid #444;
+    color: #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.debug-btn:hover {
+    background: #444;
+}
+
+.debug-state {
+    background: #111;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow: auto;
+    max-height: 300px;
+    white-space: pre-wrap;
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+.debug-log {
+    background: #111;
+    padding: 0.5rem;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow: auto;
+    font-size: 0.7rem;
+}
+
+.log-entry {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #222;
+}
+
+.log-entry.action { color: #4ade80; }
+.log-entry.warning { color: #fbbf24; }
+.log-entry.error { color: #f87171; }
+
+/* ========================================
+   MODALS
+   ======================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: var(--cream);
+    color: var(--text);
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.modal h2 {
+    color: var(--forest);
+    margin-bottom: 1rem;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 600px) {
+    .title-name {
+        font-size: 2rem;
+    }
+
+    #hud {
+        font-size: 0.8rem;
+    }
+
+    .animal-card {
+        min-width: 100px;
+    }
+
+    #debug-panel {
+        width: 100vw;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Title Screen -->
+        <div id="title-screen" class="screen active">
+            <div class="title-logo">🐷</div>
+            <h1 class="title-name">Texas Farms</h1>
+            <p class="title-subtitle">The Game</p>
+            <div class="title-buttons">
+                <button class="btn btn-primary" onclick="Game.newGame()">New Game</button>
+                <button class="btn btn-secondary" onclick="Game.loadGame()" id="continue-btn" style="display: none;">Continue</button>
+            </div>
+            <p style="margin-top: 2rem; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                A farming simulator based on<br>
+                <a href="/home.html" style="color: var(--copper-light);">Texas Farms Vermont</a>
+            </p>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <!-- HUD -->
+            <div id="hud">
+                <div class="hud-stat">
+                    <span class="hud-stat-icon">💰</span>
+                    <span class="hud-stat-value" id="hud-money">$1,000</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="hud-stat-icon">📅</span>
+                    <span class="hud-stat-value" id="hud-date">Day 1, Spring Y1</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="hud-stat-icon">🐷</span>
+                    <span class="hud-stat-value" id="hud-animals">0</span>
+                </div>
+            </div>
+
+            <!-- Farm View -->
+            <div id="farm-view">
+                <div id="animals-area">
+                    <div class="animals-title">Your Animals</div>
+                    <div class="animals-grid" id="animals-grid">
+                        <!-- Animals render here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Bar -->
+            <div id="actions-bar">
+                <button class="action-btn" onclick="Game.dispatch({type: 'BUY_PIG'})">
+                    🐷 Buy Pig ($200)
+                </button>
+                <button class="action-btn" onclick="Game.dispatch({type: 'FEED_ALL'})">
+                    🌾 Feed All ($5/pig)
+                </button>
+                <button class="action-btn" onclick="Game.dispatch({type: 'ADVANCE_DAY'})">
+                    ⏭️ Next Day
+                </button>
+                <button class="action-btn" onclick="Game.save()">
+                    💾 Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Toggle -->
+    <button id="debug-toggle" onclick="Debug.toggle()">🔧 Debug</button>
+
+    <!-- Debug Panel -->
+    <div id="debug-panel">
+        <div class="debug-header">
+            <h3>🔧 Debug Panel</h3>
+            <button class="debug-close" onclick="Debug.toggle()">×</button>
+        </div>
+        <div class="debug-tabs">
+            <button class="debug-tab active" onclick="Debug.showTab('state')">State</button>
+            <button class="debug-tab" onclick="Debug.showTab('controls')">Controls</button>
+            <button class="debug-tab" onclick="Debug.showTab('log')">Log</button>
+        </div>
+        <div class="debug-content">
+            <div id="debug-state-tab" class="debug-tab-content">
+                <div class="debug-section">
+                    <div class="debug-section-title">Game State</div>
+                    <pre class="debug-state" id="debug-state-view">Loading...</pre>
+                </div>
+            </div>
+            <div id="debug-controls-tab" class="debug-tab-content" style="display: none;">
+                <div class="debug-section">
+                    <div class="debug-section-title">Time Controls</div>
+                    <div class="debug-controls">
+                        <button class="debug-btn" onclick="Debug.advanceDays(1)">+1 Day</button>
+                        <button class="debug-btn" onclick="Debug.advanceDays(7)">+7 Days</button>
+                        <button class="debug-btn" onclick="Debug.advanceDays(30)">+30 Days</button>
+                        <button class="debug-btn" onclick="Debug.advanceDays(90)">+Season</button>
+                    </div>
+                </div>
+                <div class="debug-section">
+                    <div class="debug-section-title">Money</div>
+                    <div class="debug-controls">
+                        <button class="debug-btn" onclick="Debug.addMoney(100)">+$100</button>
+                        <button class="debug-btn" onclick="Debug.addMoney(1000)">+$1000</button>
+                        <button class="debug-btn" onclick="Debug.addMoney(-100)">-$100</button>
+                    </div>
+                </div>
+                <div class="debug-section">
+                    <div class="debug-section-title">Animals</div>
+                    <div class="debug-controls">
+                        <button class="debug-btn" onclick="Debug.spawnPig()">Spawn Pig</button>
+                        <button class="debug-btn" onclick="Debug.spawnAdultPig()">Spawn Adult Pig</button>
+                        <button class="debug-btn" onclick="Debug.killAll()">Kill All</button>
+                    </div>
+                </div>
+                <div class="debug-section">
+                    <div class="debug-section-title">Data</div>
+                    <div class="debug-controls">
+                        <button class="debug-btn" onclick="Debug.clearSave()">Clear Save</button>
+                        <button class="debug-btn" onclick="Debug.exportState()">Export JSON</button>
+                    </div>
+                </div>
+            </div>
+            <div id="debug-log-tab" class="debug-tab-content" style="display: none;">
+                <div class="debug-section">
+                    <div class="debug-section-title">Action Log</div>
+                    <div class="debug-log" id="debug-log">
+                        <!-- Log entries here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-content">
+            <!-- Modal content injected here -->
+        </div>
+    </div>
+
+<script>
+/* ========================================
+   TEXAS FARMS - THE GAME
+   Core Game Engine
+   ======================================== */
+
+// ==========================================
+// GAME STATE
+// ==========================================
+
+const DEFAULT_STATE = {
+    meta: {
+        version: "0.1.0",
+        created: null,
+        lastSaved: null,
+        totalPlayTime: 0
+    },
+    farm: {
+        name: "My Farm",
+        money: 1000,
+        day: 1,
+        season: "spring",
+        year: 1
+    },
+    animals: [],
+    stats: {
+        totalAnimalsRaised: 0,
+        totalMoneyEarned: 0,
+        totalMoneySpent: 0,
+        pigsSold: 0
+    }
+};
+
+// ==========================================
+// GAME CONFIG
+// ==========================================
+
+const CONFIG = {
+    PIG_PRICE: 200,
+    FEED_COST_PER_PIG: 5,
+    PIG_SELL_PRICE_BASE: 400,
+    PIG_MATURITY_DAYS: 180,
+    DAYS_PER_SEASON: 30,
+    SEASONS: ['spring', 'summer', 'fall', 'winter']
+};
+
+// ==========================================
+// UTILITY FUNCTIONS
+// ==========================================
+
+function generateId() {
+    return 'id_' + Math.random().toString(36).substr(2, 9);
+}
+
+function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function formatMoney(amount) {
+    return '$' + amount.toLocaleString();
+}
+
+function getSeasonIndex(season) {
+    return CONFIG.SEASONS.indexOf(season);
+}
+
+function getNextSeason(season) {
+    const idx = getSeasonIndex(season);
+    return CONFIG.SEASONS[(idx + 1) % 4];
+}
+
+// ==========================================
+// ANIMAL FACTORY
+// ==========================================
+
+function createPig(name = null) {
+    const names = ['Wilbur', 'Babe', 'Porky', 'Hamlet', 'Petunia', 'Spot', 'Chester', 'Rosie'];
+    return {
+        id: generateId(),
+        type: 'gos_pig',
+        name: name || names[Math.floor(Math.random() * names.length)],
+        age: 0,
+        health: 100,
+        happiness: 80,
+        fed: true,
+        daysSinceFed: 0,
+        genetics: {
+            marbling: 0.5 + Math.random() * 0.3,
+            growthRate: 0.5 + Math.random() * 0.3,
+            size: 0.5 + Math.random() * 0.3
+        }
+    };
+}
+
+// ==========================================
+// REDUCERS (State Mutations)
+// ==========================================
+
+function reduce(state, action) {
+    const newState = deepClone(state);
+
+    switch (action.type) {
+        case 'BUY_PIG': {
+            if (newState.farm.money < CONFIG.PIG_PRICE) {
+                Debug.log('Cannot afford pig!', 'warning');
+                return state;
+            }
+            const pig = createPig();
+            newState.animals.push(pig);
+            newState.farm.money -= CONFIG.PIG_PRICE;
+            newState.stats.totalMoneySpent += CONFIG.PIG_PRICE;
+            newState.stats.totalAnimalsRaised++;
+            Debug.log(`Bought pig: ${pig.name}`, 'action');
+            return newState;
+        }
+
+        case 'SELL_PIG': {
+            const idx = newState.animals.findIndex(a => a.id === action.id);
+            if (idx === -1) return state;
+
+            const pig = newState.animals[idx];
+            const price = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * pig.genetics.size * (pig.age / CONFIG.PIG_MATURITY_DAYS));
+
+            newState.animals.splice(idx, 1);
+            newState.farm.money += price;
+            newState.stats.totalMoneyEarned += price;
+            newState.stats.pigsSold++;
+            Debug.log(`Sold ${pig.name} for ${formatMoney(price)}`, 'action');
+            return newState;
+        }
+
+        case 'FEED_ALL': {
+            const pigCount = newState.animals.filter(a => a.type === 'gos_pig').length;
+            const cost = pigCount * CONFIG.FEED_COST_PER_PIG;
+
+            if (newState.farm.money < cost) {
+                Debug.log('Cannot afford to feed all pigs!', 'warning');
+                return state;
+            }
+
+            newState.farm.money -= cost;
+            newState.stats.totalMoneySpent += cost;
+            newState.animals.forEach(a => {
+                if (a.type === 'gos_pig') {
+                    a.fed = true;
+                    a.daysSinceFed = 0;
+                    a.happiness = Math.min(100, a.happiness + 5);
+                }
+            });
+            Debug.log(`Fed ${pigCount} pigs for ${formatMoney(cost)}`, 'action');
+            return newState;
+        }
+
+        case 'ADVANCE_DAY': {
+            newState.farm.day++;
+
+            // Check season change
+            if (newState.farm.day > CONFIG.DAYS_PER_SEASON) {
+                newState.farm.day = 1;
+                newState.farm.season = getNextSeason(newState.farm.season);
+                if (newState.farm.season === 'spring') {
+                    newState.farm.year++;
+                }
+                Debug.log(`Season changed to ${newState.farm.season}`, 'action');
+            }
+
+            // Age and process animals
+            newState.animals.forEach(animal => {
+                animal.age++;
+                animal.fed = false;
+                animal.daysSinceFed++;
+
+                // Hunger effects
+                if (animal.daysSinceFed > 1) {
+                    animal.health -= 5;
+                    animal.happiness -= 10;
+                }
+
+                // Death check
+                if (animal.health <= 0) {
+                    Debug.log(`${animal.name} died from neglect!`, 'error');
+                }
+            });
+
+            // Remove dead animals
+            newState.animals = newState.animals.filter(a => a.health > 0);
+
+            Debug.log(`Advanced to Day ${newState.farm.day}`, 'action');
+            return newState;
+        }
+
+        case 'ADD_MONEY': {
+            newState.farm.money += action.amount;
+            return newState;
+        }
+
+        case 'SPAWN_PIG': {
+            const pig = createPig();
+            if (action.age) pig.age = action.age;
+            newState.animals.push(pig);
+            newState.stats.totalAnimalsRaised++;
+            return newState;
+        }
+
+        case 'KILL_ALL': {
+            newState.animals = [];
+            return newState;
+        }
+
+        default:
+            return state;
+    }
+}
+
+// ==========================================
+// GAME OBJECT
+// ==========================================
+
+const Game = {
+    state: null,
+
+    init() {
+        // Check for saved game
+        const saved = localStorage.getItem('texasfarms_save');
+        if (saved) {
+            document.getElementById('continue-btn').style.display = 'block';
+        }
+    },
+
+    newGame() {
+        this.state = deepClone(DEFAULT_STATE);
+        this.state.meta.created = Date.now();
+        this.showScreen('game-screen');
+        this.render();
+        Debug.log('New game started', 'action');
+    },
+
+    loadGame() {
+        const saved = localStorage.getItem('texasfarms_save');
+        if (saved) {
+            try {
+                this.state = JSON.parse(saved);
+                this.showScreen('game-screen');
+                this.render();
+                Debug.log('Game loaded', 'action');
+            } catch (e) {
+                Debug.log('Failed to load save', 'error');
+                this.newGame();
+            }
+        }
+    },
+
+    save() {
+        if (!this.state) return;
+        this.state.meta.lastSaved = Date.now();
+        localStorage.setItem('texasfarms_save', JSON.stringify(this.state));
+        Debug.log('Game saved', 'action');
+    },
+
+    dispatch(action) {
+        if (!this.state) return;
+        this.state = reduce(this.state, action);
+        this.render();
+        Debug.updateStateView();
+    },
+
+    showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    },
+
+    render() {
+        if (!this.state) return;
+
+        // Update HUD
+        document.getElementById('hud-money').textContent = formatMoney(this.state.farm.money);
+        document.getElementById('hud-date').textContent =
+            `Day ${this.state.farm.day}, ${this.state.farm.season.charAt(0).toUpperCase() + this.state.farm.season.slice(1)} Y${this.state.farm.year}`;
+        document.getElementById('hud-animals').textContent = this.state.animals.length;
+
+        // Render animals
+        const grid = document.getElementById('animals-grid');
+        grid.innerHTML = '';
+
+        if (this.state.animals.length === 0) {
+            grid.innerHTML = '<p style="color: #888; font-style: italic;">No animals yet. Buy your first pig!</p>';
+        } else {
+            this.state.animals.forEach(animal => {
+                const card = document.createElement('div');
+                card.className = 'animal-card';
+                card.onclick = () => this.showAnimalModal(animal);
+
+                const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+                const status = isMature ? '✅ Ready to sell' : `${animal.age}/${CONFIG.PIG_MATURITY_DAYS} days`;
+
+                card.innerHTML = `
+                    <div class="animal-emoji">${animal.fed ? '🐷' : '🐷💤'}</div>
+                    <div class="animal-name">${animal.name}</div>
+                    <div class="animal-status">${status}</div>
+                    <div class="animal-health-bar">
+                        <div class="animal-health-fill" style="width: ${animal.health}%; background: ${animal.health > 50 ? 'var(--success)' : animal.health > 25 ? 'var(--warning)' : 'var(--danger)'}"></div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+    },
+
+    showAnimalModal(animal) {
+        const isMature = animal.age >= CONFIG.PIG_MATURITY_DAYS;
+        const sellPrice = Math.floor(CONFIG.PIG_SELL_PRICE_BASE * animal.genetics.size * (animal.age / CONFIG.PIG_MATURITY_DAYS));
+
+        const modal = document.getElementById('modal-content');
+        modal.innerHTML = `
+            <h2>🐷 ${animal.name}</h2>
+            <p><strong>Age:</strong> ${animal.age} days</p>
+            <p><strong>Health:</strong> ${animal.health}%</p>
+            <p><strong>Happiness:</strong> ${animal.happiness}%</p>
+            <p><strong>Fed today:</strong> ${animal.fed ? 'Yes' : 'No'}</p>
+            <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
+            <p><strong>Genetics:</strong></p>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li>Marbling: ${Math.round(animal.genetics.marbling * 100)}%</li>
+                <li>Growth Rate: ${Math.round(animal.genetics.growthRate * 100)}%</li>
+                <li>Size: ${Math.round(animal.genetics.size * 100)}%</li>
+            </ul>
+            <p><strong>Sell Price:</strong> ${formatMoney(sellPrice)} ${isMature ? '✅' : '(not mature)'}</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                <button class="btn btn-primary" onclick="Game.dispatch({type: 'SELL_PIG', id: '${animal.id}'}); Game.closeModal();" ${!isMature ? 'disabled' : ''}>
+                    Sell for ${formatMoney(sellPrice)}
+                </button>
+                <button class="btn btn-secondary" onclick="Game.closeModal()">Close</button>
+            </div>
+        `;
+        document.getElementById('modal-overlay').classList.add('open');
+    },
+
+    closeModal() {
+        document.getElementById('modal-overlay').classList.remove('open');
+    }
+};
+
+// ==========================================
+// DEBUG PANEL
+// ==========================================
+
+const Debug = {
+    logs: [],
+
+    toggle() {
+        document.getElementById('debug-panel').classList.toggle('open');
+        this.updateStateView();
+    },
+
+    showTab(tabName) {
+        document.querySelectorAll('.debug-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.debug-tab-content').forEach(t => t.style.display = 'none');
+
+        event.target.classList.add('active');
+        document.getElementById(`debug-${tabName}-tab`).style.display = 'block';
+    },
+
+    updateStateView() {
+        if (Game.state) {
+            document.getElementById('debug-state-view').textContent = JSON.stringify(Game.state, null, 2);
+        }
+    },
+
+    log(message, type = 'info') {
+        const entry = { time: new Date().toLocaleTimeString(), message, type };
+        this.logs.unshift(entry);
+        if (this.logs.length > 100) this.logs.pop();
+
+        const logEl = document.getElementById('debug-log');
+        logEl.innerHTML = this.logs.map(l =>
+            `<div class="log-entry ${l.type}">[${l.time}] ${l.message}</div>`
+        ).join('');
+    },
+
+    advanceDays(n) {
+        for (let i = 0; i < n; i++) {
+            Game.dispatch({ type: 'ADVANCE_DAY' });
+        }
+    },
+
+    addMoney(amount) {
+        Game.dispatch({ type: 'ADD_MONEY', amount });
+    },
+
+    spawnPig() {
+        Game.dispatch({ type: 'SPAWN_PIG' });
+    },
+
+    spawnAdultPig() {
+        Game.dispatch({ type: 'SPAWN_PIG', age: CONFIG.PIG_MATURITY_DAYS });
+    },
+
+    killAll() {
+        Game.dispatch({ type: 'KILL_ALL' });
+    },
+
+    clearSave() {
+        localStorage.removeItem('texasfarms_save');
+        this.log('Save cleared', 'warning');
+    },
+
+    exportState() {
+        const blob = new Blob([JSON.stringify(Game.state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'texasfarms-save.json';
+        a.click();
+    }
+};
+
+// ==========================================
+// PLAYTEST API (For automated testing)
+// ==========================================
+
+const Playtest = {
+    // Run a scenario and return results
+    async run(scenario) {
+        const game = deepClone(DEFAULT_STATE);
+        const metrics = {
+            startMoney: game.farm.money,
+            actions: [],
+            checkpoints: []
+        };
+
+        // Apply start state if provided
+        if (scenario.startState) {
+            Object.assign(game, scenario.startState);
+        }
+
+        // Run actions
+        for (const action of scenario.actions) {
+            const before = game.farm.money;
+            const result = reduce(game, action);
+            Object.assign(game, result);
+            metrics.actions.push({
+                action: action.type,
+                moneyBefore: before,
+                moneyAfter: game.farm.money
+            });
+        }
+
+        return {
+            finalState: game,
+            metrics: {
+                ...metrics,
+                finalMoney: game.farm.money,
+                daysPlayed: game.farm.day,
+                animalsAlive: game.animals.length,
+                moneyDelta: game.farm.money - metrics.startMoney
+            },
+            passed: scenario.validate ? scenario.validate(game) : true
+        };
+    }
+};
+
+// ==========================================
+// INIT
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    Game.init();
+});
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modal-overlay') {
+        Game.closeModal();
+    }
+});
+</script>
+</body>
+</html>
