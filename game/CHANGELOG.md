@@ -4,6 +4,27 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.8.0] - 2026-01-15
+
+### Added
+- **Toulouse Geese!** 🦢
+  - New animal type: Geese ($75 each)
+  - Goslings (🐣) mature in 100 days
+  - Adult geese produce feathers (🪶) regularly - sell for $40
+  - Geese are farm guardians in real life!
+
+- **Goose Feather Product**
+  - New item: Goose Feather (🪶)
+  - Geese produce feathers every 2-3 days when fed & happy
+  - Click sparkling geese to collect feathers
+
+### Changed
+- All animals now sparkle (✨) when they have a product ready
+- Buy Animals dialog now shows all 4 animal types
+- Version bumped to 1.8.0
+
+---
+
 ## [1.7.0] - 2026-01-15
 
 ### Added

@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v1.3.0
-// Skills and click-to-interact!
+// TEXAS FARMS - THE GAME v1.8.0
+// Added Toulouse Geese!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -393,6 +393,7 @@ const ITEMS = {
     EGG: { id: 'egg', name: 'Egg', emoji: '🥚', type: 'product', sellPrice: 30 },
     WOOL: { id: 'wool', name: 'Wool', emoji: '🧶', type: 'product', sellPrice: 50 },
     TRUFFLE: { id: 'truffle', name: 'Truffle', emoji: '🍄', type: 'product', sellPrice: 250 },
+    FEATHER: { id: 'feather', name: 'Goose Feather', emoji: '🪶', type: 'product', sellPrice: 40 },
     // Craftables
     SPRINKLER: { id: 'sprinkler', name: 'Sprinkler', emoji: '💧', type: 'placeable', desc: 'Auto-waters 8 tiles around it' },
     SCARECROW: { id: 'scarecrow', name: 'Scarecrow', emoji: '🎃', type: 'placeable', desc: 'Protects crops from crows' },
@@ -1031,7 +1032,7 @@ class Animal {
         this.health = 100;
         this.happiness = 80;
         this.hunger = 0;
-        this.weight = type === 'pig' ? 50 : (type === 'chicken' ? 2 : 0.5);
+        this.weight = type === 'pig' ? 50 : (type === 'chicken' ? 2 : (type === 'goose' ? 8 : 0.5));
         this.name = this.generateName();
         this.wanderTimer = 0;
         this.wanderDir = { x: 0, y: 0 };
@@ -1047,33 +1048,41 @@ class Animal {
         const pigNames = ['Wilbur', 'Babe', 'Hamlet', 'Porky', 'Truffle', 'Rosie', 'Chester', 'Penny'];
         const rabbitNames = ['Thumper', 'Flopsy', 'Cotton', 'Peter', 'Hazel', 'Clover'];
         const chickenNames = ['Clucky', 'Henrietta', 'Pecky', 'Goldie', 'Sunny', 'Daisy', 'Nugget', 'Feathers'];
+        const gooseNames = ['Honkers', 'Gander', 'Lucy', 'Toulouse', 'Grey', 'Waddles', 'Goosifer', 'Gigi'];
         if (this.type === 'pig') return pigNames[Math.floor(Math.random() * pigNames.length)];
         if (this.type === 'chicken') return chickenNames[Math.floor(Math.random() * chickenNames.length)];
+        if (this.type === 'goose') return gooseNames[Math.floor(Math.random() * gooseNames.length)];
         return rabbitNames[Math.floor(Math.random() * rabbitNames.length)];
     }
 
     get sprite() {
         if (this.type === 'pig') {
             if (this.age < 60) return '🐷';
-            return '🐖';
+            return this.hasProduct ? '🐖✨' : '🐖';
         }
         if (this.type === 'chicken') {
             if (this.age < 14) return '🐤';
             return this.hasProduct ? '🐔✨' : '🐔';
         }
-        return '🐰';
+        if (this.type === 'goose') {
+            if (this.age < 30) return '🐣';
+            return this.hasProduct ? '🦢✨' : '🦢';
+        }
+        return this.hasProduct ? '🐰✨' : '🐰';
     }
 
     get maturityAge() {
         if (this.type === 'pig') return 180;
         if (this.type === 'chicken') return 21; // 3 weeks to maturity
-        return 90;
+        if (this.type === 'goose') return 100; // ~14 weeks to maturity
+        return 90; // Rabbits
     }
 
     get value() {
         if (this.type === 'pig') return Math.round(this.weight * 3 * this.genetics.quality);
         if (this.type === 'chicken') return Math.round(20 * this.genetics.quality);
-        return Math.round(this.weight * 8 * this.genetics.quality);
+        if (this.type === 'goose') return Math.round(this.weight * 6 * this.genetics.quality);
+        return Math.round(this.weight * 8 * this.genetics.quality); // Rabbits
     }
 
     get canProduce() {
@@ -1120,6 +1129,14 @@ class Animal {
                 return ITEMS.TRUFFLE;
             }
         }
+        if (this.type === 'goose') {
+            // Geese produce feathers regularly
+            if (Math.random() < 0.5) {
+                this.hasProduct = true;
+                this.productCooldown = 2;
+                return ITEMS.FEATHER;
+            }
+        }
         return null;
     }
 
@@ -1129,6 +1146,7 @@ class Animal {
         if (this.type === 'chicken') return ITEMS.EGG;
         if (this.type === 'rabbit') return ITEMS.WOOL;
         if (this.type === 'pig') return ITEMS.TRUFFLE;
+        if (this.type === 'goose') return ITEMS.FEATHER;
         return null;
     }
 
@@ -3037,6 +3055,7 @@ const Game = {
         const pigPrice = 200;
         const rabbitPrice = 50;
         const chickenPrice = 25;
+        const goosePrice = 75;
 
         let html = '<strong>Buy Animals</strong><br><br>';
         html += '<span style="color:#666">Animals produce items when fed & happy!</span><br><br>';
@@ -3049,6 +3068,14 @@ const Game = {
             html += `<span style="color:#888">🐔 Chicken - $${chickenPrice} (need $${chickenPrice - this.money} more)</span><br>`;
         }
         html += '<span style="font-size:11px;color:#888">Lays eggs daily when adult</span><br><br>';
+
+        // Goose - feather production
+        if (this.money >= goosePrice) {
+            options += `<button onclick="Game.buyAnimal('goose')">🦢 Goose - $${goosePrice}</button>`;
+        } else {
+            html += `<span style="color:#888">🦢 Goose - $${goosePrice} (need $${goosePrice - this.money} more)</span><br>`;
+        }
+        html += '<span style="font-size:11px;color:#888">Produces feathers regularly</span><br><br>';
 
         // Rabbit - wool production
         if (this.money >= rabbitPrice) {
@@ -3249,7 +3276,7 @@ const Game = {
     },
 
     buyAnimal(type) {
-        const prices = { pig: 200, rabbit: 50, chicken: 25 };
+        const prices = { pig: 200, rabbit: 50, chicken: 25, goose: 75 };
         const price = prices[type] || 50;
         if (this.money < price) {
             this.showToast("Can't afford that!");
@@ -3298,7 +3325,7 @@ const Game = {
             return;
         }
 
-        const feedCosts = { pig: 5, rabbit: 1, chicken: 1 };
+        const feedCosts = { pig: 5, rabbit: 1, chicken: 1, goose: 2 };
         const cost = hungry.reduce((sum, a) => sum + (feedCosts[a.type] || 1), 0);
 
         if (this.money < cost) {
@@ -3320,7 +3347,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.7.0',
+            version: '1.8.0',
             money: this.money,
             day: this.day,
             season: this.season,
