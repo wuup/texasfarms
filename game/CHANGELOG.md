@@ -4,6 +4,23 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [2.3.0] - 2026-01-15
+
+### Added
+- **Animal Sounds!** 🔊
+  - Each animal type has a unique sound
+  - Pigs: oink-like low sound
+  - Chickens: clucky high-pitched sound
+  - Geese: honking mid-range sound
+  - Rabbits: soft thumping sound
+  - Sounds play when petting or collecting products
+
+### Changed
+- Product collection now plays animal sound instead of harvest sound
+- Version bumped to 2.3.0
+
+---
+
 ## [2.2.0] - 2026-01-15
 
 ### Added
