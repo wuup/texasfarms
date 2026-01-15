@@ -4,6 +4,28 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [2.1.0] - 2026-01-15
+
+### Added
+- **Goose Eggs!** 🥚
+  - Toulouse geese now produce large eggs (40% chance) in addition to feathers
+  - Goose eggs sell for $75 (vs $30 for chicken eggs)
+  - Perfect for baking in real life!
+
+- **New Achievement**
+  - Golden Goose: Collect 5 goose eggs 🥚
+
+- **Goose Egg Tracking**
+  - Lifetime stats now track goose eggs collected
+
+### Changed
+- Geese now described as producing "feathers & large eggs" in shop
+- Crafting menu shows goose eggs in materials list
+- Total achievements: 29
+- Version bumped to 2.1.0
+
+---
+
 ## [2.0.0] - 2026-01-15
 
 ### Added

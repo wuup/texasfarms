@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v2.0.0
-// Artisan goods crafting system!
+// TEXAS FARMS - THE GAME v2.1.0
+// Goose eggs and more!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -391,6 +391,7 @@ const ITEMS = {
     WILD_HONEY: { id: 'wild_honey', name: 'Wild Honey', emoji: '🍯', type: 'forage', sellPrice: 100 },
     // Animal products
     EGG: { id: 'egg', name: 'Egg', emoji: '🥚', type: 'product', sellPrice: 30 },
+    GOOSE_EGG: { id: 'goose_egg', name: 'Goose Egg', emoji: '🥚', type: 'product', sellPrice: 75, desc: 'Large egg, prized for baking' },
     WOOL: { id: 'wool', name: 'Wool', emoji: '🧶', type: 'product', sellPrice: 50 },
     TRUFFLE: { id: 'truffle', name: 'Truffle', emoji: '🍄', type: 'product', sellPrice: 250 },
     FEATHER: { id: 'feather', name: 'Goose Feather', emoji: '🪶', type: 'product', sellPrice: 40 },
@@ -1140,11 +1141,18 @@ class Animal {
             }
         }
         if (this.type === 'goose') {
-            // Geese produce feathers regularly
-            if (Math.random() < 0.5) {
+            // Geese produce either eggs or feathers
+            if (Math.random() < 0.6) {
                 this.hasProduct = true;
                 this.productCooldown = 2;
-                return ITEMS.FEATHER;
+                // 40% chance of egg, 60% chance of feather
+                if (Math.random() < 0.4) {
+                    this.productType = 'goose_egg';
+                    return ITEMS.GOOSE_EGG;
+                } else {
+                    this.productType = 'feather';
+                    return ITEMS.FEATHER;
+                }
             }
         }
         return null;
@@ -1156,7 +1164,10 @@ class Animal {
         if (this.type === 'chicken') return ITEMS.EGG;
         if (this.type === 'rabbit') return ITEMS.WOOL;
         if (this.type === 'pig') return ITEMS.TRUFFLE;
-        if (this.type === 'goose') return ITEMS.FEATHER;
+        if (this.type === 'goose') {
+            // Return the specific product type that was generated
+            return this.productType === 'goose_egg' ? ITEMS.GOOSE_EGG : ITEMS.FEATHER;
+        }
         return null;
     }
 
@@ -1335,6 +1346,7 @@ const Game = {
         { id: 'truffle_finder', name: 'Truffle Hunter', desc: 'Find a truffle', emoji: '🍄' },
         { id: 'animal_rancher', name: 'Animal Rancher', desc: 'Own 10 animals', emoji: '🏡' },
         { id: 'artisan', name: 'Artisan', desc: 'Craft an artisan good', emoji: '🏺' },
+        { id: 'goose_egg_collector', name: 'Golden Goose', desc: 'Collect 5 goose eggs', emoji: '🥚' },
     ],
     // Lifetime stats for achievements
     lifetimeStats: {
@@ -1342,6 +1354,7 @@ const Game = {
         woodGathered: 0,
         itemsForaged: 0,
         eggsCollected: 0,
+        gooseEggsCollected: 0,
         feathersCollected: 0,
         woolCollected: 0,
         trufflesFound: 0
@@ -1873,6 +1886,7 @@ const Game = {
         html += `<b>Materials:</b> `;
         html += `🪨${resources.stone || 0} 🪵${resources.wood || 0}`;
         if (resources.egg) html += ` 🥚${resources.egg}`;
+        if (resources.goose_egg) html += ` 🥚${resources.goose_egg}(L)`;
         if (resources.feather) html += ` 🪶${resources.feather}`;
         if (resources.wool) html += ` 🧶${resources.wool}`;
         if (resources.truffle) html += ` 🍄${resources.truffle}`;
@@ -3099,13 +3113,13 @@ const Game = {
         }
         html += '<span style="font-size:11px;color:#888">Lays eggs daily when adult</span><br><br>';
 
-        // Goose - feather production
+        // Goose - eggs and feathers
         if (this.money >= goosePrice) {
             options += `<button onclick="Game.buyAnimal('goose')">🦢 Goose - $${goosePrice}</button>`;
         } else {
             html += `<span style="color:#888">🦢 Goose - $${goosePrice} (need $${goosePrice - this.money} more)</span><br>`;
         }
-        html += '<span style="font-size:11px;color:#888">Produces feathers regularly</span><br><br>';
+        html += '<span style="font-size:11px;color:#888">Produces feathers & large eggs</span><br><br>';
 
         // Rabbit - wool production
         if (this.money >= rabbitPrice) {
@@ -3278,6 +3292,9 @@ const Game = {
             if (product.id === 'egg') {
                 this.lifetimeStats.eggsCollected++;
                 if (this.lifetimeStats.eggsCollected >= 10) this.unlockAchievement('egg_collector');
+            } else if (product.id === 'goose_egg') {
+                this.lifetimeStats.gooseEggsCollected++;
+                if (this.lifetimeStats.gooseEggsCollected >= 5) this.unlockAchievement('goose_egg_collector');
             } else if (product.id === 'feather') {
                 this.lifetimeStats.feathersCollected++;
                 if (this.lifetimeStats.feathersCollected >= 10) this.unlockAchievement('feather_collector');
@@ -3401,7 +3418,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '2.0.0',
+            version: '2.1.0',
             money: this.money,
             day: this.day,
             season: this.season,
@@ -3541,6 +3558,7 @@ const Game = {
                     woodGathered: save.lifetimeStats.woodGathered || 0,
                     itemsForaged: save.lifetimeStats.itemsForaged || 0,
                     eggsCollected: save.lifetimeStats.eggsCollected || 0,
+                    gooseEggsCollected: save.lifetimeStats.gooseEggsCollected || 0,
                     feathersCollected: save.lifetimeStats.feathersCollected || 0,
                     woolCollected: save.lifetimeStats.woolCollected || 0,
                     trufflesFound: save.lifetimeStats.trufflesFound || 0
