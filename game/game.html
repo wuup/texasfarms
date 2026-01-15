@@ -238,6 +238,7 @@ canvas {
             <h3>Time</h3>
             <div id="time-display">Day 1, Spring Y1</div>
             <div id="weather-display" style="font-size: 18px; margin-top: 4px;">☀️</div>
+            <div id="music-toggle" onclick="Game.toggleMusic()" style="font-size: 16px; margin-top: 4px; cursor: pointer;" title="Press M to toggle">🔇</div>
         </div>
         <div class="hud-panel">
             <h3>Farm</h3>
@@ -270,7 +271,7 @@ canvas {
 
     <div id="instructions">
         WASD: Move | Click/E: Interact<br>
-        1-8: Select | C: Craft | K: Skills | H: Help
+        1-8: Select | C: Craft | K: Skills | M: Music | H: Help
     </div>
 
     <div id="title-screen">
@@ -525,6 +526,137 @@ const Audio = {
                 osc.start(now);
                 osc.stop(now + 0.2);
                 break;
+            case 'thunder':
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(80, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.5);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+                break;
+            case 'achievement':
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523, now);
+                gain.gain.setValueAtTime(0.12, now);
+                osc.frequency.setValueAtTime(659, now + 0.15);
+                osc.frequency.setValueAtTime(784, now + 0.3);
+                osc.frequency.setValueAtTime(1047, now + 0.45);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+                break;
+        }
+    },
+
+    // Background music system
+    musicEnabled: false,
+    musicGain: null,
+    musicOscillators: [],
+    musicInterval: null,
+    currentChord: 0,
+
+    // Chord progressions for ambient farm music (frequencies in Hz)
+    chords: [
+        [261.63, 329.63, 392.00], // C major
+        [293.66, 369.99, 440.00], // D minor
+        [329.63, 392.00, 493.88], // E minor
+        [349.23, 440.00, 523.25], // F major
+        [392.00, 493.88, 587.33], // G major
+        [293.66, 369.99, 440.00], // D minor
+        [329.63, 392.00, 493.88], // E minor
+        [261.63, 329.63, 392.00], // C major
+    ],
+
+    startMusic() {
+        if (this.musicEnabled) return;
+        if (!this.ctx) this.init();
+
+        this.musicEnabled = true;
+        this.musicGain = this.ctx.createGain();
+        this.musicGain.connect(this.ctx.destination);
+        this.musicGain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+
+        this.playChord();
+        this.musicInterval = setInterval(() => this.playChord(), 2000);
+    },
+
+    stopMusic() {
+        if (!this.musicEnabled) return;
+        this.musicEnabled = false;
+
+        if (this.musicInterval) {
+            clearInterval(this.musicInterval);
+            this.musicInterval = null;
+        }
+
+        // Fade out and stop oscillators
+        this.musicOscillators.forEach(osc => {
+            try { osc.stop(); } catch(e) {}
+        });
+        this.musicOscillators = [];
+    },
+
+    playChord() {
+        if (!this.musicEnabled || !this.ctx) return;
+
+        const chord = this.chords[this.currentChord];
+        this.currentChord = (this.currentChord + 1) % this.chords.length;
+
+        // Clean up old oscillators
+        this.musicOscillators.forEach(osc => {
+            try { osc.stop(); } catch(e) {}
+        });
+        this.musicOscillators = [];
+
+        const now = this.ctx.currentTime;
+
+        // Play each note in the chord
+        chord.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const noteGain = this.ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+
+            // Gentle envelope
+            noteGain.gain.setValueAtTime(0, now);
+            noteGain.gain.linearRampToValueAtTime(0.8, now + 0.3);
+            noteGain.gain.linearRampToValueAtTime(0.5, now + 1.5);
+            noteGain.gain.linearRampToValueAtTime(0, now + 2);
+
+            osc.connect(noteGain);
+            noteGain.connect(this.musicGain);
+
+            osc.start(now);
+            osc.stop(now + 2.1);
+
+            this.musicOscillators.push(osc);
+        });
+
+        // Add a bass note (octave down from root)
+        const bassOsc = this.ctx.createOscillator();
+        const bassGain = this.ctx.createGain();
+        bassOsc.type = 'sine';
+        bassOsc.frequency.setValueAtTime(chord[0] / 2, now);
+        bassGain.gain.setValueAtTime(0, now);
+        bassGain.gain.linearRampToValueAtTime(0.6, now + 0.2);
+        bassGain.gain.linearRampToValueAtTime(0.3, now + 1);
+        bassGain.gain.linearRampToValueAtTime(0, now + 2);
+        bassOsc.connect(bassGain);
+        bassGain.connect(this.musicGain);
+        bassOsc.start(now);
+        bassOsc.stop(now + 2.1);
+        this.musicOscillators.push(bassOsc);
+    },
+
+    toggleMusic() {
+        if (this.musicEnabled) {
+            this.stopMusic();
+            return false;
+        } else {
+            this.startMusic();
+            return true;
         }
     }
 };
@@ -1351,6 +1483,11 @@ const Game = {
         if (e.key === 'k' || e.key === 'K') {
             this.showSkillsDialog();
         }
+
+        // M for music toggle
+        if (e.key === 'm' || e.key === 'M') {
+            this.toggleMusic();
+        }
     },
 
     handleKeyUp(e) {
@@ -1519,6 +1656,7 @@ const Game = {
         html += '<b>Skills:</b> K key<br>';
         html += '<b>Crafting:</b> C key<br>';
         html += '<b>Achievements:</b> Tab key<br>';
+        html += '<b>Music:</b> M key<br>';
         html += '<b>Help:</b> H key<br><br>';
 
         html += '<b>Tools:</b><br>';
@@ -2816,7 +2954,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.1.0',
+            version: '1.4.0',
             money: this.money,
             day: this.day,
             season: this.season,
@@ -2858,7 +2996,8 @@ const Game = {
             npcsTalkedTo: this.npcsTalkedTo,
             skills: this.skills,
             playerX: this.player.x,
-            playerY: this.player.y
+            playerY: this.player.y,
+            musicEnabled: Audio.musicEnabled
         };
         localStorage.setItem('texasfarms_save', JSON.stringify(save));
         this.showToast('Game saved!');
@@ -2956,6 +3095,12 @@ const Game = {
             // Disable tutorial for loaded games
             this.tutorial.active = false;
 
+            // Restore music state
+            if (save.musicEnabled) {
+                Audio.startMusic();
+                document.getElementById('music-toggle').textContent = '🎵';
+            }
+
             this.updateInventoryUI();
             return true;
         } catch (e) {
@@ -2990,6 +3135,12 @@ const Game = {
     closeDialog() {
         document.getElementById('dialog').classList.remove('show');
         this.dialogOpen = false;
+    },
+
+    toggleMusic() {
+        const enabled = Audio.toggleMusic();
+        document.getElementById('music-toggle').textContent = enabled ? '🎵' : '🔇';
+        this.showToast(enabled ? '🎵 Music ON' : '🔇 Music OFF');
     },
 
     showToast(message) {

@@ -4,6 +4,26 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.4.0] - 2026-01-15
+
+### Added
+- **Background Music System**
+  - Press M key to toggle ambient music
+  - Click music icon in HUD to toggle
+  - Procedural chord progressions (no audio files needed)
+  - Relaxing farm-style ambient soundtrack
+  - Music preference saved with game state
+
+- **New Sound Effects**
+  - Thunder sound for storms
+  - Achievement unlock fanfare
+
+### Changed
+- Version bumped to 1.4.0
+- Instructions panel updated with M key
+
+---
+
 ## [1.3.0] - 2026-01-15
 
 ### Added
