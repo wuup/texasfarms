@@ -4,6 +4,23 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.5.0] - 2026-01-15
+
+### Added
+- **Tool Upgrade System**
+  - Press U key to open upgrade menu
+  - Four tool tiers: Basic, Copper, Iron, Gold
+  - Upgrades require money + stone + wood
+  - Higher tiers use less energy (up to 50% less at Gold!)
+  - Higher tiers yield more resources (up to 50% more at Gold!)
+  - Upgrades saved with game state
+
+### Changed
+- All tools now benefit from upgrade bonuses
+- Version bumped to 1.5.0
+
+---
+
 ## [1.4.0] - 2026-01-15
 
 ### Added

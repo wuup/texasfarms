@@ -271,7 +271,7 @@ canvas {
 
     <div id="instructions">
         WASD: Move | Click/E: Interact<br>
-        1-8: Select | C: Craft | K: Skills | M: Music | H: Help
+        1-8: Select | C: Craft | U: Upgrade | K: Skills | H: Help
     </div>
 
     <div id="title-screen">
@@ -398,6 +398,21 @@ const ITEMS = {
 const RECIPES = {
     sprinkler: { result: ITEMS.SPRINKLER, ingredients: { stone: 5, wood: 3 } },
     scarecrow: { result: ITEMS.SCARECROW, ingredients: { wood: 10, stone: 2 } },
+};
+
+// Tool upgrade tiers
+const TOOL_TIERS = {
+    0: { name: 'Basic', prefix: '', energyMult: 1.0, yieldMult: 1.0, color: '#888' },
+    1: { name: 'Copper', prefix: '🟤', energyMult: 0.85, yieldMult: 1.15, color: '#b87333' },
+    2: { name: 'Iron', prefix: '⚪', energyMult: 0.70, yieldMult: 1.30, color: '#a8a8a8' },
+    3: { name: 'Gold', prefix: '🟡', energyMult: 0.50, yieldMult: 1.50, color: '#ffd700' },
+};
+
+// Tool upgrade costs
+const TOOL_UPGRADE_COSTS = {
+    1: { money: 500, stone: 10, wood: 5 },   // Basic -> Copper
+    2: { money: 1500, stone: 25, wood: 15 }, // Copper -> Iron
+    3: { money: 5000, stone: 50, wood: 30 }, // Iron -> Gold
 };
 
 // Crop growth stages
@@ -1211,6 +1226,15 @@ const Game = {
     },
     XP_PER_LEVEL: 100, // XP needed for each level up
 
+    // Tool upgrades (tier 0-3: Basic, Copper, Iron, Gold)
+    toolUpgrades: {
+        hoe: 0,
+        watering_can: 0,
+        pickaxe: 0,
+        axe: 0,
+        fishing_rod: 0
+    },
+
     // Tutorial steps
     TUTORIAL_STEPS: [
         {
@@ -1488,6 +1512,11 @@ const Game = {
         if (e.key === 'm' || e.key === 'M') {
             this.toggleMusic();
         }
+
+        // U for tool upgrades
+        if (e.key === 'u' || e.key === 'U') {
+            this.showToolUpgradeDialog();
+        }
     },
 
     handleKeyUp(e) {
@@ -1655,6 +1684,7 @@ const Game = {
         html += '<b>Item Info:</b> Q key<br>';
         html += '<b>Skills:</b> K key<br>';
         html += '<b>Crafting:</b> C key<br>';
+        html += '<b>Tool Upgrades:</b> U key<br>';
         html += '<b>Achievements:</b> Tab key<br>';
         html += '<b>Music:</b> M key<br>';
         html += '<b>Help:</b> H key<br><br>';
@@ -1836,6 +1866,165 @@ const Game = {
         if (!skill) return 1;
         // 5% bonus per level above 1
         return 1 + (skill.level - 1) * 0.05;
+    },
+
+    // Tool upgrade methods
+    getToolTier(toolId) {
+        return this.toolUpgrades[toolId] || 0;
+    },
+
+    getToolTierInfo(toolId) {
+        const tier = this.getToolTier(toolId);
+        return TOOL_TIERS[tier];
+    },
+
+    getToolEnergyMultiplier(toolId) {
+        const tierInfo = this.getToolTierInfo(toolId);
+        return tierInfo ? tierInfo.energyMult : 1;
+    },
+
+    getToolYieldMultiplier(toolId) {
+        const tierInfo = this.getToolTierInfo(toolId);
+        return tierInfo ? tierInfo.yieldMult : 1;
+    },
+
+    canUpgradeTool(toolId) {
+        const currentTier = this.getToolTier(toolId);
+        if (currentTier >= 3) return false; // Max tier
+
+        const nextTier = currentTier + 1;
+        const cost = TOOL_UPGRADE_COSTS[nextTier];
+
+        // Count resources
+        const resources = {};
+        this.inventory.forEach(slot => {
+            if (slot && slot.item.type === 'resource') {
+                resources[slot.item.id] = (resources[slot.item.id] || 0) + slot.count;
+            }
+        });
+
+        return this.money >= cost.money &&
+               (resources.stone || 0) >= cost.stone &&
+               (resources.wood || 0) >= cost.wood;
+    },
+
+    upgradeTool(toolId) {
+        if (!this.canUpgradeTool(toolId)) {
+            Audio.play('error');
+            return false;
+        }
+
+        const currentTier = this.getToolTier(toolId);
+        const nextTier = currentTier + 1;
+        const cost = TOOL_UPGRADE_COSTS[nextTier];
+
+        // Deduct money
+        this.money -= cost.money;
+
+        // Remove resources from inventory
+        let stoneNeeded = cost.stone;
+        let woodNeeded = cost.wood;
+
+        for (let i = 0; i < this.inventory.length; i++) {
+            const slot = this.inventory[i];
+            if (!slot) continue;
+
+            if (slot.item.id === 'stone' && stoneNeeded > 0) {
+                const take = Math.min(slot.count, stoneNeeded);
+                slot.count -= take;
+                stoneNeeded -= take;
+                if (slot.count <= 0) this.inventory[i] = null;
+            }
+            if (slot.item.id === 'wood' && woodNeeded > 0) {
+                const take = Math.min(slot.count, woodNeeded);
+                slot.count -= take;
+                woodNeeded -= take;
+                if (slot.count <= 0) this.inventory[i] = null;
+            }
+        }
+
+        // Upgrade the tool
+        this.toolUpgrades[toolId] = nextTier;
+
+        const tierInfo = TOOL_TIERS[nextTier];
+        const toolName = this.getToolDisplayName(toolId);
+
+        Audio.play('achievement');
+        this.showToast(`🔧 ${toolName} upgraded to ${tierInfo.name}!`);
+        this.updateInventoryUI();
+
+        return true;
+    },
+
+    getToolDisplayName(toolId) {
+        const tier = this.getToolTier(toolId);
+        const tierInfo = TOOL_TIERS[tier];
+        const toolNames = {
+            hoe: 'Hoe',
+            watering_can: 'Watering Can',
+            pickaxe: 'Pickaxe',
+            axe: 'Axe',
+            fishing_rod: 'Fishing Rod'
+        };
+        const baseName = toolNames[toolId] || toolId;
+        return tier > 0 ? `${tierInfo.name} ${baseName}` : baseName;
+    },
+
+    showToolUpgradeDialog() {
+        let html = '<strong>🔧 Tool Upgrades</strong><br><br>';
+
+        // Count resources
+        const resources = {};
+        this.inventory.forEach(slot => {
+            if (slot && slot.item.type === 'resource') {
+                resources[slot.item.id] = (resources[slot.item.id] || 0) + slot.count;
+            }
+        });
+
+        const stoneHave = resources.stone || 0;
+        const woodHave = resources.wood || 0;
+
+        html += `<span style="color:#888">Your resources: 🪨 ${stoneHave} Stone | 🪵 ${woodHave} Wood | 💰 $${this.money}</span><br><br>`;
+
+        const tools = [
+            { id: 'hoe', emoji: '🔨' },
+            { id: 'watering_can', emoji: '🪣' },
+            { id: 'pickaxe', emoji: '⛏️' },
+            { id: 'axe', emoji: '🪓' },
+            { id: 'fishing_rod', emoji: '🎣' }
+        ];
+
+        tools.forEach(tool => {
+            const tier = this.getToolTier(tool.id);
+            const tierInfo = TOOL_TIERS[tier];
+            const displayName = this.getToolDisplayName(tool.id);
+
+            html += `<div style="margin-bottom:8px;">`;
+            html += `<span style="color:${tierInfo.color}">${tool.emoji} <b>${displayName}</b></span>`;
+            html += ` <span style="color:#666">(Energy: ${Math.round((1-tierInfo.energyMult)*100)}% less, Yield: +${Math.round((tierInfo.yieldMult-1)*100)}%)</span>`;
+
+            if (tier < 3) {
+                const nextTier = tier + 1;
+                const cost = TOOL_UPGRADE_COSTS[nextTier];
+                const nextTierInfo = TOOL_TIERS[nextTier];
+                const canUpgrade = this.canUpgradeTool(tool.id);
+
+                html += `<br><span style="font-size:11px;color:#888">`;
+                html += `➜ ${nextTierInfo.name}: $${cost.money} + 🪨${cost.stone} + 🪵${cost.wood}`;
+                html += `</span>`;
+
+                if (canUpgrade) {
+                    html += ` <button onclick="Game.upgradeTool('${tool.id}'); Game.showToolUpgradeDialog();" style="font-size:11px;padding:2px 6px;">Upgrade</button>`;
+                }
+            } else {
+                html += ` <span style="color:#ffd700">★ MAX</span>`;
+            }
+            html += `</div>`;
+        });
+
+        html += '<br><span style="color:#888;font-size:11px">Better tools use less energy and gather more resources!</span>';
+
+        this.showDialog(html, `<button onclick="Game.closeDialog()">Close</button>`);
     },
 
     gameLoop() {
@@ -2230,7 +2419,7 @@ const Game = {
                 // Till grass into farmland
                 if (tile === TILES.GRASS || tile === TILES.FLOWERS) {
                     this.world[tileY][tileX] = TILES.TILLED;
-                    this.energy -= 5;
+                    this.energy -= Math.ceil(5 * this.getToolEnergyMultiplier('hoe'));
                     Audio.play('hoe');
                     this.showToast('Tilled the soil!');
                     this.completeTutorialAction('tilled');
@@ -2246,7 +2435,7 @@ const Game = {
                 // Water tilled soil or crops
                 if (tile === TILES.TILLED) {
                     this.world[tileY][tileX] = TILES.WATERED;
-                    this.energy -= 3;
+                    this.energy -= Math.ceil(3 * this.getToolEnergyMultiplier('watering_can'));
                     Audio.play('water');
                     // Mark crop as watered if there's one there
                     if (crop) {
@@ -2268,10 +2457,10 @@ const Game = {
                 if (tile === TILES.STONE) {
                     this.world[tileY][tileX] = TILES.GRASS;
                     this.clearedResources.push({ x: tileX, y: tileY, type: TILES.STONE, respawnDay: this.day + 7 });
-                    this.energy -= 8;
-                    // Apply mining skill bonus
+                    this.energy -= Math.ceil(8 * this.getToolEnergyMultiplier('pickaxe'));
+                    // Apply mining skill bonus + tool yield bonus
                     const stoneBase = 1 + Math.floor(Math.random() * 2);
-                    const stoneYield = Math.floor(stoneBase * this.getSkillBonus('mining'));
+                    const stoneYield = Math.floor(stoneBase * this.getSkillBonus('mining') * this.getToolYieldMultiplier('pickaxe'));
                     this.addToInventory(ITEMS.STONE, stoneYield);
                     this.addSkillXP('mining', 5);
                     Audio.play('pickup');
@@ -2287,10 +2476,10 @@ const Game = {
                 if (tile === TILES.WOOD) {
                     this.world[tileY][tileX] = TILES.GRASS;
                     this.clearedResources.push({ x: tileX, y: tileY, type: TILES.WOOD, respawnDay: this.day + 7 });
-                    this.energy -= 8;
-                    // Apply mining skill bonus
+                    this.energy -= Math.ceil(8 * this.getToolEnergyMultiplier('axe'));
+                    // Apply mining skill bonus + tool yield bonus
                     const woodBase = 2 + Math.floor(Math.random() * 2);
-                    const woodYield = Math.floor(woodBase * this.getSkillBonus('mining'));
+                    const woodYield = Math.floor(woodBase * this.getSkillBonus('mining') * this.getToolYieldMultiplier('axe'));
                     this.addToInventory(ITEMS.WOOD, woodYield);
                     this.addSkillXP('mining', 5);
                     Audio.play('pickup');
@@ -2327,7 +2516,7 @@ const Game = {
         this.fishing.timer = 30; // Cast animation frames
         this.fishing.waterX = waterX;
         this.fishing.waterY = waterY;
-        this.energy -= 3;
+        this.energy -= Math.ceil(3 * this.getToolEnergyMultiplier('fishing_rod'));
         Audio.play('cast');
         this.showToast('Casting...');
     },
@@ -2954,7 +3143,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.4.0',
+            version: '1.5.0',
             money: this.money,
             day: this.day,
             season: this.season,
@@ -2995,6 +3184,7 @@ const Game = {
             achievements: this.achievements,
             npcsTalkedTo: this.npcsTalkedTo,
             skills: this.skills,
+            toolUpgrades: this.toolUpgrades,
             playerX: this.player.x,
             playerY: this.player.y,
             musicEnabled: Audio.musicEnabled
@@ -3074,6 +3264,11 @@ const Game = {
             // Restore skills
             if (save.skills) {
                 this.skills = save.skills;
+            }
+
+            // Restore tool upgrades
+            if (save.toolUpgrades) {
+                this.toolUpgrades = save.toolUpgrades;
             }
 
             // Create NPCs
