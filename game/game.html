@@ -287,8 +287,8 @@ canvas {
 
 <script>
 // ==========================================
-// TEXAS FARMS - THE GAME v2.3.0
-// Animal sounds and polish!
+// TEXAS FARMS - THE GAME v2.4.0
+// Improved animal dialog!
 // ==========================================
 
 const TILE_SIZE = 48;
@@ -3295,18 +3295,35 @@ const Game = {
             html += ` (mature in ${animal.maturityAge - animal.age} days)`;
         }
 
+        // Show product info
+        const productInfo = {
+            chicken: { name: 'Eggs', emoji: '🥚' },
+            goose: { name: 'Eggs/Feathers', emoji: '🥚🪶' },
+            rabbit: { name: 'Wool', emoji: '🧶' },
+            pig: { name: 'Truffles', emoji: '🍄' }
+        };
+        const info = productInfo[animal.type] || { name: 'products', emoji: '' };
+
         // Show product status
         if (animal.hasProduct) {
-            const productName = animal.type === 'chicken' ? '🥚 Egg' : (animal.type === 'rabbit' ? '🧶 Wool' : '🍄 Truffle');
-            html += `<br><br><span style="color:#4ade80">✨ Has ${productName} ready!</span>`;
+            let readyProduct = '';
+            if (animal.type === 'goose') {
+                readyProduct = animal.productType === 'goose_egg' ? '🥚 Goose Egg' : '🪶 Feather';
+            } else if (animal.type === 'chicken') readyProduct = '🥚 Egg';
+            else if (animal.type === 'rabbit') readyProduct = '🧶 Wool';
+            else if (animal.type === 'pig') readyProduct = '🍄 Truffle';
+            html += `<br><br><span style="color:#4ade80">✨ Has ${readyProduct} ready!</span>`;
         } else if (animal.age >= animal.maturityAge) {
+            html += `<br><br><span style="color:#888">Produces: ${info.emoji} ${info.name}</span>`;
             if (animal.hunger >= 50) {
-                html += `<br><br><span style="color:#666">Feed to produce items</span>`;
+                html += `<br><span style="color:#f59e0b">⚠️ Feed to produce items</span>`;
             } else if (animal.happiness <= 30) {
-                html += `<br><br><span style="color:#666">Pet to increase happiness</span>`;
+                html += `<br><span style="color:#f59e0b">⚠️ Pet to increase happiness</span>`;
             } else {
-                html += `<br><br><span style="color:#666">Will produce tomorrow</span>`;
+                html += `<br><span style="color:#666">Will check tomorrow</span>`;
             }
+        } else {
+            html += `<br><br><span style="color:#888">Will produce ${info.emoji} when mature</span>`;
         }
 
         let options = '';
@@ -3463,7 +3480,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '2.3.0',
+            version: '2.4.0',
             money: this.money,
             day: this.day,
             season: this.season,

@@ -4,6 +4,21 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [2.4.0] - 2026-01-15
+
+### Improved
+- **Enhanced Animal Dialog**
+  - Shows what product each animal type produces
+  - Clear warning icons when animals need food or petting
+  - Shows specific goose product type (egg vs feather) when ready
+  - Shows product info for immature animals too
+  - Better color coding for status messages
+
+### Changed
+- Version bumped to 2.4.0
+
+---
+
 ## [2.3.0] - 2026-01-15
 
 ### Added
