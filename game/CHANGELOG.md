@@ -4,6 +4,29 @@ All notable changes to the game will be documented here.
 
 ---
 
+## [1.7.0] - 2026-01-15
+
+### Added
+- **Chickens!** 🐔
+  - New animal type: Chickens ($25 each)
+  - Baby chicks (🐤) mature in 21 days
+  - Adult chickens lay eggs daily when fed
+
+- **Animal Product System**
+  - Chickens: Lay eggs (🥚) daily - sell for $30
+  - Rabbits: Produce wool (🧶) occasionally - sell for $50
+  - Pigs: Find truffles (🍄) when happy - sell for $250
+  - Animals sparkle when product is ready
+  - Click animal to collect products
+
+### Changed
+- Animal dialog shows type and product status
+- Buy Animals dialog now shows product info
+- Animals must be fed and happy to produce
+- Version bumped to 1.7.0
+
+---
+
 ## [1.6.0] - 2026-01-15
 
 ### Added

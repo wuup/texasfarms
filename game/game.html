@@ -389,6 +389,10 @@ const ITEMS = {
     WILD_BERRIES: { id: 'wild_berries', name: 'Wild Berries', emoji: '🫐', type: 'forage', sellPrice: 25 },
     MUSHROOM: { id: 'mushroom', name: 'Mushroom', emoji: '🍄', type: 'forage', sellPrice: 40 },
     WILD_HONEY: { id: 'wild_honey', name: 'Wild Honey', emoji: '🍯', type: 'forage', sellPrice: 100 },
+    // Animal products
+    EGG: { id: 'egg', name: 'Egg', emoji: '🥚', type: 'product', sellPrice: 30 },
+    WOOL: { id: 'wool', name: 'Wool', emoji: '🧶', type: 'product', sellPrice: 50 },
+    TRUFFLE: { id: 'truffle', name: 'Truffle', emoji: '🍄', type: 'product', sellPrice: 250 },
     // Craftables
     SPRINKLER: { id: 'sprinkler', name: 'Sprinkler', emoji: '💧', type: 'placeable', desc: 'Auto-waters 8 tiles around it' },
     SCARECROW: { id: 'scarecrow', name: 'Scarecrow', emoji: '🎃', type: 'placeable', desc: 'Protects crops from crows' },
@@ -1027,7 +1031,7 @@ class Animal {
         this.health = 100;
         this.happiness = 80;
         this.hunger = 0;
-        this.weight = type === 'pig' ? 50 : 0.5;
+        this.weight = type === 'pig' ? 50 : (type === 'chicken' ? 2 : 0.5);
         this.name = this.generateName();
         this.wanderTimer = 0;
         this.wanderDir = { x: 0, y: 0 };
@@ -1035,13 +1039,17 @@ class Animal {
             quality: 0.5 + Math.random() * 0.4,
             growth: 0.6 + Math.random() * 0.4,
         };
+        this.productCooldown = 0; // Days until next product
+        this.hasProduct = false; // If ready to collect
     }
 
     generateName() {
         const pigNames = ['Wilbur', 'Babe', 'Hamlet', 'Porky', 'Truffle', 'Rosie', 'Chester', 'Penny'];
         const rabbitNames = ['Thumper', 'Flopsy', 'Cotton', 'Peter', 'Hazel', 'Clover'];
-        const names = this.type === 'pig' ? pigNames : rabbitNames;
-        return names[Math.floor(Math.random() * names.length)];
+        const chickenNames = ['Clucky', 'Henrietta', 'Pecky', 'Goldie', 'Sunny', 'Daisy', 'Nugget', 'Feathers'];
+        if (this.type === 'pig') return pigNames[Math.floor(Math.random() * pigNames.length)];
+        if (this.type === 'chicken') return chickenNames[Math.floor(Math.random() * chickenNames.length)];
+        return rabbitNames[Math.floor(Math.random() * rabbitNames.length)];
     }
 
     get sprite() {
@@ -1049,16 +1057,79 @@ class Animal {
             if (this.age < 60) return '🐷';
             return '🐖';
         }
+        if (this.type === 'chicken') {
+            if (this.age < 14) return '🐤';
+            return this.hasProduct ? '🐔✨' : '🐔';
+        }
         return '🐰';
     }
 
     get maturityAge() {
-        return this.type === 'pig' ? 180 : 90;
+        if (this.type === 'pig') return 180;
+        if (this.type === 'chicken') return 21; // 3 weeks to maturity
+        return 90;
     }
 
     get value() {
-        const basePrice = this.type === 'pig' ? 3 : 8;
-        return Math.round(this.weight * basePrice * this.genetics.quality);
+        if (this.type === 'pig') return Math.round(this.weight * 3 * this.genetics.quality);
+        if (this.type === 'chicken') return Math.round(20 * this.genetics.quality);
+        return Math.round(this.weight * 8 * this.genetics.quality);
+    }
+
+    get canProduce() {
+        return this.age >= this.maturityAge &&
+               this.hunger < 50 &&
+               this.happiness > 30;
+    }
+
+    // Generate product if ready
+    checkProduct() {
+        if (!this.canProduce) {
+            this.hasProduct = false;
+            return null;
+        }
+
+        if (this.productCooldown > 0) {
+            this.productCooldown--;
+            return null;
+        }
+
+        if (this.hasProduct) {
+            return null; // Already has uncollected product
+        }
+
+        // Set product ready based on animal type
+        if (this.type === 'chicken') {
+            this.hasProduct = true;
+            this.productCooldown = 1; // Produce egg every day
+            return ITEMS.EGG;
+        }
+        if (this.type === 'rabbit' && this.age >= 120) {
+            // Rabbits produce wool less frequently
+            if (Math.random() < 0.3) {
+                this.hasProduct = true;
+                this.productCooldown = 3;
+                return ITEMS.WOOL;
+            }
+        }
+        if (this.type === 'pig' && this.happiness > 70) {
+            // Happy pigs occasionally find truffles
+            if (Math.random() < 0.1) {
+                this.hasProduct = true;
+                this.productCooldown = 5;
+                return ITEMS.TRUFFLE;
+            }
+        }
+        return null;
+    }
+
+    collectProduct() {
+        if (!this.hasProduct) return null;
+        this.hasProduct = false;
+        if (this.type === 'chicken') return ITEMS.EGG;
+        if (this.type === 'rabbit') return ITEMS.WOOL;
+        if (this.type === 'pig') return ITEMS.TRUFFLE;
+        return null;
     }
 
     update(world) {
@@ -2254,6 +2325,16 @@ const Game = {
         // Age animals
         this.animals.forEach(a => a.advanceDay());
 
+        // Check for animal products
+        let productsReady = 0;
+        this.animals.forEach(a => {
+            const product = a.checkProduct();
+            if (product) productsReady++;
+        });
+        if (productsReady > 0) {
+            this.showToast(`🥚 ${productsReady} animals have products ready to collect!`);
+        }
+
         // Remove dead animals
         const dead = this.animals.filter(a => a.health <= 0);
         if (dead.length > 0) {
@@ -2955,20 +3036,35 @@ const Game = {
     showBuyAnimalsDialog() {
         const pigPrice = 200;
         const rabbitPrice = 50;
+        const chickenPrice = 25;
 
         let html = '<strong>Buy Animals</strong><br><br>';
+        html += '<span style="color:#666">Animals produce items when fed & happy!</span><br><br>';
         let options = '';
 
-        if (this.money >= pigPrice) {
-            options += `<button onclick="Game.buyAnimal('pig')">Pig - $${pigPrice}</button>`;
+        // Chicken - cheap, lays eggs daily
+        if (this.money >= chickenPrice) {
+            options += `<button onclick="Game.buyAnimal('chicken')">🐔 Chicken - $${chickenPrice}</button>`;
         } else {
-            html += `<span style="color:#888">Pig - $${pigPrice} (need $${pigPrice - this.money} more)</span><br>`;
+            html += `<span style="color:#888">🐔 Chicken - $${chickenPrice} (need $${chickenPrice - this.money} more)</span><br>`;
         }
+        html += '<span style="font-size:11px;color:#888">Lays eggs daily when adult</span><br><br>';
+
+        // Rabbit - wool production
         if (this.money >= rabbitPrice) {
-            options += `<button onclick="Game.buyAnimal('rabbit')">Rabbit - $${rabbitPrice}</button>`;
+            options += `<button onclick="Game.buyAnimal('rabbit')">🐰 Rabbit - $${rabbitPrice}</button>`;
         } else {
-            html += `<span style="color:#888">Rabbit - $${rabbitPrice} (need $${rabbitPrice - this.money} more)</span><br>`;
+            html += `<span style="color:#888">🐰 Rabbit - $${rabbitPrice} (need $${rabbitPrice - this.money} more)</span><br>`;
         }
+        html += '<span style="font-size:11px;color:#888">Produces wool occasionally</span><br><br>';
+
+        // Pig - truffles when happy
+        if (this.money >= pigPrice) {
+            options += `<button onclick="Game.buyAnimal('pig')">🐖 Pig - $${pigPrice}</button>`;
+        } else {
+            html += `<span style="color:#888">🐖 Pig - $${pigPrice} (need $${pigPrice - this.money} more)</span><br>`;
+        }
+        html += '<span style="font-size:11px;color:#888">Finds truffles when happy</span><br><br>';
 
         options += `<button onclick="Game.showMarketDialog()">Back</button>`;
         this.showDialog(html, options);
@@ -3073,6 +3169,7 @@ const Game = {
 
     showAnimalDialog(animal) {
         let html = `<strong>${animal.sprite} ${animal.name}</strong><br><br>`;
+        html += `Type: ${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)}<br>`;
         html += `Age: ${animal.age} days<br>`;
         html += `Weight: ${Math.round(animal.weight * 10) / 10} lbs<br>`;
         html += `Health: ${animal.health}%<br>`;
@@ -3083,10 +3180,44 @@ const Game = {
             html += ` (mature in ${animal.maturityAge - animal.age} days)`;
         }
 
-        let options = `<button onclick="Game.petAnimal('${animal.id}')">Pet ${animal.name}</button>`;
+        // Show product status
+        if (animal.hasProduct) {
+            const productName = animal.type === 'chicken' ? '🥚 Egg' : (animal.type === 'rabbit' ? '🧶 Wool' : '🍄 Truffle');
+            html += `<br><br><span style="color:#4ade80">✨ Has ${productName} ready!</span>`;
+        } else if (animal.age >= animal.maturityAge) {
+            if (animal.hunger >= 50) {
+                html += `<br><br><span style="color:#666">Feed to produce items</span>`;
+            } else if (animal.happiness <= 30) {
+                html += `<br><br><span style="color:#666">Pet to increase happiness</span>`;
+            } else {
+                html += `<br><br><span style="color:#666">Will produce tomorrow</span>`;
+            }
+        }
+
+        let options = '';
+        if (animal.hasProduct) {
+            options += `<button onclick="Game.collectAnimalProduct('${animal.id}')">Collect Product</button>`;
+        }
+        options += `<button onclick="Game.petAnimal('${animal.id}')">Pet ${animal.name}</button>`;
         options += `<button onclick="Game.closeDialog()">Close</button>`;
 
         this.showDialog(html, options);
+    },
+
+    collectAnimalProduct(id) {
+        const animal = this.animals.find(a => a.id === id);
+        if (!animal || !animal.hasProduct) {
+            this.showToast('No product to collect!');
+            return;
+        }
+
+        const product = animal.collectProduct();
+        if (product) {
+            this.addToInventory(product, 1);
+            Audio.play('harvest');
+            this.showToast(`Collected ${product.emoji} ${product.name} from ${animal.name}!`);
+            this.showAnimalDialog(animal); // Refresh dialog
+        }
     },
 
     showBarnDialog() {
@@ -3118,7 +3249,8 @@ const Game = {
     },
 
     buyAnimal(type) {
-        const price = type === 'pig' ? 200 : 50;
+        const prices = { pig: 200, rabbit: 50, chicken: 25 };
+        const price = prices[type] || 50;
         if (this.money < price) {
             this.showToast("Can't afford that!");
             return;
@@ -3166,7 +3298,8 @@ const Game = {
             return;
         }
 
-        const cost = hungry.reduce((sum, a) => sum + (a.type === 'pig' ? 5 : 1), 0);
+        const feedCosts = { pig: 5, rabbit: 1, chicken: 1 };
+        const cost = hungry.reduce((sum, a) => sum + (feedCosts[a.type] || 1), 0);
 
         if (this.money < cost) {
             this.showToast(`Need $${cost} to feed all animals!`);
@@ -3187,7 +3320,7 @@ const Game = {
 
     saveGame() {
         const save = {
-            version: '1.6.0',
+            version: '1.7.0',
             money: this.money,
             day: this.day,
             season: this.season,
@@ -3205,7 +3338,9 @@ const Game = {
                 hunger: a.hunger,
                 weight: a.weight,
                 name: a.name,
-                genetics: a.genetics
+                genetics: a.genetics,
+                hasProduct: a.hasProduct,
+                productCooldown: a.productCooldown
             })),
             crops: this.crops.map(c => ({
                 x: c.x,
@@ -3271,6 +3406,8 @@ const Game = {
                 animal.weight = a.weight;
                 animal.name = a.name;
                 animal.genetics = a.genetics;
+                animal.hasProduct = a.hasProduct || false;
+                animal.productCooldown = a.productCooldown || 0;
                 return animal;
             });
 
