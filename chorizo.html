@@ -1,0 +1,1014 @@
+---
+layout: default
+title: Chorizo Salami
+description: Our first artisan salami - heritage Gloucestershire Old Spot pork, smoked paprika, hand-crafted in small batches in Vermont. Ships anywhere in the US.
+---
+<style>
+:root {
+    --forest: #1a2e1a;
+    --forest-light: #2d4a2d;
+    --cream: #f7f4ed;
+    --cream-dark: #ebe6db;
+    --copper: #b87333;
+    --copper-light: #d4915c;
+    --text: #1a1a1a;
+    --text-light: #555;
+}
+
+.chorizo-page {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+.chorizo-page * {
+    box-sizing: border-box;
+}
+
+/* Hero */
+.hero-section {
+    min-height: 70vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--forest);
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem;
+    color: var(--cream);
+    position: relative;
+}
+
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.hero-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper-light);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+    color: #f7f4ed;
+}
+
+.hero-title .title-accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--copper-light);
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #e8e4db;
+    max-width: 420px;
+    margin: 0 auto 2.5rem;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary-hero {
+    background: var(--copper);
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary-hero:hover {
+    background: var(--copper-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.btn-outline-hero {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-hero:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    border-color: rgba(255,255,255,0.5);
+}
+
+.hero-image {
+    background: url('/images/chorizo-gos-smoked-paprika-salami.png') center/cover;
+    position: relative;
+}
+
+.hero-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(to top, var(--forest), transparent);
+}
+
+@media (max-width: 900px) {
+    .hero-section {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    .hero-image {
+        height: 45vh;
+        order: -1;
+    }
+    .hero-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Feature Banner */
+.feature-banner {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.feature-list span {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #f0ede6;
+    font-weight: 500;
+}
+
+@media (max-width: 600px) {
+    .feature-list {
+        gap: 1rem 2.5rem;
+    }
+}
+
+/* Product Section */
+.product-section {
+    background: var(--cream);
+    padding: 5rem 0;
+}
+
+.product-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    align-items: start;
+}
+
+.product-gallery img {
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.product-thumbs {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.product-thumbs img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.product-thumbs img:hover,
+.product-thumbs img.active {
+    opacity: 1;
+    border-color: var(--copper);
+}
+
+.product-details .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.product-details h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.15;
+}
+
+.product-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+
+.product-desc {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+/* Shopify Buy Button */
+.shopify-buy-wrap {
+    margin-bottom: 2rem;
+    min-height: 60px;
+}
+
+.buy-fallback-msg {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Specs Grid */
+.specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.spec-item {
+    background: white;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.spec-item .spec-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+}
+
+.spec-item .spec-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--forest);
+}
+
+.shipping-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: rgba(184, 115, 51, 0.06);
+    border: 1px solid rgba(184, 115, 51, 0.15);
+    padding: 1rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.shipping-note i {
+    color: var(--copper);
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+    .product-inner {
+        grid-template-columns: 1fr;
+    }
+    .specs-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Story Section */
+.story-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.story-image {
+    background: url('/images/gos-pork-charcuterie2.png') center/cover;
+    min-height: 500px;
+}
+
+.story-content {
+    background: var(--cream-dark);
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.story-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.story-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+}
+
+.story-content > p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.story-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+}
+
+.story-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.story-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--copper);
+}
+
+@media (max-width: 900px) {
+    .story-section {
+        grid-template-columns: 1fr;
+    }
+    .story-image {
+        height: 350px;
+        min-height: auto;
+    }
+    .story-content {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Process Section */
+.process-section {
+    background: white;
+    padding: 5rem 0;
+}
+
+.process-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.process-header .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.process-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.process-step {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.step-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--copper);
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.process-step h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.process-step p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+@media (max-width: 800px) {
+    .process-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .process-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+}
+
+/* Ingredients Section */
+.ingredients-section {
+    background: var(--cream-dark);
+    padding: 4rem 0;
+}
+
+.ingredients-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.ingredients-inner .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-weight: 600;
+}
+
+.ingredients-inner h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.ingredients-sub {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.ingredient-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+}
+
+.ingredient-tags span {
+    font-size: 0.9rem;
+    color: var(--text);
+    padding: 0.35rem 0;
+}
+
+.ingredient-tags span::after {
+    content: '•';
+    margin-left: 1.5rem;
+    color: var(--copper);
+}
+
+.ingredient-tags span:last-child::after {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .ingredient-tags span::after {
+        display: none;
+    }
+    .ingredient-tags {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+/* Final CTA */
+.final-cta {
+    background: var(--cream);
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.final-cta h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--forest);
+    margin: 0 0 0.5rem 0;
+}
+
+.final-cta p {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.cta-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-cta {
+    display: inline-block;
+    background: var(--forest);
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cta:hover {
+    background: var(--forest-light);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(26,46,26,0.3);
+}
+
+.btn-cta-outline {
+    display: inline-block;
+    background: transparent;
+    color: var(--forest);
+    padding: 1rem 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--forest);
+    transition: all 0.3s ease;
+}
+
+.btn-cta-outline:hover {
+    background: var(--forest);
+    color: var(--cream);
+    text-decoration: none;
+}
+</style>
+
+<div class="chorizo-page">
+
+<!-- Hero -->
+<section class="hero-section">
+    <div class="hero-content">
+        <span class="hero-label">Now Available &mdash; Our First-Ever Charcuterie</span>
+        <h1 class="hero-title">Chorizo<br><span class="title-accent">Salami</span></h1>
+        <p class="hero-subtitle">Bold and flavorful, seasoned with smoked paprika and red wine. Made from our pasture-raised Gloucestershire Old Spot pork. Limited quantities &mdash; once it's gone, it's gone.</p>
+        <div class="hero-cta">
+            <a href="#buy" class="btn-primary-hero">Order Yours Now</a>
+            <a href="#story" class="btn-outline-hero">Why It's Special</a>
+        </div>
+    </div>
+    <div class="hero-image"></div>
+</section>
+
+<!-- Feature Banner -->
+<div class="feature-banner">
+    <div class="feature-list">
+        <span>Heritage Breed Pork</span>
+        <span>Hand-Crafted in Small Batches</span>
+        <span>USDA Inspected</span>
+        <span>No Antibiotics or Hormones</span>
+        <span>Free Shipping in the US</span>
+    </div>
+</div>
+
+<!-- Product Details + Buy -->
+<section class="product-section" id="buy">
+    <div class="product-inner">
+        <div class="product-gallery">
+            <img src="/images/chorizo-gos-smoked-paprika-salami.png" alt="GOS Chorizo Salami" class="product-main-img">
+            <div class="product-thumbs">
+                <img src="/images/chorizo-gos-smoked-paprika-salami.png" alt="Chorizo salami" class="product-thumb active">
+                <img src="/images/gos-pork-charcuterie1.png" alt="Charcuterie board" class="product-thumb">
+                <img src="/images/gos-pork-charcuterie3.png" alt="Artisan sausage" class="product-thumb">
+            </div>
+        </div>
+
+        <div class="product-details">
+            <span class="label">Limited First Batch &mdash; Order Before It Sells Out</span>
+            <h2>Chorizo Salami</h2>
+            <p class="product-tagline">Bold, smoky, with a little bit of heat &mdash; 2.5 oz.</p>
+
+            <!-- Shopify Buy Button renders here -->
+            <div class="shopify-buy-wrap" id="shopify-buy-button">
+                <div id="buy-fallback">
+                    <span class="buy-fallback-msg">Loading checkout...</span>
+                </div>
+            </div>
+
+            <p class="product-desc">
+                Our Chorizo salami is bold and flavorful, seasoned with smoked paprika and red wine. Smoky with a little bit of heat, this salami is incredibly versatile. Perfect for jazzing up a charcuterie board, as a topping on pizza, or adding to your favorite sandwich!
+            </p>
+
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <div class="spec-label">Breed</div>
+                    <div class="spec-value">Gloucestershire Old Spot</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Size</div>
+                    <div class="spec-value">2.5 oz.</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Flavor</div>
+                    <div class="spec-value">Smoky with a Kick</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Ingredients</div>
+                    <div class="spec-value" style="font-size:0.85rem">Pork, salt, red wine, spices, cultured celery powder, turbinado sugar, garlic, lactic acid starter culture</div>
+                </div>
+            </div>
+
+            <div class="shipping-note">
+                <i class="fas fa-truck"></i>
+                <span>Ships anywhere in the US with insulated packaging. Order today, taste heritage pork by the end of the week.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story -->
+<section class="story-section" id="story">
+    <div class="story-image"></div>
+    <div class="story-content">
+        <span class="story-label">About the Breed</span>
+        <h2>The Oldest Pedigreed Spotted Pig in the World</h2>
+        <p>Gloucestershire Old Spots hail from Gloucestershire, England, where they were once popular on small family farms raised on dropped orchard fruit &mdash; earning them the nicknames "orchard pig" and "cottage pig." The richly marbled meat has a depth of flavor that is completely unmatched. It's no surprise this breed is the favorite of British Royalty!</p>
+        <p>This heritage breed is considered "Threatened" by the Livestock Conservancy with fewer than 1,000 annual registrations in the US and an estimated global population of less than 5,000. By buying and enjoying pork from Texas Farms, you are helping us continue to preserve this amazing breed.</p>
+        <ul class="story-list">
+            <li>Humanely raised on pasture</li>
+            <li>Known for gourmet flavor</li>
+            <li>100% free of antibiotics, added hormones, and steroids</li>
+            <li>Inspected at a USDA facility</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Process -->
+<section class="process-section">
+    <div class="process-header">
+        <span class="label">From Pasture to Plate</span>
+        <h2>How Our Salami Is Made</h2>
+    </div>
+    <div class="process-grid">
+        <div class="process-step">
+            <div class="step-number">1</div>
+            <h3>Pasture-Raised</h3>
+            <p>Our GOS pigs forage on Vermont pastures, building flavor through a natural, stress-free life outdoors.</p>
+        </div>
+        <div class="process-step">
+            <div class="step-number">2</div>
+            <h3>Butchered Whole</h3>
+            <p>We use the whole animal with respect. Choice cuts are selected and hand-trimmed for salami production.</p>
+        </div>
+        <div class="process-step">
+            <div class="step-number">3</div>
+            <h3>Seasoned &amp; Stuffed</h3>
+            <p>Ground with imported smoked paprika, garlic, and spices, then stuffed into natural casings by hand.</p>
+        </div>
+        <div class="process-step">
+            <div class="step-number">4</div>
+            <h3>Slow-Cured</h3>
+            <p>Hung to cure for weeks in controlled conditions until the flavors concentrate and the texture becomes silky.</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- Final CTA -->
+<section class="final-cta">
+    <h2>Don't Miss Our First Batch</h2>
+    <p>This is the first charcuterie we've ever released &mdash; and it won't last long. Ships to your door anywhere in the US.</p>
+    <div class="cta-links">
+        <a href="#buy" class="btn-cta">Order Now &mdash; Limited Supply</a>
+        <a href="/charcuterie.html" class="btn-cta-outline">See All Charcuterie</a>
+    </div>
+</section>
+
+</div>
+
+<!-- Shopify Buy Button SDK -->
+<!--
+  To activate direct checkout on this page:
+  1. Shopify Admin > Sales Channels > add "Buy Button"
+  2. Create a Buy Button for your chorizo product
+  3. In the generated code snippet, find and copy:
+     - storefrontAccessToken: 'abc123...'
+     - id: '1234567890' (the product ID)
+     - domain: 'your-store.myshopify.com'
+  4. Paste those 3 values below
+-->
+<script type="text/javascript">
+/*<![CDATA[*/
+(function () {
+  var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+
+  // Gallery
+  function initGallery() {
+    var thumbs = document.querySelectorAll('.product-thumb');
+    var mainImg = document.querySelector('.product-main-img');
+    if (!thumbs.length || !mainImg) return;
+    thumbs.forEach(function(thumb) {
+      thumb.addEventListener('click', function() {
+        thumbs.forEach(function(t) { t.classList.remove('active'); });
+        thumb.classList.add('active');
+        mainImg.src = thumb.src;
+        mainImg.alt = thumb.alt;
+      });
+    });
+  }
+
+  // Smooth scroll
+  function initSmoothScroll() {
+    document.querySelectorAll('.chorizo-page a[href^="#"]').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  }
+
+  // Shopify Buy Button — uses same pattern as Shopify-generated snippet
+  function ShopifyBuyInit() {
+    var client = ShopifyBuy.buildClient({
+      domain: 'xnfc1b-gj.myshopify.com',
+      storefrontAccessToken: '18c6a0ef597c40329003ecc047559d9a',
+    });
+    ShopifyBuy.UI.onReady(client).then(function (ui) {
+      var fallback = document.getElementById('buy-fallback');
+      if (fallback) fallback.style.display = 'none';
+
+      ui.createComponent('product', {
+        id: '9340328935508',
+        node: document.getElementById('shopify-buy-button'),
+        moneyFormat: '%24%7B%7Bamount%7D%7D',
+        options: {
+          "product": {
+            "styles": {
+              "product": {
+                "@media (min-width: 601px)": {
+                  "max-width": "100%",
+                  "margin-left": "0",
+                  "margin-bottom": "0"
+                },
+                "text-align": "left"
+              },
+              "button": {
+                "font-family": "DM Sans, sans-serif",
+                "font-size": "0.85rem",
+                "font-weight": "600",
+                "letter-spacing": "0.05em",
+                "text-transform": "uppercase",
+                "padding-top": "16px",
+                "padding-bottom": "16px",
+                "width": "100%",
+                "color": "#ffffff",
+                "background-color": "#b87333",
+                ":hover": {
+                  "color": "#ffffff",
+                  "background-color": "#d4915c"
+                },
+                ":focus": {
+                  "background-color": "#d4915c"
+                },
+                "border-radius": "0"
+              },
+              "price": {
+                "font-family": "Cormorant Garamond, serif",
+                "font-size": "2rem",
+                "font-weight": "600",
+                "color": "#1a2e1a"
+              },
+              "quantityInput": {
+                "font-size": "1rem",
+                "padding-top": "12px",
+                "padding-bottom": "12px"
+              }
+            },
+            "buttonDestination": "cart",
+            "contents": {
+              "img": false,
+              "title": false,
+              "price": true,
+              "description": false,
+              "button": true,
+              "quantity": true
+            },
+            "text": {
+              "button": "Add to Cart",
+              "outOfStock": "Sold Out \u2014 Next Batch Coming Soon"
+            }
+          },
+          "productSet": {
+            "styles": {
+              "products": {
+                "@media (min-width: 601px)": {
+                  "margin-left": "-20px"
+                }
+              }
+            }
+          },
+          "modalProduct": {
+            "contents": {
+              "img": false,
+              "imgWithCarousel": true,
+              "button": false,
+              "buttonWithQuantity": true
+            },
+            "styles": {
+              "product": {
+                "@media (min-width: 601px)": {
+                  "max-width": "100%",
+                  "margin-left": "0px",
+                  "margin-bottom": "0px"
+                }
+              },
+              "button": {
+                "font-family": "DM Sans, sans-serif",
+                "font-weight": "600",
+                "color": "#ffffff",
+                "background-color": "#b87333",
+                ":hover": {
+                  "color": "#ffffff",
+                  "background-color": "#d4915c"
+                },
+                ":focus": {
+                  "background-color": "#d4915c"
+                },
+                "border-radius": "0"
+              }
+            },
+            "text": {
+              "button": "Add to cart"
+            }
+          },
+          "option": {},
+          "cart": {
+            "styles": {
+              "button": {
+                "font-family": "DM Sans, sans-serif",
+                "font-weight": "600",
+                "color": "#ffffff",
+                "background-color": "#b87333",
+                ":hover": {
+                  "color": "#ffffff",
+                  "background-color": "#d4915c"
+                },
+                ":focus": {
+                  "background-color": "#d4915c"
+                },
+                "border-radius": "0"
+              }
+            },
+            "text": {
+              "total": "Subtotal",
+              "button": "Checkout",
+              "notice": "Shipping calculated at checkout. We ship anywhere in the US."
+            },
+            "popup": false
+          },
+          "toggle": {
+            "styles": {
+              "toggle": {
+                "background-color": "#b87333",
+                ":hover": {
+                  "background-color": "#d4915c"
+                },
+                ":focus": {
+                  "background-color": "#d4915c"
+                }
+              }
+            }
+          }
+        },
+      });
+    });
+  }
+
+  function loadScript() {
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = scriptURL;
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+    script.onload = ShopifyBuyInit;
+  }
+
+  function init() {
+    initGallery();
+    initSmoothScroll();
+    if (window.ShopifyBuy) {
+      if (window.ShopifyBuy.UI) {
+        ShopifyBuyInit();
+      } else {
+        loadScript();
+      }
+    } else {
+      loadScript();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+/*]]>*/
+</script>

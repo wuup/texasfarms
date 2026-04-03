@@ -2,8 +2,8 @@
     <div class="container">
         <div class="d-flex justify-content-center align-items-center">
             <p class="mb-0">
-                <i class="fas fa-star mr-2"></i>
-                <strong>Place an order for local delivery! <a href="{{ site.shop_url }}" class="text-dark" style="text-decoration: underline;">Click here to order</a></strong>
+                <i class="fas fa-fire mr-2"></i>
+                <strong>NEW: Our first-ever charcuterie is here! Chorizo Salami &mdash; <a href="/chorizo.html" class="text-dark" style="text-decoration: underline;">Order now before it sells out</a></strong>
             </p>
         </div>
     </div>
@@ -55,8 +55,16 @@
                             <li class="nav-item">
                                 <a class="nav-link{% if page.nav_section == 'blog' %} active{% endif %}" href="/blog.html">Blog</a>
                             </li>
-                            <li class="nav-item"><a class="nav-link{% if page.url == '/farm-story.html' %} active{% endif %}" href="/farm-story.html">Farm Story</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ site.shop_url }}">Farm Shop</a></li>
+                            <!-- <li class="nav-item"><a class="nav-link{% if page.url == '/farm-story.html' %} active{% endif %}" href="/farm-story.html">Farm Story</a></li> -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="{{ site.shop_url }}" id="shopDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Farm Shop
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="shopDropdown">
+                                    <a class="dropdown-item" href="/chorizo.html">Chorizo Salami</a>
+                                    <a class="dropdown-item" href="{{ site.shop_url }}">Local Delivery</a>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </nav>
